@@ -1,0 +1,68 @@
+library(DT)
+
+print_table_bootstrapped_summary <- function(table, decimal_places){
+  datatable(
+    table,
+    rownames = FALSE,
+    extensions = list("FixedColumns" = NULL),
+    options = list(
+      dom = "t",
+      pageLength = 21,
+      scrollX = TRUE,
+      fixedColumns = list(leftColumns = 2)
+    ) 
+  ) %>%
+    formatRound(
+      names(table)[-c(1, 2)],
+      digits = decimal_places
+    ) %>%
+    formatStyle(
+      names(table),
+      lineHeight = "80%"
+    )
+}
+
+
+print_table_summary <- function(table, decimal_places){
+  datatable(
+    table,
+    rownames = FALSE,
+    extensions = list("FixedColumns" = NULL),
+    options = list(
+      dom = "t",
+      pageLength = 20,
+      scrollX = TRUE,
+      fixedColumns = TRUE
+    ) 
+  ) %>%
+    formatRound(
+      names(table)[-1],
+      digits = decimal_places
+    ) %>%
+    formatStyle(
+      names(table),
+      lineHeight = "80%"
+    )
+}
+
+
+print_table_distribution <- function(table, decimal_places){
+  datatable(
+    table,
+    rownames = FALSE,
+    extensions = list("FixedColumns" = NULL),
+    options = list(
+      dom = "t",
+      pageLength = 10,
+      fixedColumns = list(leftColumns = 1)
+    ) 
+  ) %>%
+    formatRound(
+      names(table)[-1],
+      digits = decimal_places
+    ) %>%
+    formatStyle(
+      names(table),
+      lineHeight = "80%"
+    )
+}

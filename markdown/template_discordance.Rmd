@@ -1,0 +1,192 @@
+
+```{r, include=FALSE, warning=FALSE, message=FALSE}
+## Load libraries.
+library(boot)
+library(dplyr)
+```
+
+```{r, include=FALSE, warning=FALSE, message=FALSE}
+## Import functions and variables.
+source('src/simulate_discordance.R', local = discordance <- new.env())
+source('src/bootstrapped_ci.R', local = bootstrapped <- new.env())
+source('src/comparison.R', local = comparison <- new.env())
+source('src/print_table.R', local = print <- new.env())
+```
+
+## Simulate predictions and calculate % discordance.
+```{r, echo=FALSE}
+discordance_status <-
+  discordance$simulate_bias_induced_discordance(
+    parameters$data,
+    parameters$identifier,
+    parameters$uncertain_variables,
+    parameters$bias_factors,
+    parameters$laboratory,
+    parameters$continuous_prediction_function,
+    parameters$categorical_prediction_function,
+    model = parameters$model,
+    model_variables = parameters$model_variables,
+    model_outcome = parameters$model_outcome,
+    model_cut_off = parameters$model_cut_off
+  )
+
+write.csv(
+  discordance_status,
+  parameters$path_and_name_simulated_results,
+  row.names = FALSE
+)
+```
+
+## Summarise results.
+
+- Histogram and QQ-plot of absolute_difference_continuous_prediction:
+```{r, echo=FALSE}
+discordance$plot_distribution_per_laboratory(
+  discordance_status, 
+  "absolute_difference"
+)
+```
+
+- Histogram and QQ-plot of percentage_difference_continuous_prediction:
+```{r, echo=FALSE}
+discordance$plot_distribution_per_laboratory(
+  discordance_status, 
+  "percentage_difference"
+)
+```
+
+## Calculate discordance measures,
+
+The histograms and QQ-plots show the distribution of bootstrapped estimates and together with the bootstrap bias estimate determine the appropriateness of normal and percentile bootstrapped confidence intervals. Bias-corrected and accelerated (BCa) confidence intervals correct for bias and skewness in the distribution of bootstrapped estimates.
+
+```{r, echo=FALSE}
+bootstrapped_discordant_predictions <- 
+  discordance_status %>%
+  group_split(laboratory) %>%
+  set_names(unique(discordance_status[["laboratory"]])) %>%
+  purrr::map(
+    function(x){
+      boot(
+        x,
+        discordance$get_distribution_of_bias_measures_as_vector,
+        parameters$bootstrap_number_of_samples
+      )
+    }
+  )
+```
+
+- Table with bootstrapped summary statistics:
+```{r, echo=FALSE}
+bootstrapped_ci_discordance_status <- bootstrapped$get_bootstrapped_ci_all_laboratories(
+  bootstrapped_discordant_predictions,
+  discordance$get_variable_names_from_distribution_of_bias_measures_as_vector(discordance_status), 
+  parameters$bootstrap_confidence_level, 
+  parameters$bootstrap_methods
+)
+
+write.csv(
+  bootstrapped_ci_discordance_status,
+  parameters$path_and_name_stats_with_ci,
+  row.names = FALSE
+)
+
+print$print_table_bootstrapped_summary(bootstrapped_ci_discordance_status, 4)
+```
+
+- Compact table with summary statistics.
+```{r, echo=FALSE}
+summary_discordance_status <- bootstrapped$get_dataframe_without_ci(bootstrapped_ci_discordance_status)
+
+write.csv(
+  summary_discordance_status,
+  parameters$path_and_name_stats_without_ci,
+  row.names = FALSE
+)
+
+print$print_table_summary(summary_discordance_status, 4)
+```
+
+- Histogram and distribution of median absolute difference:
+```{r, echo=FALSE}
+histogram_absolute_difference <- comparison$get_histogram(
+  summary_discordance_status, 
+  "absolute_difference_median",
+  "Median absolute difference",
+  parameters$histogram_method,
+  parameters$histogram_method_label,
+  parameters$histogram_absolute_difference_binwidth,
+  parameters$histogram_absolute_difference_x_range,
+  parameters$histogram_absolute_difference_y_range
+)
+
+plot(histogram_absolute_difference)
+```
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+distribution_absolute_difference <- comparison$get_distribution_table(
+  summary_discordance_status, 
+  "absolute_difference_median", 
+  "laboratory"
+)
+
+print$print_table_distribution(distribution_absolute_difference, 4)
+```
+
+- Histogram and distribution of median percentage difference:
+```{r, echo=FALSE}
+histogram_percentage_difference <- comparison$get_histogram(
+  summary_discordance_status, 
+  "percentage_difference_median",
+  "Percentage absolute difference",
+  parameters$histogram_method,
+  parameters$histogram_method_label,
+  parameters$histogram_percentage_difference_binwidth,
+  parameters$histogram_percentage_difference_x_range,
+  parameters$histogram_percentage_difference_y_range
+)
+
+plot(histogram_percentage_difference)
+```
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+distribution_percentage_difference <- comparison$get_distribution_table(
+  summary_discordance_status, 
+  "percentage_difference_median", 
+  "laboratory"
+)
+
+print$print_table_distribution(distribution_percentage_difference, 4)
+```
+
+- Histogram and distribution of percentage discordant:
+```{r, echo=FALSE}
+histogram_percentage_discordant <- comparison$get_histogram(
+  summary_discordance_status, 
+  "percentage_discordant",
+  "Percentage discordant",
+  parameters$histogram_method,
+  parameters$histogram_method_label,
+  parameters$histogram_percentage_discordant_binwidth,
+  parameters$histogram_percentage_discordant_x_range,
+  parameters$histogram_percentage_discordant_y_range
+)
+
+plot(histogram_percentage_discordant)
+```
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+distribution_percentage_discordant <- comparison$get_distribution_table(
+  summary_discordance_status, 
+  "percentage_discordant", 
+  "laboratory"
+)
+
+print$print_table_distribution(distribution_percentage_discordant, 4)
+```
+
+```{r, echo=FALSE}
+## Save plots.
+saveRDS(histogram_absolute_difference, parameters$path_and_name_histogram_absolute_difference)
+saveRDS(histogram_absolute_difference, parameters$path_and_name_histogram_percentage_difference)
+saveRDS(histogram_absolute_difference, parameters$path_and_name_histogram_percentage_discordant)
+```
