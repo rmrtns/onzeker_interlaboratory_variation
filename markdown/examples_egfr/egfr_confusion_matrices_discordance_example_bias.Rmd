@@ -11,6 +11,7 @@ set.seed(seed = 200)
 ```
 
 ## Load libraries.
+
 ```{r, include=FALSE, warning=FALSE, message=FALSE}
 library(DT)
 library(tidyr)
@@ -18,6 +19,7 @@ library(purrr)
 ```
 
 ## Set main parameters.
+
 ```{r}
 parameters <- new.env()
 parameters$original_data <- read.csv('data/test_data.csv')
@@ -32,6 +34,7 @@ parameters$bootstrap_methods <- c("norm", "perc")
 ```
 
 ## Set bootstrap parameters.
+
 ```{r}
 parameters$bootstrap_number_of_samples <- 1000
 parameters$bootstrap_confidence_level <- 0.95
@@ -39,6 +42,7 @@ parameters$bootstrap_methods <- c("norm", "perc")
 ```
 
 ## Set plot parameters.
+
 ```{r}
 parameters$histogram_method <- "laboratory"
 parameters$histogram_method_label <- "Laboratory"
@@ -54,6 +58,7 @@ parameters$histogram_specificity_y_range <- c(0, 10)
 ```
 
 ## Set directories to save results.
+
 ```{r}
 parameters$path_and_name_combined_stats <- 'out/egfr/simulations_confusion_matrix/egfr_confusion_matrix_test_data_bias_combined_stats.csv'
 parameters$path_and_name_stats_with_ci <- 'out/egfr/simulations_confusion_matrix/egfr_confusion_matrix_test_data_bias_stats_with_ci.csv'
