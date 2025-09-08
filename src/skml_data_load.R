@@ -19,7 +19,9 @@ skml_data_load_function <- function(){
       df <- read_xlsx(path = filenames[i])
       assign(df_name,df)
       rm(df)
+      
     } else {
+      
       print(paste0("file: (", filenames[i], ") is not formated as a csv or an xlsx"))
     }
     
