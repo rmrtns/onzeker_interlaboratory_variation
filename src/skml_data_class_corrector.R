@@ -1,4 +1,4 @@
-data_class_correction_function <- function(dataframe_list){
+skml_data_class_correction_function <- function(dataframe_list){
   
   dataframe_corrected <-list()
   
