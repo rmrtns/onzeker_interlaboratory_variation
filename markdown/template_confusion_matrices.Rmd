@@ -106,7 +106,7 @@ distribution_auroc <- comparison$get_distribution_table(
   "laboratory"
 )
 
-comparison$print_datatable_distribution(distribution_auroc, 4)
+print$print_table_summary(distribution_auroc, 4)
 ```
 
 - Histogram of sensitivity:
@@ -132,7 +132,7 @@ distribution_sensitivity <- comparison$get_distribution_table(
   "laboratory"
 )
 
-comparison$print_datatable_distribution(distribution_sensitivity, 4)
+print$print_table_distribution(distribution_sensitivity, 4)
 ```
 
 - Histogram of percentage discordant:
@@ -158,7 +158,7 @@ distribution_specificity <- comparison$get_distribution_table(
   "laboratory"
 )
 
-comparison$print_datatable_distribution(distribution_specificity, 4)
+print$print_table_distribution(distribution_specificity, 4)
 ```
 
 ```{r, echo=FALSE}
