@@ -1,6 +1,7 @@
-library("readxl")
+library("readxl") # mogelijk andere voor pakken als java depdent is readr
+library("dplyr")
 
-skml_data_load_function <- function(){
+skml_data_load_function <- function(sheetnumber = 1){
   data_dir <- "data"  
   filenames <- list.files(data_dir,full.names=TRUE)
   
@@ -16,7 +17,7 @@ skml_data_load_function <- function(){
     } else if (grepl(".xlsx$",filenames[i])) {
       
       df_name <- paste0("df_",i)
-      df <- read_xlsx(path = filenames[i])
+      df <- read_xlsx(path = filenames[i], sheet = sheetnumber)
       assign(df_name,df)
       rm(df)
       
