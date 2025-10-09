@@ -2,7 +2,7 @@ set.seed(seed = 200)
 
 library("dplyr")
 
-n_subj <- 200
+n_subj <- 500
 
 calculate_egfr <- function(data){
   egfr_men <- expression(141 * (pmin((data[["creatinine"]] / 88.4) / 0.9, 1) ** -0.411) * (pmax((data[["creatinine"]] / 88.4) / 0.9, 1) ** -1.209) * (0.993 ** data[["age"]]))
