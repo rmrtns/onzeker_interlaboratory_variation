@@ -2,7 +2,7 @@ set.seed(seed = 200)
 
 library("dplyr")
 
-n_subj <- 100
+n_subj <- 500
 
 calculate_egfr <- function(data){
   egfr_men <- expression(141 * (pmin((data[["creatinine"]] / 88.4) / 0.9, 1) ** -0.411) * (pmax((data[["creatinine"]] / 88.4) / 0.9, 1) ** -1.209) * (0.993 ** data[["age"]]))
@@ -29,8 +29,8 @@ test_data <- test_data %>%
       TRUE ~ 0
     ),
     mgfr_60 = case_when(
-      egfr_60 == 1 ~ sample(c(0, 1), 100, replace = TRUE, prob = c(0.20, 0.80)),
-      egfr_60 == 0 ~ sample(c(0, 1), 100, replace = TRUE, prob = c(0.90, 0.10)) 
+      egfr_60 == 1 ~ sample(c(0, 1), n_subj, replace = TRUE, prob = c(0.20, 0.80)),
+      egfr_60 == 0 ~ sample(c(0, 1), n_subj, replace = TRUE, prob = c(0.90, 0.10)) 
     )
   )
 
