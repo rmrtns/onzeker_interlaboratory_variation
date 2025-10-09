@@ -2,6 +2,8 @@ set.seed(seed = 200)
 
 library("dplyr")
 
+n_subj <- 100
+
 calculate_egfr <- function(data){
   egfr_men <- expression(141 * (pmin((data[["creatinine"]] / 88.4) / 0.9, 1) ** -0.411) * (pmax((data[["creatinine"]] / 88.4) / 0.9, 1) ** -1.209) * (0.993 ** data[["age"]]))
   egfr_women <- expression(141 * (pmin((data[["creatinine"]] / 88.4) / 0.7, 1) ** -0.329) * (pmax((data[["creatinine"]] / 88.4) / 0.7, 1) ** -1.209) * (0.993 ** data[["age"]]) * 1.018)
@@ -13,10 +15,10 @@ calculate_egfr <- function(data){
 
 
 test_data <- data.frame(
-  id = seq(1, 100, 1),
-  age = rnorm(100, 60, 10),
-  sex = sample(c(0, 1), 100, replace = TRUE),
-  creatinine = rnorm(100, 80, 15)
+  id = seq(1, n_subj, 1),
+  age = rnorm(n_subj, 60, 10),
+  sex = sample(c(0, 1), n_subj, replace = TRUE),
+  creatinine = rnorm(n_subj, 80, 15)
 )
 
 test_data <- test_data %>%
