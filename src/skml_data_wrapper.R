@@ -6,6 +6,8 @@ library("mcr")
 
 ## main function to execute the pipeline
 skml_data_wrapper_function <- function(vector_variable_of_interest){
+  # A wrapper function to execute the SKML data pipeline in the correct order. 
+  # This is the function that must be run in the application 
 
   # data pipeline
   list_df_1 <- skml_data_load_function()
@@ -21,25 +23,35 @@ skml_data_wrapper_function <- function(vector_variable_of_interest){
 
 ## data loading function
 skml_data_load_function <- function(sheetnumber = 1){
+  # function to load the data from the "data" map it can recognize both excel files (.XLSX)
+  # and comma-separated values files (.csv). It will output an list of dataframes with each 
+  # dataframe corresponding to one loaded file 
   
   data_dir <- "data"  
   filenames <- list.files(data_dir,full.names=TRUE)
+  dataframe_extracted <-list()
+  j = 1 # used to position the dataframe in the list
+  
   
   for(i in 1:length(filenames)) {
     if (grepl(".csv$",filenames[i])) {
       
       df_name <- paste0("df_",i)
       df <- read.csv(filenames[i])
-      assign(df_name,df)
-      rm(df)
+      df_2 <- assign(df_name,df)
+      
+      dataframe_extracted[[j]] <- df_2
+      j= j+1
       
       
     } else if (grepl(".xlsx$",filenames[i])) {
       
       df_name <- paste0("df_",i)
       df <- read_xlsx(path = filenames[i], sheet = sheetnumber)
-      assign(df_name,df)
-      rm(df)
+      df_2 <- assign(df_name,df)
+      
+      dataframe_extracted[[j]] <- df_2
+      j= j+1
       
     } else {
       
@@ -49,17 +61,16 @@ skml_data_load_function <- function(sheetnumber = 1){
     
   }
   
-  df_only <- Filter(is.data.frame, mget(ls(), 
-                                        envir = environment()
-  )
-  )
-  
-  return(df_only)
+
+  return(dataframe_extracted)
   
 }
 
 ## class correction function
 skml_data_class_correction_function <- function(dataframe_list){
+  # function to correct the classes in the measurements fields to numeric necessary for merging the data. 
+  # The function recognizes the measurements column based on the perl grepl fucntion: "\\d{4}[.]\\d{1}\\D{1}".
+  # meaning 4 numbers, a dot, one non-number, and one number corresponding to the encoding in the measurement column names.
   
   dataframe_corrected <-list()
   
@@ -85,6 +96,9 @@ skml_data_class_correction_function <- function(dataframe_list){
 
 ## data list merge function
 skml_data_merge_function <- function(dataframe_list){
+  # function to pivot and merge the different dataframes in the dataframe list. It first pivots all measurements columns
+  # using the same grepl perl function as seen in the class correction function.after these measurement colomns are pivoted.
+  # the dataframe list is then merged in one main dataframe.
   
   dataframe_pivot <-list()
   
@@ -108,6 +122,8 @@ skml_data_merge_function <- function(dataframe_list){
 
 ## data loading reference function
 skml_data_refrence <- function(){
+  # extracts the reference value out of the SKML data files and returns this as a dataframe.
+  # it uses the SKML_data_load_function to load the excel files into this function.
   
   df_list <- skml_data_load_function(2)
   df_corrected <-list()
@@ -130,6 +146,7 @@ skml_data_refrence <- function(){
 
 ## data merge measurements and reference function
 skml_data_to_reference_merge_function <- function(skml_dataframe, sklm_reference_dataframe){
+  # a function that merges the dataframe with all the measurements with the corresponding references values into one dataframe
   
   df_merged <- inner_join(skml_dataframe, sklm_reference_dataframe,
                           by = c("Bepaling" = "Bepaling", "name" = "ctm"))
@@ -139,6 +156,8 @@ skml_data_to_reference_merge_function <- function(skml_dataframe, sklm_reference
 
 ## Bias calculation function
 SKML_data_bias_function <- function(df, variable_list){
+  # A function that calculates the A and B (which reflect the bias) for the passing-bablock method for each combination of 
+  # ptp, ctr, and bepaling found the the dataframe (containing the measurements and the reference).
   
   Loop_list <- df %>% 
     filter(Bepaling %in% variable_list) %>%
