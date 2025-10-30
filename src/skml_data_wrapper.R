@@ -5,10 +5,10 @@ library("tidyr")
 library("mcr")
 
 ## main function to execute the pipeline
-skml_data_wrapper_function <- function(vector_variable_of_interest){
+skml_data_wrapper_function <- function(vector_variable_of_interest, subfolder){
 
   # data pipeline
-  list_df_1 <- skml_data_load_function()
+  list_df_1 <- skml_data_load_function(subfolder)
   list_df_2 <- skml_data_class_correction_function(list_df_1)
   df_measurements <- skml_data_merge_function(list_df_2)
   df_reference <- skml_data_refrence()
@@ -20,9 +20,9 @@ skml_data_wrapper_function <- function(vector_variable_of_interest){
 }
 
 ## data loading function
-skml_data_load_function <- function(sheetnumber = 1){
+skml_data_load_function <- function(subfolder, sheetnumber = 1){
   
-  data_dir <- "data"  
+  data_dir <- paste0("data", "/", subfolder)
   filenames <- list.files(data_dir,full.names=TRUE)
   
   for(i in 1:length(filenames)) {

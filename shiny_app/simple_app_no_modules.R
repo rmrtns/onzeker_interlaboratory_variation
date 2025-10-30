@@ -24,7 +24,7 @@ ui <- fluidPage(
     nav_panel("Rapport A", "Inhoud rapport A"), 
     nav_panel("Rapport B", "Inhoud rapport B"))
 )
-  
+
 # Define server logic
 server <- function(input, output, session) {
   
