@@ -11,7 +11,7 @@ data_list_reference <- lapply(files, read_excel, sheet = "Consensuswaarden",
 
 
 # Cast the columns "2024.1A", "2024.1B", "2024.1C", etc. to long by using
-# pivo and cast to numeric in data_list_results.
+# pivot and cast to numeric in data_list_results.
 data_list_results <- lapply(data_list_results, function(df) {
   df_long <- pivot_longer(df, cols = starts_with("2024"), 
                           names_to = "ctm", values_to = "Resultaat")
