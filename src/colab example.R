@@ -60,6 +60,25 @@ covars_w_skml_name <- c("Erytrocyten_BV" = "Erytrocyten",
                         "GGT_BV" = "Gamma-GT",
                         "Albumine_BV" = "Albumine",
                         "CRP_BV" = "CRP",
-                        "age"= NA)
+                        "age" = NA)
 
-lapply(covars_w_skml_name, function(x) )
+
+
+
+lapply(names(covars_w_skml_name), 
+       function(x) addBias(orig_dataset =  dataZMC_nolog,
+                   bepaling_naam_in_data = x, 
+                   bepaling_naam_in_skml = covars_w_skml_name[[x]],
+                   pbreg_data_ptp = subset(paba_regs, ptp == 1 & ctr == 4)))
+addBias <- function(orig_dataset, bepaling_naam_in_data,
+                    bepaling_naam_in_skml, pbreg_data_ptp){
+  if (!is.na(bepaling_naam_in_skml) | !(bepaling_naam_in_skml %in% pbreg_data_ptp$Bepaling)) { 
+    pbreg_bepaling <- subset(pbreg_data_ptp, Bepaling == bepaling_naam_in_skml)
+    orig_resultaten <- subset(orig_dataset, select = bepaling_naam_in_data)
+    pbreg_bepaling[['Intercept']] + pbreg_bepaling[['Slope']] * orig_resultaten
+    print(bepaling_naam_in_data)
+  } else {
+    return(orig_dataset)
+  }
+}
+
