@@ -9,12 +9,17 @@ source("src/predict_CoLab.R")
 dataZMC <- read.csv("data/CoLab_externe_validatie_Zuyderland.csv")
 dataZMC$CoLab_binary <- get_binary_prediction_CoLab(dataZMC$CoLab_lp)
 
+
 # De-transform log10 variables and removed log10_ from columns names
 log10_cols <- grep("log10", names(dataZMC), value = T)
 dataZMC_nolog <- dataZMC %>%
   mutate(across(all_of(log10_cols), ~ 10 ^ .x)) %>% 
-  rename_with(~ gsub("log10_", "", log10_cols), .cols = log10_cols) %>% 
-  select(!c("CoLab_lp", "CoLab_score"))
+  rename_with(~ gsub("log10_", "", log10_cols), .cols = log10_cols) 
+
+dataZMC_nolog$CoLab_lp <- get_lp_prediction_CoLab(dataZMC_nolog)
+dataZMC_nolog$CoLab_score <- get_ordinal_prediction_CoLab(dataZMC_nolog$CoLab_lp)
+dataZMC_nolog$CoLab_binary <- get_binary_prediction_CoLab(dataZMC_nolog$CoLab_lp)
+
 
 skml <- read.csv("data/skml_merged.csv")
 # Select one cluster from each participant
@@ -108,6 +113,8 @@ ptp_results <- lapply(ptp_biasedData, function(x){
   x$CoLab_binary <- get_binary_prediction_CoLab(x$CoLab_lp)
   x})
 
+saveRDS(ptp_results, "CoLab_results_by_ptp.Rds")
+saveRDS(dataZMC_nolog, "CoLab_results_ZMC.Rds")
 
 ptp_rocs <- lapply(ptp_results, function(x) 
   roc(x, "outcome", "CoLab_score", direction = "<"))
@@ -115,11 +122,24 @@ ptp_rocs <- lapply(ptp_results, function(x)
 ptp_aucs <- sapply(ptp_rocs, function(x) x$auc)
 quantile(unlist(ptp_aucs), probs = c(0.025, 0.5, 0.975))
 
-ptp_coords <- lapply(ptp_rocs, coords, x = 5)
-ptp_coords <- do.call(rbind, ptp_coords)
-quantile(ptp_coords$specificity, probs = c(0.025, 0.5, 0.975))
-quantile(ptp_coords$sensitivity, probs = c(0.025, 0.5, 0.975))
+ptp_coords <- lapply(ptp_rocs, coords, x = 5, 
+                     ret = c("sensitivity", "specificity", "ppv", "npv"))
+df.ptp_coords <- do.call(rbind, ptp_coords)
+quantile(df.ptp_coords$specificity, probs = c(0.025, 0.5, 0.975))
+quantile(df.ptp_coords$sensitivity, probs = c(0.025, 0.5, 0.975))
+quantile(df.ptp_coords$ppv, probs = c(0.025, 0.5, 0.975))
+quantile(df.ptp_coords$npv, probs = c(0.025, 0.5, 0.975))
+
+
+getDiscordantPreds <- function(orig_score, new_score){
+  (sum(orig_score != new_score)/length(orig_score))*100
+}
+
+disc_pairs <- sapply(ptp_results, function(x) 
+  getDiscordantPreds(dataZMC_nolog$CoLab_binary, x$CoLab_binary))
+quantile(disc_pairs, probs = c(0.025, 0.5, 0.975), na.rm = T)
 
 orig_roc <- roc(dataZMC, "outcome", "CoLab_score", direction = "<")
 orig_roc$auc
-coords(orig_roc, x = 5)
+coords(orig_roc, x = 5,
+       ret = c("sensitivity", "specificity", "ppv", "npv"))
