@@ -72,7 +72,7 @@ ref_cent <- ref_cent %>%
 # New slope = slope_ptp/slope_ref
 paba_regs_new <- left_join(subset(paba_regs, ptp != 11), 
                            ref_cent, by = "Bepaling") %>% 
-  mutate(New_Intercept = (Intercept - Ref_Intercept)/Ref_Slope) %>% 
+  mutate(New_Intercept = -((Ref_Slope*Ref_Intercept)/Ref_Slope) + Intercept) %>% 
   mutate(New_Slope = Slope/Ref_Slope)
 
 
