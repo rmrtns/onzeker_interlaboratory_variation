@@ -58,8 +58,7 @@ skml_merged <- skml_merged %>%
   drop_na(Resultaat) %>% 
   group_by(ptp, ctr, anl) %>% 
   mutate(n = n())  %>% 
-  ungroup() %>% 
-  filter(n >= 16)
+  ungroup()
 
 
 write.csv(skml_merged, "data/skml_merged.csv", row.names = FALSE)
