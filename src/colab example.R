@@ -5,7 +5,13 @@ source("src/predict_CoLab.R")
 
 
 # Import and pre-process --------------------------------------------------
+
                              
+skml <- read.csv("data/skml_merged.csv")
+# If file doesn't exist, run:
+# source("src/new skml import.R")
+
+
 dataZMC <- read.csv("data/CoLab_externe_validatie_Zuyderland.csv")
 dataZMC$CoLab_binary <- get_binary_prediction_CoLab(dataZMC$CoLab_lp)
 
@@ -21,9 +27,7 @@ dataZMC_nolog$CoLab_score <- get_ordinal_prediction_CoLab(dataZMC_nolog$CoLab_lp
 dataZMC_nolog$CoLab_binary <- get_binary_prediction_CoLab(dataZMC_nolog$CoLab_lp)
 
 
-skml <- read.csv("data/skml_merged.csv")
-# If file doesn't exist, run:
-# source("src/new skml import.R")
+
 
 # Select one cluster for each bepaling for each center
 skml_one_ptp <- skml %>% 
@@ -57,12 +61,13 @@ paba_regs <- skml_one_ptp %>%
   do(paba.reg.fun(.$ConsensusWaarde, .$Resultaat))
 
 
-
 # Paba regs wrt ZMC -------------------------------------------------------
 
+# ZMC is ptp 11, use as reference
+ref_ptp_no <- 11
 
 # Convert PaBa regression to using the ZMC dataset as reference
-ref_cent <- subset(paba_regs, ptp == 11)
+ref_cent <- subset(paba_regs, ptp == ref_ptp_no)
 
 ref_cent <- ref_cent %>% 
   rename("Ref_Intercept" = "Intercept") %>% 
@@ -70,11 +75,9 @@ ref_cent <- ref_cent %>%
   ungroup() %>% 
   select(-ptp, -ctr)
 
-
-
 # New intercept = (int_ptp - int_ref / slope_ref)
 # New slope = slope_ptp/slope_ref
-paba_regs_new <- left_join(subset(paba_regs, ptp != 11), 
+paba_regs_new <- left_join(subset(paba_regs, ptp != ref_ptp_no), 
                            ref_cent, by = "Bepaling") %>% 
   mutate(New_Intercept = -((Ref_Slope*Ref_Intercept)/Ref_Slope) + Intercept) %>% 
   mutate(New_Slope = Slope/Ref_Slope)
@@ -122,8 +125,8 @@ compl_ptp <- names(which(N_bepalingen_uit_CoLab == 8))
 
 createBiasedData <- function(orig_dataset, skml_paba_reg_ptp_ctr,
                              variable_dictionary, 
-                             int_colname = "Intercept", 
-                             slope_colname = "Slope") {
+                             int_colname, 
+                             slope_colname) {
   
   biased_dataset <- orig_dataset
   # Do for each variable 
@@ -140,6 +143,8 @@ createBiasedData <- function(orig_dataset, skml_paba_reg_ptp_ctr,
   }
   return(biased_dataset)
 }
+
+
 
 # Create biased data by participant
 ptp_biasedData <- lapply(paba_regs_split[compl_ptp], createBiasedData, 
@@ -175,20 +180,23 @@ q_auc <- quantile(unlist(ptp_aucs), probs = c(0.025, 0.5, 0.975))
 cat(sprintf("%.3f [%.3f - %.3f]", q_auc[2], q_auc[1], q_auc[3]))
 
 ptp_coords <- lapply(ptp_rocs, coords, x = 5, 
-                     ret = c("sensitivity", "specificity", "ppv", "npv"))
+                     ret =  c("sensitivity", "specificity", "ppv", "npv", 
+                              "tp", "tn", "fp", "fn"))
 df.ptp_coords <- do.call(rbind, ptp_coords)
 
-q_sens <- quantile(df.ptp_coords$sensitivity, probs = c(0.025, 0.5, 0.975))
-cat(sprintf("%.3f [%.3f - %.3f]", q_sens[2], q_sens[1], q_sens[3]))
+fancy_print_qs <- function(result_vec){
+  qs <- quantile(result_vec, probs = c(0.025, 0.5, 0.975))
+  cat(sprintf("%.3f [%.3f - %.3f]", qs[2], qs[1], qs[3]))
+}
 
-q_spec <- quantile(df.ptp_coords$specificity, probs = c(0.025, 0.5, 0.975))
-cat(sprintf("%.3f [%.3f - %.3f]", q_spec[2], q_spec[1], q_spec[3]))
-
-q_ppv <- quantile(df.ptp_coords$ppv, probs = c(0.025, 0.5, 0.975))
-cat(sprintf("%.3f [%.3f - %.3f]", q_ppv[2], q_ppv[1], q_ppv[3]))
-
-q_npv <- quantile(df.ptp_coords$npv, probs = c(0.025, 0.5, 0.975))
-cat(sprintf("%.3f [%.3f - %.3f]", q_npv[2], q_npv[1], q_npv[3]))
+fancy_print_qs(df.ptp_coords$sensitivity*100)
+fancy_print_qs(df.ptp_coords$specificity*100)
+fancy_print_qs(df.ptp_coords$ppv*100)
+fancy_print_qs(df.ptp_coords$npv*100)
+fancy_print_qs(df.ptp_coords$tp)
+fancy_print_qs(df.ptp_coords$tn)
+fancy_print_qs(df.ptp_coords$fp)
+fancy_print_qs(df.ptp_coords$fn)
 
 getDiscordantPreds <- function(orig_score, new_score){
   (sum(orig_score != new_score)/length(orig_score))*100
@@ -196,9 +204,8 @@ getDiscordantPreds <- function(orig_score, new_score){
 
 disc_pairs <- sapply(ptp_results, function(x) 
   getDiscordantPreds(dataZMC_nolog$CoLab_binary, x$CoLab_binary))
-q_pairs <- quantile(disc_pairs, probs = c(0.025, 0.5, 0.975), na.rm = T)
-cat(sprintf("%.3f [%.3f - %.3f]", q_pairs[2], q_pairs[1], q_pairs[3]))
 
+fancy_print_qs(disc_pairs)
 
 
 # Case study --------------------------------------------------------------
