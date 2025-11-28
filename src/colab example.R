@@ -25,7 +25,7 @@ skml <- read.csv("data/skml_merged.csv")
 # If file doesn't exist, run:
 # source("src/new skml import.R")
 
-# Select one cluster f
+# Select one cluster for each bepaling for each center
 skml_one_ptp <- skml %>% 
   group_by(Bepaling, ptp) %>% 
   filter(ctr == min(ctr))
@@ -167,7 +167,6 @@ coords(orig_roc, x = 5,
                 "tp", "tn", "fp", "fn"))
 
 # Stats alle centra
-
 ptp_rocs <- lapply(ptp_results, function(x) 
   roc(x, "outcome", "CoLab_score", direction = "<", levels = c(F, T)))
 
