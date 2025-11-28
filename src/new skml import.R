@@ -61,5 +61,7 @@ skml_merged <- skml_merged %>%
   ungroup()
 
 
+
 write.csv(skml_merged, "data/skml_merged.csv", row.names = FALSE)
 
+rm(list = ls())

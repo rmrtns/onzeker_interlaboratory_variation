@@ -22,6 +22,9 @@ dataZMC_nolog$CoLab_binary <- get_binary_prediction_CoLab(dataZMC_nolog$CoLab_lp
 
 
 skml <- read.csv("data/skml_merged.csv")
+# If file doesn't exist, run:
+source("src/new skml import.R")
+
 # Select one cluster from each participant
 skml_one_ptp <- skml %>% 
   group_by(Bepaling, ptp) %>% 
