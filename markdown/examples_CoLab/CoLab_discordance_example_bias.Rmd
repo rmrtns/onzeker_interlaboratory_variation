@@ -1,0 +1,49 @@
+---
+title: "CoLab Score: Discordant predictions related to bias in Zuyderland data"
+output: html_document
+date: "Report generated on: `r format(Sys.time(), '%Y-%m-%d')`"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_knit$set(root.dir = rprojroot::find_rstudio_root_file())
+set.seed(seed = 200)
+```
+
+## import skml bias data
+```{r}
+SKML <- new.env()
+SKML$data <- read.csv('data/skml_merged.csv')
+```
+
+
+## Import functions and variables.
+```{r, include=FALSE, warning=FALSE, message=FALSE}
+source('src/variables_colab.R', local = variables <- new.env())
+source('src/predict_CoLab.R', local = CoLab <- new.env())
+
+```
+
+
+## Set simulation parameters.
+```{r}
+parameters <- new.env()
+parameters$data <- read.csv('data/CoLab_externe_validatie_Zuyderland.csv')
+parameters$identifier <- "id"
+parameters$continuous_prediction_function <- CoLab$get_lp_prediction_CoLab
+parameters$categorical_prediction_function <- CoLab$get_ordinal_prediction_CoLab
+parameters$model <- NA
+parameters$model_variables <- variables$selected_variables_colab
+parameters$model_outcome <- "CoLab"
+parameters$model_cut_off <- 60
+parameters$uncertain_variables <- variables$selected_variables_colab[variables$uncertain_variables_indicator_colab]
+parameters$bias_factors <- variables$df_bias_percent_egfr
+parameters$laboratory <- "lab"
+```
+
+## Set bootstrap parameters.
+```{r}
+parameters$bootstrap_number_of_samples <- 1000
+parameters$bootstrap_confidence_level <- 0.95
+parameters$bootstrap_methods <- c("norm", "perc")
+```
