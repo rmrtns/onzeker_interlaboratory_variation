@@ -11,3 +11,16 @@ CoLab_variable_de_log <- function(data){
   return(data_nolog)
   
 }
+
+
+skml_bias_table_colab <- function(skml_long_table, bias_types, skml_names, non_bias_vec){
+  non_bias_bias_types_vec <- paste(rep(bias_types, each = length(non_bias_vec)), non_bias_vec, sep="")
+  
+  tmp <- skml_long_table %>%
+    select("name", matches(bias_types)) %>%
+    select("name", matches(skml_names)) %>%
+    mutate(!!!setNames(as.list(rep(NA, length(non_bias_bias_types_vec))), non_bias_bias_types_vec))
+  
+  
+  return(tmp)
+}

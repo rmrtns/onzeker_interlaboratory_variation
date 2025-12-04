@@ -10,25 +10,76 @@ knitr::opts_knit$set(root.dir = rprojroot::find_rstudio_root_file())
 set.seed(seed = 200)
 ```
 
-## import skml bias data
-```{r}
-SKML <- new.env()
-SKML$data <- read.csv('data/skml_merged.csv')
-```
-
 
 ## Import functions and variables.
 ```{r, include=FALSE, warning=FALSE, message=FALSE}
 source('src/variables_colab.R', local = variables <- new.env())
 source('src/predict_CoLab.R', local = CoLab <- new.env())
-
+source('src/paba_regression.R', local = paba <- new.env())
+source('src/CoLab_specific_functions.R', local = CoLab_functions <- new.env())
 ```
 
+
+```{r}
+library(tidyr)
+```
+
+## import skml bias data
+```{r}
+
+SKML <- new.env()
+# SKML$data <- read.csv('data/skml_bias_table.csv')
+SKML$merged_data <- read.csv("data/skml_merged.csv")
+SKML$N <- 16
+SKML$ref_ptp <- 11 
+SKML$paba_regression_function <- paba$paba.reg.fun
+SKML$data_bias <- SKML$merged_data %>% 
+                    group_by(Bepaling, ptp, ctr) %>% 
+                    do(SKML$paba_regression_function(.$ConsensusWaarde, .$Resultaat, SKML$N)) 
+
+
+SKML$data_bias_ref_centre <- subset(SKML$data_bias, ptp == SKML$ref_ptp)
+SKML$data_bias_ref_centre <-   SKML$data_bias_ref_centre %>% 
+                                  rename("Ref_Intercept" = "Intercept") %>% 
+                                  rename("Ref_Slope" = "Slope") %>% 
+                                  ungroup() %>% 
+                                  select(-ptp, -ctr)
+
+SKML$data_new_ref <-   left_join(subset(SKML$data_bias, ptp != SKML$ref_ptp), 
+                                 SKML$data_bias_ref_centre, by = "Bepaling") %>% 
+                                  mutate(New_Intercept = -((Ref_Slope*Ref_Intercept)/Ref_Slope) + Intercept) %>% 
+                                  mutate(New_Slope = Slope/Ref_Slope)  
+
+SKML$data <- SKML$data_new_ref %>%
+  pivot_wider(names_from = Bepaling, values_from = c(Intercept, Slope, Ref_Intercept, Ref_Slope, New_Intercept, New_Slope)) %>%
+  mutate(name = paste("ptp", ptp, "ctr", ctr, sep = "_"))
+
+
+SKML$bias_types <- c("New_Slope_", "New_Intercept_")
+SKML$skml_names <- c("Erytrocyten","Leukocyten", "Bilirubine", "LD", "Alk. Fosfatase", "Gamma-GT", "Albumine", "CRP")
+SKML$non_bias_vec <- c("age", "EosAbs_BV",  "BasoAbs_BV")
+
+
+SKML$bias_table <- CoLab_functions$skml_bias_table_colab(SKML$data, 
+                                                         SKML$bias_types, 
+                                                         SKML$skml_names, 
+                                                         SKML$non_bias_vec)
+SKML$bias_table <-  SKML$bias_table %>%
+    rename("laboratory" = "name")
+
+# TODO put the bias table in the next chunk
+# TODO make the markdown runable
+# TODO put the bare functions in the template_discordance.rmd (only if this is desired by the project lead)
+# TODO error due to pivot_wide tidyr not loaded   
+
+
+```
 
 ## Set simulation parameters.
 ```{r}
 parameters <- new.env()
 parameters$data <- read.csv('data/CoLab_externe_validatie_Zuyderland.csv')
+parameters$data_nolog <- CoLab_functions$CoLab_variable_de_log(parameters$data)
 parameters$identifier <- "id"
 parameters$continuous_prediction_function <- CoLab$get_lp_prediction_CoLab
 parameters$categorical_prediction_function <- CoLab$get_ordinal_prediction_CoLab
@@ -37,8 +88,8 @@ parameters$model_variables <- variables$selected_variables_colab
 parameters$model_outcome <- "CoLab"
 parameters$model_cut_off <- 60
 parameters$uncertain_variables <- variables$selected_variables_colab[variables$uncertain_variables_indicator_colab]
-parameters$bias_factors <- variables$df_bias_percent_egfr
-parameters$laboratory <- "lab"
+parameters$bias_factors <- SKML$bias_table
+parameters$laboratory <- "name"
 ```
 
 ## Set bootstrap parameters.
@@ -47,3 +98,40 @@ parameters$bootstrap_number_of_samples <- 1000
 parameters$bootstrap_confidence_level <- 0.95
 parameters$bootstrap_methods <- c("norm", "perc")
 ```
+
+## Set plot parameters.
+```{r}
+parameters$histogram_method <- "laboratory"
+parameters$histogram_method_label <- "Laboratory"
+parameters$histogram_absolute_difference_binwidth <-  0.5
+parameters$histogram_absolute_difference_x_range <- c(-10, 10)
+parameters$histogram_absolute_difference_y_range <- c(0, 10)
+parameters$histogram_percentage_difference_binwidth <-  0.5
+parameters$histogram_percentage_difference_x_range <- c(-20, 20)
+parameters$histogram_percentage_difference_y_range <- c(0, 10)
+parameters$histogram_percentage_discordant_binwidth <-  0.5
+parameters$histogram_percentage_discordant_x_range <- c(0, 20)
+parameters$histogram_percentage_discordant_y_range <- c(0, 10)
+```
+
+## Set directories to save results.
+```{r}
+parameters$path_and_name_simulated_results <- 'out/CoLab/simulations_discordance/colab_discordance_test_data_bias.csv'
+parameters$path_and_name_stats_with_ci <- 'out/CoLab/simulations_discordance/colab_discordance_test_data_stats_with_ci.csv'
+parameters$path_and_name_stats_without_ci <-
+  'out/CoLab/simulations_discordance/colab_discordance_test_data_stats_without_ci.csv'
+parameters$path_and_name_histogram_absolute_difference <- 
+  'out/CoLab/simulations_discordance/colab_discordance_test_data_histogram_absolute_difference.rds'
+parameters$path_and_name_histogram_percentage_difference <- 
+  'out/CoLab/simulations_discordance/colab_discordance_test_data_histogram_absolute_difference.rds'
+parameters$path_and_name_histogram_percentage_discordant <- 
+  'out/CoLab/simulations_discordance/colab_discordance_test_data_histogram_absolute_difference.rds'
+```
+
+
+
+```{r, child='markdown/template_discordance.Rmd'}
+
+```
+
+
