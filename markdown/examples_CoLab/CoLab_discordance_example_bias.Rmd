@@ -50,6 +50,26 @@ SKML$data_new_ref <-   left_join(subset(SKML$data_bias, ptp != SKML$ref_ptp),
                                   mutate(New_Intercept = -((Ref_Slope*Ref_Intercept)/Ref_Slope) + Intercept) %>% 
                                   mutate(New_Slope = Slope/Ref_Slope)  
 
+# formula form 
+SKML$data_new_ref <- SKML$data_new_ref %>%
+  mutate(formula = ifelse(!is.na(New_Intercept) | !is.na(New_Intercept) , 
+                           paste("y ~ ", round(New_Slope,3),"*x + ", round(New_Intercept,3), sep = "" ), 
+                          NA))
+           
+           
+           
+          
+  
+# formula form 
+SKML$data <- SKML$data_new_ref %>%
+  group_by(ptp, ctr) %>%
+  select(c(Bepaling,formula)) %>%
+  pivot_wider(names_from = Bepaling, values_from = c(formula)) %>%
+  mutate(name = paste("ptp", ptp, "ctr", ctr, sep = "_"))
+
+
+
+
 SKML$data <- SKML$data_new_ref %>%
   pivot_wider(names_from = Bepaling, values_from = c(Intercept, Slope, Ref_Intercept, Ref_Slope, New_Intercept, New_Slope)) %>%
   mutate(name = paste("ptp", ptp, "ctr", ctr, sep = "_"))
