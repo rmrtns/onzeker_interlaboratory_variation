@@ -68,20 +68,18 @@ SKML$data <- SKML$data_new_ref %>%
   mutate(name = paste("ptp", ptp, "ctr", ctr, sep = "_"))
 
 
+AAA
+
+# SKML$data <- SKML$data_new_ref %>%
+#   pivot_wider(names_from = Bepaling, values_from = c(Intercept, Slope, Ref_Intercept, Ref_Slope, New_Intercept, New_Slope)) %>%
+#   mutate(name = paste("ptp", ptp, "ctr", ctr, sep = "_"))
 
 
-SKML$data <- SKML$data_new_ref %>%
-  pivot_wider(names_from = Bepaling, values_from = c(Intercept, Slope, Ref_Intercept, Ref_Slope, New_Intercept, New_Slope)) %>%
-  mutate(name = paste("ptp", ptp, "ctr", ctr, sep = "_"))
-
-
-SKML$bias_types <- c("New_Slope_", "New_Intercept_")
 SKML$skml_names <- c("Erytrocyten","Leukocyten", "Bilirubine", "LD", "Alk. Fosfatase", "Gamma-GT", "Albumine", "CRP")
 SKML$non_bias_vec <- c("age", "EosAbs_BV",  "BasoAbs_BV")
 
 
 SKML$bias_table <- CoLab_functions$skml_bias_table_colab(SKML$data, 
-                                                         SKML$bias_types, 
                                                          SKML$skml_names, 
                                                          SKML$non_bias_vec)
 SKML$bias_table <-  SKML$bias_table %>%
