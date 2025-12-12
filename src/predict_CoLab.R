@@ -1,8 +1,39 @@
 # Functions to calculate the CoLab-score, either continous (linear predictor)
 # ordinal (0 to 5) or binary (using a score of 5 as positive)
 
+get_continuous_prediction_CoLab <- function(data, dots_arguments){
+  
+  RBC <- dots_arguments[["model_variables"]]["Erytrocyten_BV"]
+  WBC <- dots_arguments[["model_variables"]]["Leukocyten_BV"]
+  EOS <- dots_arguments[["model_variables"]]["EosAbs_BV"]
+  BASO <- dots_arguments[["model_variables"]]["BasoAbs_BV"]
+  BILI <- dots_arguments[["model_variables"]]["log10_BilirubineTotaal_BV"]
+  LD <- dots_arguments[["model_variables"]]["log10_LD_BV"]
+  AF <- dots_arguments[["model_variables"]]["log10_AlkFosf_BV"]
+  GGT <- dots_arguments[["model_variables"]]["log10_GGT_BV"]
+  ALB <- dots_arguments[["model_variables"]]["Albumine_BV"]
+  CRP <- dots_arguments[["model_variables"]]["CRP_BV"]
+  age <- dots_arguments[["model_variables"]]["age"]
+  
+  CoLab <- expression(-6.885000+
+                        data[[RBC]]*0.937900+
+                        data[[WBC]]*-0.129800+
+                        data[[EOS]]*-6.834000+
+                        data[[BASO]]*-47.70000+
+                        data[[BILI]]*-1.142000+
+                        data[[LD]]*5.369000+
+                        data[[AF]]*-3.114000+
+                        data[[GGT]]*0.360500+
+                        data[[ALB]]*-0.115600+
+                        data[[CRP]]*0.002560+
+                        data[[age]]*0.002275
+  )
+  
+}
 
-get_lp_prediction_CoLab <- function(X.unscaled){
+
+
+get_lp_prediction_CoLab <- function(data,dots_arguments){
   
   coefs <- c("(Intercept)" = -6.885000,
              "Erytrocyten_BV" = 0.937900,
@@ -39,12 +70,12 @@ get_lp_prediction_CoLab <- function(X.unscaled){
   lp + coefs["(Intercept)"]
 }
 
-get_ordinal_prediction_CoLab <- function(CoLab_lps){
+get_ordinal_prediction_CoLab <- function(CoLab_lps,...){
   cutoffs <- c( -1.64, -2.34, -3.29, -4.03, -5.83)
   cut(CoLab_lps, c(Inf, cutoffs, -Inf), labels = seq(0, length(cutoffs)), 
       ordered_result = T)
 }
 
-get_binary_prediction_CoLab <- function(CoLab_lps){
+get_binary_prediction_CoLab <- function(CoLab_lps,...){
   CoLab_lps >= -1.64
 }
