@@ -59,23 +59,27 @@ SKML$data_new_ref <- SKML$data_new_ref %>%
            
            
           
-  
+#   
+# # formula form 
+# SKML$data <- SKML$data_new_ref %>%
+#   group_by(ptp, ctr) %>%
+#   select(c(Bepaling,formula)) %>%
+#   pivot_wider(names_from = Bepaling, values_from = c(formula)) %>%
+#   mutate(name = paste("ptp", ptp, "ctr", ctr, sep = "_"))
+
 # formula form 
 SKML$data <- SKML$data_new_ref %>%
   group_by(ptp, ctr) %>%
-  select(c(Bepaling,formula)) %>%
-  pivot_wider(names_from = Bepaling, values_from = c(formula)) %>%
+  select(c(Bepaling,New_Slope)) %>%
+  pivot_wider(names_from = Bepaling, values_from = c(New_Slope)) %>%
   mutate(name = paste("ptp", ptp, "ctr", ctr, sep = "_"))
-
-
-AAA
 
 # SKML$data <- SKML$data_new_ref %>%
 #   pivot_wider(names_from = Bepaling, values_from = c(Intercept, Slope, Ref_Intercept, Ref_Slope, New_Intercept, New_Slope)) %>%
 #   mutate(name = paste("ptp", ptp, "ctr", ctr, sep = "_"))
 
 
-SKML$skml_names <- c("Erytrocyten","Leukocyten", "Bilirubine", "LD", "Alk. Fosfatase", "Gamma-GT", "Albumine", "CRP")
+SKML$skml_names <- c("name", "Erytrocyten","Leukocyten", "Bilirubine", "LD", "Alk. Fosfatase", "Gamma-GT", "Albumine", "CRP")
 SKML$non_bias_vec <- c("age", "EosAbs_BV",  "BasoAbs_BV")
 
 
@@ -83,7 +87,19 @@ SKML$bias_table <- CoLab_functions$skml_bias_table_colab(SKML$data,
                                                          SKML$skml_names, 
                                                          SKML$non_bias_vec)
 SKML$bias_table <-  SKML$bias_table %>%
-    rename("laboratory" = "name")
+    rename("laboratory" = "name",
+           "Erytrocyten_BV" =  "Erytrocyten",
+           "Leukocyten_BV" = "Leukocyten",
+           "BilirubineTotaal_BV" = "Bilirubine",
+           "LD_BV" = "LD",
+           "AlkFosf_BV" = "Alk. Fosfatase",
+           "Albumine_BV" = "Albumine" ,
+           "CRP_BV" = "CRP")
+
+
+
+
+SKML$bias_table_full <- SKML$bias_table[rowSums(!is.na(SKML$bias_table)) == 11, ]
 
 # TODO put the bias table in the next chunk
 # TODO make the markdown runable
@@ -96,18 +112,18 @@ SKML$bias_table <-  SKML$bias_table %>%
 ## Set simulation parameters.
 ```{r}
 parameters <- new.env()
-parameters$data <- read.csv('data/CoLab_externe_validatie_Zuyderland.csv')
-parameters$data_nolog <- CoLab_functions$CoLab_variable_de_log(parameters$data)
-parameters$identifier <- "id"
-parameters$continuous_prediction_function <- CoLab$get_lp_prediction_CoLab
+parameters$data_with_log <- read.csv('data/CoLab_externe_validatie_Zuyderland.csv')
+parameters$data <- CoLab_functions$CoLab_variable_de_log(parameters$data_with_log)
+parameters$identifier <- "Pat"
+parameters$continuous_prediction_function <- CoLab$get_continuous_prediction_CoLab
 parameters$categorical_prediction_function <- CoLab$get_ordinal_prediction_CoLab
 parameters$model <- NA
 parameters$model_variables <- variables$selected_variables_colab
 parameters$model_outcome <- "CoLab"
-parameters$model_cut_off <- 60
+parameters$model_cut_off <- -1.64 #c( -1.64, -2.34, -3.29, -4.03, -5.83)
 parameters$uncertain_variables <- variables$selected_variables_colab[variables$uncertain_variables_indicator_colab]
-parameters$bias_factors <- SKML$bias_table
-parameters$laboratory <- "name"
+parameters$bias_factors <- SKML$bias_table_full
+parameters$laboratory <- "ptp"
 ```
 
 ## Set bootstrap parameters.
