@@ -94,6 +94,7 @@ SKML$bias_table <-  SKML$bias_table %>%
            "LD_BV" = "LD",
            "AlkFosf_BV" = "Alk. Fosfatase",
            "Albumine_BV" = "Albumine" ,
+           "GGT_BV" = "Gamma-GT",
            "CRP_BV" = "CRP")
 
 
@@ -120,7 +121,7 @@ parameters$categorical_prediction_function <- CoLab$get_ordinal_prediction_CoLab
 parameters$model <- NA
 parameters$model_variables <- variables$selected_variables_colab
 parameters$model_outcome <- "CoLab"
-parameters$model_cut_off <- -1.64 #c( -1.64, -2.34, -3.29, -4.03, -5.83)
+parameters$model_cut_off <- c( -1.64, -2.34, -3.29, -4.03, -5.83) #-1.64
 parameters$uncertain_variables <- variables$selected_variables_colab[variables$uncertain_variables_indicator_colab]
 parameters$bias_factors <- SKML$bias_table_full
 parameters$laboratory <- "ptp"

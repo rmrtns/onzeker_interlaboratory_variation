@@ -12,31 +12,15 @@ selected_variables_colab <- c("Erytrocyten_BV" = "Erytrocyten_BV",
 )
 
 
-
-# 
-# uncertain_variables_indicator_colab <- c(
-#   TRUE,
-#   TRUE,
-#   FALSE,
-#   FALSE,
-#   TRUE,
-#   TRUE,
-#   TRUE,
-#   TRUE,
-#   TRUE,
-#   TRUE,
-#   FALSE)
-
-
 uncertain_variables_indicator_colab <- c(
-  FALSE,
+  TRUE,
   TRUE,
   FALSE,
   FALSE,
+  TRUE,
+  TRUE,
+  TRUE,
   FALSE,
-  FALSE,
-  FALSE,
-  FALSE,
-  FALSE,
-  FALSE,
+  TRUE,
+  TRUE,
   FALSE)
