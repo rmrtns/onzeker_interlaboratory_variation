@@ -121,7 +121,7 @@ parameters$categorical_prediction_function <- CoLab$get_ordinal_prediction_CoLab
 parameters$model <- NA
 parameters$model_variables <- variables$selected_variables_colab
 parameters$model_outcome <- "CoLab"
-parameters$model_cut_off <- c( -1.64, -2.34, -3.29, -4.03, -5.83) #-1.64
+parameters$model_cut_off <- -5.83 # c( -1.64, -2.34, -3.29, -4.03, -5.83) #-1.64
 parameters$uncertain_variables <- variables$selected_variables_colab[variables$uncertain_variables_indicator_colab]
 parameters$bias_factors <- SKML$bias_table_full
 parameters$laboratory <- "ptp"
@@ -129,7 +129,7 @@ parameters$laboratory <- "ptp"
 
 ## Set bootstrap parameters.
 ```{r}
-parameters$bootstrap_number_of_samples <- 1000
+parameters$bootstrap_number_of_samples <- 50
 parameters$bootstrap_confidence_level <- 0.95
 parameters$bootstrap_methods <- c("norm", "perc")
 ```
