@@ -27,15 +27,16 @@ source('src/CoLab_specific_functions.R', local = CoLab_functions <- new.env())
 ```{r}
 parameters <- new.env()
 parameters$data_with_log <- read.csv('data/CoLab_externe_validatie_Zuyderland.csv')
-parameters$original_data <- CoLab_functions$CoLab_variable_de_log(parameters$data_with_log)
+parameters$data_with_dups <- CoLab_functions$CoLab_variable_de_log(parameters$data_with_log)
+parameters$original_data <- parameters$data_with_dups[!duplicated(parameters[["data_with_dups"]][["Pat"]]),] # dit nog omzetten naar functie
 parameters$discordance_data <- 
   read.csv('out/CoLab/simulations_discordance/colab_discordance_test_data_bias.csv')
 parameters$identifier <- "Pat"
 parameters$model_outcome <- "CoLab_score"
 parameters$model_outcome_class_TRUE <-  "1"
-parameters$bootstrap_number_of_samples <- 5
-parameters$bootstrap_confidence_level <- 0.95
-parameters$bootstrap_methods <- c("norm", "perc")
+# parameters$bootstrap_number_of_samples <- 50
+# parameters$bootstrap_confidence_level <- 0.95
+# parameters$bootstrap_methods <- c("perc") #c("norm", "perc")
 ```
 
 ## Set bootstrap parameters.

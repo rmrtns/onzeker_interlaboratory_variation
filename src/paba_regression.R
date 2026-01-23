@@ -5,6 +5,7 @@ library(dplyr)
 
 paba.reg.fun <- function(ReferenceMethod, TestMethod,N){
   # Minimum sample size is N
+
   if (length(ReferenceMethod) >= N) {
     PB.reg <- mcr::mcreg(ReferenceMethod,
                          TestMethod,

@@ -25,14 +25,5 @@ CoLab_variable_de_log <- function(data){
 #   return(tmp)
 # }
 
-skml_bias_table_colab <- function(skml_long_table, skml_names, non_bias_vec){
 
-    tmp <- skml_long_table %>%
-    # select("name", matches(skml_names)) %>%
-    select(skml_names) %>% 
-    mutate(!!!setNames(as.list(rep(NA, length(non_bias_vec))), non_bias_vec))
-  
-  
-  return(tmp)
-}
 
