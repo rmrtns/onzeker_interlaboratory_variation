@@ -1,0 +1,124 @@
+---
+title: "CoLab Score: Discordant predictions related to bias in Zuyderland data"
+output: html_document
+date: "Report generated on: `r format(Sys.time(), '%Y-%m-%d')`"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_knit$set(root.dir = rprojroot::find_rstudio_root_file())
+set.seed(seed = 200)
+```
+
+
+## Import functions and variables.
+```{r, include=FALSE, warning=FALSE, message=FALSE}
+source('src/variables_colab.R', local = variables <- new.env())
+source('src/predict_CoLab.R', local = CoLab <- new.env())
+source('src/paba_regression.R', local = paba <- new.env())
+source('src/CoLab_specific_functions.R', local = CoLab_functions <- new.env())
+```
+
+
+```{r}
+library(tidyr)
+```
+
+## import skml bias data
+```{r}
+
+source('src/calculate_bias_table.r')
+
+SKML <- new.env()
+# SKML$data <- read.csv('data/skml_bias_table.csv')
+SKML$SKML_data_full <- read.csv("data/paba_data.csv")
+SKML$ref_ptp <- 11 
+SKML$skml_names <- c("Erytrocyten","Leukocyten", "Bilirubine", "LD", "Alk. Fosfatase", "Gamma-GT", "Albumine", "CRP")
+SKML$non_bias_vec <- c("age", "EosAbs_BV",  "BasoAbs_BV")
+SKML$bias_table_intercept <- get_intercept_table(SKML$SKML_data_full, SKML$ref_ptp, SKML$skml_names, SKML$non_bias_vec)
+SKML$bias_table_slope <- get_slope_table(SKML$SKML_data_full, SKML$ref_ptp, SKML$skml_names, SKML$non_bias_vec)
+
+
+
+
+SKML$bias_table <-  SKML$bias_table %>%
+    rename("laboratory" = "name",
+           "Erytrocyten_BV" =  "Erytrocyten",
+           "Leukocyten_BV" = "Leukocyten",
+           "BilirubineTotaal_BV" = "Bilirubine",
+           "LD_BV" = "LD",
+           "AlkFosf_BV" = "Alk. Fosfatase",
+           "Albumine_BV" = "Albumine" ,
+           "GGT_BV" = "Gamma-GT",
+           "CRP_BV" = "CRP")
+
+SKML$bias_table_full <- SKML$bias_table[rowSums(!is.na(SKML$bias_table)) == 10, ] # hier zit het probleem
+
+# TODO put the bias table in the next chunk
+# TODO make the markdown runable
+# TODO put the bare functions in the template_discordance.rmd (only if this is desired by the project lead)
+# TODO error due to pivot_wide tidyr not loaded   
+
+
+```
+
+## Set simulation parameters.
+```{r}
+parameters <- new.env()
+parameters$data_with_log <- read.csv('data/CoLab_externe_validatie_Zuyderland.csv')
+parameters$data <- CoLab_functions$CoLab_variable_de_log(parameters$data_with_log)
+parameters$identifier <- "Pat"
+parameters$continuous_prediction_function <- CoLab$get_continuous_prediction_CoLab
+parameters$categorical_prediction_function <- CoLab$get_ordinal_prediction_CoLab
+parameters$model <- NA
+parameters$model_variables <- variables$selected_variables_colab
+parameters$model_outcome <- "CoLab"
+parameters$model_cut_off <- -1.64 
+parameters$uncertain_variables <- variables$selected_variables_colab[variables$uncertain_variables_indicator_colab]
+parameters$bias_factors <- SKML$bias_table_full
+parameters$laboratory <- "ptp"
+```
+
+## Set bootstrap parameters.
+```{r}
+parameters$bootstrap_number_of_samples <- 50
+parameters$bootstrap_confidence_level <- 0.95
+parameters$bootstrap_methods <- c("perc") #c("norm", "perc")
+```
+
+## Set plot parameters.
+```{r}
+parameters$histogram_method <- "laboratory"
+parameters$histogram_method_label <- "Laboratory"
+parameters$histogram_absolute_difference_binwidth <-  0.5
+parameters$histogram_absolute_difference_x_range <- c(-10, 10)
+parameters$histogram_absolute_difference_y_range <- c(0, 10)
+parameters$histogram_percentage_difference_binwidth <-  0.5
+parameters$histogram_percentage_difference_x_range <- c(-20, 20)
+parameters$histogram_percentage_difference_y_range <- c(0, 10)
+parameters$histogram_percentage_discordant_binwidth <-  0.5
+parameters$histogram_percentage_discordant_x_range <- c(0, 20)
+parameters$histogram_percentage_discordant_y_range <- c(0, 10)
+```
+
+## Set directories to save results.
+```{r}
+parameters$path_and_name_simulated_results <- 'out/CoLab/simulations_discordance/colab_discordance_test_data_bias.csv'
+parameters$path_and_name_stats_with_ci <- 'out/CoLab/simulations_discordance/colab_discordance_test_data_stats_with_ci.csv'
+parameters$path_and_name_stats_without_ci <-
+  'out/CoLab/simulations_discordance/colab_discordance_test_data_stats_without_ci.csv'
+parameters$path_and_name_histogram_absolute_difference <- 
+  'out/CoLab/simulations_discordance/colab_discordance_test_data_histogram_absolute_difference.rds'
+parameters$path_and_name_histogram_percentage_difference <- 
+  'out/CoLab/simulations_discordance/colab_discordance_test_data_histogram_absolute_difference.rds'
+parameters$path_and_name_histogram_percentage_discordant <- 
+  'out/CoLab/simulations_discordance/colab_discordance_test_data_histogram_absolute_difference.rds'
+```
+
+
+
+```{r, child='markdown/template_discordance.Rmd'}
+
+```
+
+

@@ -1,3 +1,4 @@
+
 library(boot)
 # const function copied from source code boot
 library(dplyr)
@@ -21,7 +22,7 @@ get_bootstrapped_ci_per_laboratory <- function(boot_out, variables, confidence_l
   variables <- as.vector(variables)
   statistics <- get_statistics_from_boot_out(boot_out, variables)
   cis_per_variable <- get_bootstrapped_cis_per_variable(boot_out, variables, confidence_level, methods, statistics)
-  plot_boot_out(boot_out, variables)
+  # plot_boot_out(boot_out, variables) # comment this in for bootstrap histograms
   return(left_join(statistics, cis_per_variable, by = "variable"))
 }
 

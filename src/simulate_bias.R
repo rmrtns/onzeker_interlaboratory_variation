@@ -22,6 +22,7 @@ simulate_bias <- function(data, identifier, variables, bias){
 }
 
 
-multiply_variable_by_factor <- function(original, factor){
+multiply_variable_by_factor <- function(original, factor){ 
+
   return(original * factor)
 }

@@ -26,6 +26,11 @@ simulate_bias_induced_discordance <-
     constant_data <- bias$create_constant_data(data, variables)
     for (row in 1:nrow(bias_factors)){
       simulated_data <- bias$simulate_bias(data, identifier, variables, bias_factors[[variables]][row]) 
+      # simulated_data <- data.frame(setNames(list(data[[identifier]]), identifier))
+      # for(var in variables){
+      #   tmp <- bias$simulate_bias(data, identifier, var, bias_factors[[var]][row]) # deze row over heen lopen
+      #   simulated_data <- cbind(simulated_data, tmp[2])
+      # }
       combined_data <- left_join(constant_data, simulated_data, by = c(identifier))
       combined_data_with_predictions <- get_predictions(combined_data, identifier, predict_continuous, predict_categorical, dots_arguments)
       # save_database$save_database_data(combined_data_with_predictions)

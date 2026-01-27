@@ -1,0 +1,80 @@
+---
+title: "CoLab_confusion_matrices_discordance_example_bias.Rmd"
+output: html_document
+date: "2026-01-06"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_knit$set(root.dir = rprojroot::find_rstudio_root_file())
+set.seed(seed = 200)
+```
+
+## Load libraries.
+```{r, include=FALSE, warning=FALSE, message=FALSE}
+library(DT)
+library(tidyr)
+library(purrr)
+```
+
+```{r, include=FALSE, warning=FALSE, message=FALSE}
+
+source('src/CoLab_specific_functions.R', local = CoLab_functions <- new.env())
+```
+
+
+## Set main parameters.
+```{r}
+parameters <- new.env()
+parameters$data_with_log <- read.csv('data/CoLab_externe_validatie_Zuyderland.csv')
+parameters$data_with_dups <- CoLab_functions$CoLab_variable_de_log(parameters$data_with_log)
+parameters$original_data <- parameters$data_with_dups[!duplicated(parameters[["data_with_dups"]][["Pat"]]),] # dit nog omzetten naar functie
+parameters$discordance_data <- 
+  read.csv('out/CoLab/simulations_discordance/colab_discordance_test_data_bias.csv')
+parameters$identifier <- "Pat"
+parameters$model_outcome <- "CoLab_score"
+parameters$model_outcome_class_TRUE <-  "1"
+# parameters$bootstrap_number_of_samples <- 50
+# parameters$bootstrap_confidence_level <- 0.95
+# parameters$bootstrap_methods <- c("perc") #c("norm", "perc")
+```
+
+## Set bootstrap parameters.
+```{r}
+parameters$bootstrap_number_of_samples <- 50
+parameters$bootstrap_confidence_level <- 0.95
+parameters$bootstrap_methods <- c("norm", "perc")
+```
+
+## Set plot parameters.
+```{r}
+parameters$histogram_method <- "laboratory"
+parameters$histogram_method_label <- "Laboratory"
+parameters$histogram_auroc_binwidth <-  0.02
+parameters$histogram_auroc_x_range <- c(0.5, 1.0)
+parameters$histogram_auroc_y_range <- c(0, 10)
+parameters$histogram_sensitivity_binwidth <-  0.02
+parameters$histogram_sensitivity_x_range <- c(0.0, 1.0)
+parameters$histogram_sensitivity_y_range <- c(0, 10)
+parameters$histogram_specificity_binwidth <-  0.02
+parameters$histogram_specificity_x_range <- c(0.5, 1.0)
+parameters$histogram_specificity_y_range <- c(0, 10)
+```
+
+## Set directories to save results.
+```{r}
+parameters$path_and_name_combined_stats <- 'out/CoLab/simulations_confusion_matrix/colab_confusion_matrix_test_data_bias_combined_stats.csv'
+parameters$path_and_name_stats_with_ci <- 'out/CoLab/simulations_confusion_matrix/colab_confusion_matrix_test_data_bias_stats_with_ci.csv'
+parameters$path_and_name_stats_without_ci <-
+  'out/CoLab/simulations_confusion_matrix/colab_confusion_matrix_test_data_bias_stats_without_ci.csv'
+parameters$path_and_name_histogram_auroc <- 
+  'out/CoLab/simulations_confusion_matrix/colab_confusion_matrix_test_data_histogram_auroc.rds'
+parameters$path_and_name_histogram_sensitivity <- 
+  'out/CoLab/simulations_confusion_matrix/colab_confusion_matrix_test_data_histogram_sensitivity.rds'
+parameters$path_and_name_histogram_specificity <- 
+  'out/CoLab/simulations_confusion_matrix/colab_confusion_matrix_test_data_histogram_specificity.rds'
+```
+
+```{r, child='markdown/template_confusion_matrices.Rmd'}
+
+```
