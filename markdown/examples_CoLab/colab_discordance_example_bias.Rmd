@@ -14,7 +14,7 @@ set.seed(seed = 200)
 ## Import functions and variables.
 ```{r, include=FALSE, warning=FALSE, message=FALSE}
 source('src/variables_colab.R', local = variables <- new.env())
-source('src/predict_CoLab.R', local = CoLab <- new.env())
+source('src/predict_colab.R', local = CoLab <- new.env())
 source('src/paba_regression.R', local = paba <- new.env())
 source('src/CoLab_specific_functions.R', local = CoLab_functions <- new.env())
 ```
