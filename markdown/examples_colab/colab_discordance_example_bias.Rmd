@@ -14,9 +14,9 @@ set.seed(seed = 200)
 ## Import functions and variables.
 ```{r, include=FALSE, warning=FALSE, message=FALSE}
 source('src/variables_colab.R', local = variables <- new.env())
-source('src/predict_colab.R', local = CoLab <- new.env())
+source('src/predict_colab.R', local = colab <- new.env())
 source('src/paba_regression.R', local = paba <- new.env())
-source('src/CoLab_specific_functions.R', local = CoLab_functions <- new.env())
+source('src/colab_specific_functions.R', local = colab_functions <- new.env())
 ```
 
 
@@ -66,10 +66,10 @@ SKML$bias_table_full <- SKML$bias_table[rowSums(!is.na(SKML$bias_table)) == 10, 
 ```{r}
 parameters <- new.env()
 parameters$data_with_log <- read.csv('data/CoLab_externe_validatie_Zuyderland.csv')
-parameters$data <- CoLab_functions$CoLab_variable_de_log(parameters$data_with_log)
+parameters$data <- colab_functions$colab_variable_de_log(parameters$data_with_log)
 parameters$identifier <- "Pat"
-parameters$continuous_prediction_function <- CoLab$get_continuous_prediction_CoLab
-parameters$categorical_prediction_function <- CoLab$get_ordinal_prediction_CoLab
+parameters$continuous_prediction_function <- colab$get_continuous_prediction_colab
+parameters$categorical_prediction_function <- colab$get_ordinal_prediction_colab
 parameters$model <- NA
 parameters$model_variables <- variables$selected_variables_colab
 parameters$model_outcome <- "CoLab"
@@ -103,16 +103,16 @@ parameters$histogram_percentage_discordant_y_range <- c(0, 10)
 
 ## Set directories to save results.
 ```{r}
-parameters$path_and_name_simulated_results <- 'out/CoLab/simulations_discordance/colab_discordance_test_data_bias.csv'
-parameters$path_and_name_stats_with_ci <- 'out/CoLab/simulations_discordance/colab_discordance_test_data_stats_with_ci.csv'
+parameters$path_and_name_simulated_results <- 'out/colab/simulations_discordance/colab_discordance_test_data_bias.csv'
+parameters$path_and_name_stats_with_ci <- 'out/colab/simulations_discordance/colab_discordance_test_data_stats_with_ci.csv'
 parameters$path_and_name_stats_without_ci <-
-  'out/CoLab/simulations_discordance/colab_discordance_test_data_stats_without_ci.csv'
+  'out/colab/simulations_discordance/colab_discordance_test_data_stats_without_ci.csv'
 parameters$path_and_name_histogram_absolute_difference <- 
-  'out/CoLab/simulations_discordance/colab_discordance_test_data_histogram_absolute_difference.rds'
+  'out/colab/simulations_discordance/colab_discordance_test_data_histogram_absolute_difference.rds'
 parameters$path_and_name_histogram_percentage_difference <- 
-  'out/CoLab/simulations_discordance/colab_discordance_test_data_histogram_absolute_difference.rds'
+  'out/colab/simulations_discordance/colab_discordance_test_data_histogram_absolute_difference.rds'
 parameters$path_and_name_histogram_percentage_discordant <- 
-  'out/CoLab/simulations_discordance/colab_discordance_test_data_histogram_absolute_difference.rds'
+  'out/colab/simulations_discordance/colab_discordance_test_data_histogram_absolute_difference.rds'
 ```
 
 
