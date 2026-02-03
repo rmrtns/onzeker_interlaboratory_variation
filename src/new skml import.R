@@ -64,4 +64,8 @@ skml_merged <- skml_merged %>%
 
 write.csv(skml_merged, "data/skml_merged.csv", row.names = FALSE)
 
-rm(list = ls())
+
+
+rm(list = c("data_list_reference", "data_list_results", 
+            "data_list_results_long", "files", "reference_filt", 
+            "reference_methods_by_bepaling", "results_filt", "skml_merged"))
