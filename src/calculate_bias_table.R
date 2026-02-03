@@ -57,7 +57,7 @@ regression_with_ref_centre_function <- function(data_SKML, reference_ptp){
   # calculate the new slope and intercept with the reference bias
   df2 <- left_join(subset(df0, ptp != reference_ptp), 
                    df1, by = "Bepaling") %>% 
-    mutate(New_Intercept = -((Ref_Slope*Ref_Intercept)/Ref_Slope) + Intercept) %>% 
+    mutate(New_Intercept = -((Slope*Ref_Intercept)/Ref_Slope) + Intercept) %>% 
     mutate(New_Slope = Slope/Ref_Slope) 
   
   return(df2)
