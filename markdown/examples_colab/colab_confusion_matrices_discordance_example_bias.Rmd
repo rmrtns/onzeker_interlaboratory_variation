@@ -19,7 +19,7 @@ library(purrr)
 
 ```{r, include=FALSE, warning=FALSE, message=FALSE}
 
-source('src/CoLab_specific_functions.R', local = CoLab_functions <- new.env())
+source('src/colab_specific_functions.R', local = colab_functions <- new.env())
 ```
 
 
@@ -27,10 +27,10 @@ source('src/CoLab_specific_functions.R', local = CoLab_functions <- new.env())
 ```{r}
 parameters <- new.env()
 parameters$data_with_log <- read.csv('data/CoLab_externe_validatie_Zuyderland.csv')
-parameters$data_with_dups <- CoLab_functions$CoLab_variable_de_log(parameters$data_with_log)
+parameters$data_with_dups <- colab_functions$colab_variable_de_log(parameters$data_with_log)
 parameters$original_data <- parameters$data_with_dups[!duplicated(parameters[["data_with_dups"]][["Pat"]]),] # dit nog omzetten naar functie
 parameters$discordance_data <- 
-  read.csv('out/CoLab/simulations_discordance/colab_discordance_test_data_bias.csv')
+  read.csv('out/colab/simulations_discordance/colab_discordance_test_data_bias.csv')
 parameters$identifier <- "Pat"
 parameters$model_outcome <- "CoLab_score"
 parameters$model_outcome_class_TRUE <-  "1"
@@ -63,16 +63,16 @@ parameters$histogram_specificity_y_range <- c(0, 10)
 
 ## Set directories to save results.
 ```{r}
-parameters$path_and_name_combined_stats <- 'out/CoLab/simulations_confusion_matrix/colab_confusion_matrix_test_data_bias_combined_stats.csv'
-parameters$path_and_name_stats_with_ci <- 'out/CoLab/simulations_confusion_matrix/colab_confusion_matrix_test_data_bias_stats_with_ci.csv'
+parameters$path_and_name_combined_stats <- 'out/colab/simulations_confusion_matrix/colab_confusion_matrix_test_data_bias_combined_stats.csv'
+parameters$path_and_name_stats_with_ci <- 'out/colab/simulations_confusion_matrix/colab_confusion_matrix_test_data_bias_stats_with_ci.csv'
 parameters$path_and_name_stats_without_ci <-
-  'out/CoLab/simulations_confusion_matrix/colab_confusion_matrix_test_data_bias_stats_without_ci.csv'
+  'out/colab/simulations_confusion_matrix/colab_confusion_matrix_test_data_bias_stats_without_ci.csv'
 parameters$path_and_name_histogram_auroc <- 
-  'out/CoLab/simulations_confusion_matrix/colab_confusion_matrix_test_data_histogram_auroc.rds'
+  'out/colab/simulations_confusion_matrix/colab_confusion_matrix_test_data_histogram_auroc.rds'
 parameters$path_and_name_histogram_sensitivity <- 
-  'out/CoLab/simulations_confusion_matrix/colab_confusion_matrix_test_data_histogram_sensitivity.rds'
+  'out/colab/simulations_confusion_matrix/colab_confusion_matrix_test_data_histogram_sensitivity.rds'
 parameters$path_and_name_histogram_specificity <- 
-  'out/CoLab/simulations_confusion_matrix/colab_confusion_matrix_test_data_histogram_specificity.rds'
+  'out/colab/simulations_confusion_matrix/colab_confusion_matrix_test_data_histogram_specificity.rds'
 ```
 
 ```{r, child='markdown/template_confusion_matrices.Rmd'}

@@ -1,6 +1,8 @@
 ---
-title: "eGFR: Discordant predictions related to bias in test_data"
-output: html_document
+title: 'eGFR: Discordant predictions related to bias in test_data'
+output:
+  html_document: default
+  pdf_document: default
 date: "Report generated on: `r format(Sys.time(), '%Y-%m-%d')`"
 ---
 
@@ -29,6 +31,7 @@ parameters$model_outcome <- "egfr"
 parameters$model_cut_off <- 60
 parameters$uncertain_variables <- variables$selected_variables_egfr[variables$uncertain_variables_indicator_egfr]
 parameters$bias_factors <- variables$df_bias_percent_egfr
+parameters$bias_intercepts <- variables$df_bias_abs_egfr
 parameters$laboratory <- "lab"
 ```
 

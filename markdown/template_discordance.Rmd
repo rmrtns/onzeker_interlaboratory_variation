@@ -1,4 +1,3 @@
-
 ```{r, include=FALSE, warning=FALSE, message=FALSE}
 ## Load libraries.
 library(boot)
@@ -14,6 +13,7 @@ source('src/print_table.R', local = print <- new.env())
 ```
 
 ## Simulate predictions and calculate % discordance.
+
 ```{r, echo=FALSE}
 discordance_status <-
   discordance$simulate_bias_induced_discordance(
@@ -21,6 +21,7 @@ discordance_status <-
     parameters$identifier,
     parameters$uncertain_variables,
     parameters$bias_factors,
+    parameters$bias_intercepts,
     parameters$laboratory,
     parameters$continuous_prediction_function,
     parameters$categorical_prediction_function,
@@ -39,7 +40,8 @@ write.csv(
 
 ## Summarise results.
 
-- Histogram and QQ-plot of absolute_difference_continuous_prediction:
+-   Histogram and QQ-plot of absolute_difference_continuous_prediction:
+
 ```{r, echo=FALSE}
 discordance$plot_distribution_per_laboratory(
   discordance_status, 
@@ -47,7 +49,8 @@ discordance$plot_distribution_per_laboratory(
 )
 ```
 
-- Histogram and QQ-plot of percentage_difference_continuous_prediction:
+-   Histogram and QQ-plot of percentage_difference_continuous_prediction:
+
 ```{r, echo=FALSE}
 discordance$plot_distribution_per_laboratory(
   discordance_status, 
@@ -75,7 +78,8 @@ bootstrapped_discordant_predictions <-
   )
 ```
 
-- Table with bootstrapped summary statistics:
+-   Table with bootstrapped summary statistics:
+
 ```{r, echo=FALSE}
 bootstrapped_ci_discordance_status <- bootstrapped$get_bootstrapped_ci_all_laboratories(
   bootstrapped_discordant_predictions,
@@ -93,7 +97,8 @@ write.csv(
 print$print_table_bootstrapped_summary(bootstrapped_ci_discordance_status, 4)
 ```
 
-- Compact table with summary statistics.
+-   Compact table with summary statistics.
+
 ```{r, echo=FALSE}
 summary_discordance_status <- bootstrapped$get_dataframe_without_ci(bootstrapped_ci_discordance_status)
 
@@ -106,7 +111,8 @@ write.csv(
 print$print_table_summary(summary_discordance_status, 4)
 ```
 
-- Histogram and distribution of median absolute difference:
+-   Histogram and distribution of median absolute difference:
+
 ```{r, echo=FALSE}
 histogram_absolute_difference <- comparison$get_histogram(
   summary_discordance_status, 
@@ -132,7 +138,8 @@ distribution_absolute_difference <- comparison$get_distribution_table(
 print$print_table_distribution(distribution_absolute_difference, 4)
 ```
 
-- Histogram and distribution of median percentage difference:
+-   Histogram and distribution of median percentage difference:
+
 ```{r, echo=FALSE}
 histogram_percentage_difference <- comparison$get_histogram(
   summary_discordance_status, 
@@ -158,7 +165,8 @@ distribution_percentage_difference <- comparison$get_distribution_table(
 print$print_table_distribution(distribution_percentage_difference, 4)
 ```
 
-- Histogram and distribution of percentage discordant:
+-   Histogram and distribution of percentage discordant:
+
 ```{r, echo=FALSE}
 histogram_percentage_discordant <- comparison$get_histogram(
   summary_discordance_status, 

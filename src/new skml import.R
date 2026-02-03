@@ -36,7 +36,7 @@ reference_filt <- do.call(rbind, lapply(data_list_reference, function(df) {
 }))
 
 # For each Bepaling and ctm in reference_filt, select one Methode 
-# in hierarchical order, Referentiewaarde, Expertwaarde
+# in hierarchical order, Referentiewaarde, Expertwaarde, ALTM
 reference_methods_by_bepaling <- reference_filt %>% 
   group_by(anl) %>%
   slice(which.min(match(Methode, c("Referentiewaarde", "Expertwaarde",  
@@ -64,4 +64,8 @@ skml_merged <- skml_merged %>%
 
 write.csv(skml_merged, "data/skml_merged.csv", row.names = FALSE)
 
-rm(list = ls())
+
+
+rm(list = c("data_list_reference", "data_list_results", 
+            "data_list_results_long", "files", "reference_filt", 
+            "reference_methods_by_bepaling", "results_filt", "skml_merged"))
