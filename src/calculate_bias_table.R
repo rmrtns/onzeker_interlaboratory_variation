@@ -2,7 +2,7 @@ library("dplyr")
 library("tidyr")
 
 get_intercept_table <- function(data_SKML, reference_ptp, skml_names, non_bias_vec){
-  df1 <- regression_with_ref_centre_function(data_SKML, reference_ptp)
+  df1 <- regression_with_ref_centre(data_SKML, reference_ptp)
   
   # get the bias estimates in the wide format
   df2 <- df1 %>%
@@ -16,13 +16,13 @@ get_intercept_table <- function(data_SKML, reference_ptp, skml_names, non_bias_v
     mutate(!!!setNames(as.list(rep(NA, length(non_bias_vec))), non_bias_vec))
   
   
-  df4 <- extract_only_bias_variables_function(df3, skml_names)
+  df4 <- extract_only_bias_variables(df3, skml_names)
   return(df4)
   
 }
 
 get_slope_table <- function(data_SKML,  reference_ptp, skml_names, non_bias_vec){
-  df1 <- regression_with_ref_centre_function(data_SKML, reference_ptp)
+  df1 <- regression_with_ref_centre(data_SKML, reference_ptp)
   
   # get the bias estimates in the wide format
   df2 <- df1 %>%
@@ -35,13 +35,13 @@ get_slope_table <- function(data_SKML,  reference_ptp, skml_names, non_bias_vec)
     select(skml_names) %>%
     mutate(!!!setNames(as.list(rep(NA, length(non_bias_vec))), non_bias_vec))
   
-  df4 <- extract_only_bias_variables_function(df3, skml_names)
+  df4 <- extract_only_bias_variables(df3, skml_names)
   return(df4)
   
 }
 
 # set one centre as the refrence centre 
-regression_with_ref_centre_function <- function(data_SKML, reference_ptp){
+regression_with_ref_centre <- function(data_SKML, reference_ptp){
   df0 <- data_SKML %>%
     group_by(Bepaling, ptp) %>%
     filter(ctr == min(ctr))
@@ -63,7 +63,7 @@ regression_with_ref_centre_function <- function(data_SKML, reference_ptp){
   return(df2)
 }
 
-extract_only_bias_variables_function <- function(data, skml_names){
+extract_only_bias_variables <- function(data, skml_names){
   df1 <- data %>% select(skml_names)
   df2 <- df1 %>%
     rowwise() %>%

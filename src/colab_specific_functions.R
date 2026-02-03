@@ -1,6 +1,6 @@
 library(dplyr)
 
-CoLab_variable_de_log <- function(data){
+colab_variable_de_log <- function(data){
   # De-transform log10 variables and removed log10_ from columns names
   
   log10_cols <- grep("log10", names(data), value = T)
