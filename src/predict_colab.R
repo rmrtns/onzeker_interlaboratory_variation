@@ -33,7 +33,7 @@ get_continuous_prediction_colab <- function(data, dots_arguments){
 }
 
 
-get_ordinal_prediction_colab <- function(data){
+get_ordinal_prediction_colab <- function(data, dots_arguments){
   if_else (as.numeric(data[["continuous_prediction"]]) < -5.83,
            true = 0,
            false = if_else(
@@ -60,7 +60,7 @@ get_ordinal_prediction_colab <- function(data){
 }
 
 
-get_categorical_prediction_colab <- function(data){
+get_categorical_prediction_colab <- function(data, dots_arguments){
   as.numeric(data[["continuous_prediction"]]) >= -1.64
 }
 

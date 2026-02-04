@@ -1,5 +1,5 @@
 
-# Functions to calculate continuous egfr and dichotomised egfr.
+# Functions to calculate continuous egfr, categorical egfr and dichotomised egfr.
 ## Ethnicity is considered non-African American for all entries.
 
 get_continuous_prediction_egfr <- function(data, dots_arguments){
