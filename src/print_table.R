@@ -6,8 +6,6 @@ print_table_bootstrapped_summary <- function(table, decimal_places){
     rownames = FALSE,
     extensions = list("FixedColumns" = NULL),
     options = list(
-      dom = "t",
-      pageLength = 21,
       scrollX = TRUE,
       fixedColumns = list(leftColumns = 2)
     ) 

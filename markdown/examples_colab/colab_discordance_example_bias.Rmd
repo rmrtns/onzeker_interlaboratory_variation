@@ -10,15 +10,13 @@ knitr::opts_knit$set(root.dir = rprojroot::find_rstudio_root_file())
 set.seed(seed = 200)
 ```
 
-
 ## Import functions and variables.
 ```{r, include=FALSE, warning=FALSE, message=FALSE}
 source('src/variables_colab.R', local = variables <- new.env())
 source('src/predict_colab.R', local = colab <- new.env())
-source('src/paba_regression.R', local = paba <- new.env())
-source('src/colab_specific_functions.R', local = colab_functions <- new.env())
+source('src/paba_regression.R', local = paba <- new.env()) # verwijderen
+source('src/colab_specific_functions.R', local = colab_functions <- new.env()) # verwijderen
 ```
-
 
 ```{r}
 library(tidyr)
@@ -26,6 +24,8 @@ library(tidyr)
 
 ## import skml bias data
 ```{r}
+
+# gehele codeblok verwijderen en verplaatsen naar ander script of markdown document
 
 source('src/calculate_bias_table.r')
 
@@ -69,11 +69,10 @@ parameters$data_with_log <- read.csv('data/CoLab_externe_validatie_Zuyderland.cs
 parameters$data <- colab_functions$colab_variable_de_log(parameters$data_with_log)
 parameters$identifier <- "Pat"
 parameters$continuous_prediction_function <- colab$get_continuous_prediction_colab
-parameters$categorical_prediction_function <- colab$get_ordinal_prediction_colab
+parameters$ordinal_prediction_function <- colab$get_ordinal_prediction_colab
+parameters$categorical_prediction_function <- colab$get_categorical_prediction_colab
 parameters$model <- NA
 parameters$model_variables <- variables$selected_variables_colab
-parameters$model_outcome <- "CoLab"
-parameters$model_cut_off <- -1.64 
 parameters$uncertain_variables <- variables$selected_variables_colab[variables$uncertain_variables_indicator_colab]
 parameters$bias_factors <- SKML$bias_table_full
 parameters$laboratory <- "ptp"
@@ -115,10 +114,6 @@ parameters$path_and_name_histogram_percentage_discordant <-
   'out/colab/simulations_discordance/colab_discordance_test_data_histogram_absolute_difference.rds'
 ```
 
-
-
 ```{r, child='markdown/template_discordance.Rmd'}
 
 ```
-
-

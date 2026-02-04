@@ -15,6 +15,21 @@ get_continuous_prediction_egfr <- function(data, dots_arguments){
 }
 
 
+get_ordinal_prediction_egfr <- function(data, dots_arguments){
+  if_else (as.numeric(data[["continuous_prediction"]]) < 60,
+           true = 1,
+           false = if_else(
+             as.numeric(data[["continuous_prediction"]]) >= 60 & as.numeric(data[["continuous_prediction"]]) < 90,
+             true = 2,
+             false = if_else(
+               as.numeric(data[["continuous_prediction"]]) > 90,
+               true = 3,
+               false = NA)
+           ),
+           missing = NA)
+}
+
+
 get_categorical_prediction_egfr <- function(data, dots_arguments){
-  as.numeric(data[["continuous_prediction"]]) < dots_arguments[["model_cut_off"]]
+  as.numeric(data[["continuous_prediction"]]) < 60
 }
