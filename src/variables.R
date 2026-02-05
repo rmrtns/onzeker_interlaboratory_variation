@@ -2,7 +2,7 @@
 selected_variables_egfr <- c(
   'age' = 'age',
   'sex' = 'sex',
-  'creatinine' = 'creatinine',
+  'creatinine' = 'Kreatinine',
   'egfr_ckdepi' = 'egfr'
 )
 

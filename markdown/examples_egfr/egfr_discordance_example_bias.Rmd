@@ -16,12 +16,29 @@ set.seed(seed = 200)
 ```{r, include=FALSE, warning=FALSE, message=FALSE}
 source('src/variables.R', local = variables <- new.env())
 source('src/predict_egfr.R', local = egfr <- new.env())
+
+# temp
+source('src/calculate_bias_table.r', local = bias <- new.env())
+
+#temp
 ```
 
 ## Set simulation parameters.
 ```{r}
 parameters <- new.env()
 parameters$data <- read.csv('data/test_data.csv')
+
+# temp 
+parameters$SKML_data_full <- read.csv("data/paba_data.csv")
+parameters$ref_ptp <- 11 
+parameters$skml_names <- c("Kreatinine")
+parameters$non_bias_vec <- c("age", "sex",  "egfr")
+parameters$bias_table_intercept <- bias$get_intercept_table(parameters$SKML_data_full, parameters$ref_ptp, parameters$skml_names, parameters$non_bias_vec)
+parameters$bias_table_slope <- bias$get_slope_table(parameters$SKML_data_full, parameters$ref_ptp, parameters$skml_names, parameters$non_bias_vec)
+
+# temp 
+
+
 parameters$identifier <- "id"
 parameters$continuous_prediction_function <- egfr$get_continuous_prediction_egfr
 parameters$ordinal_prediction_function <- egfr$get_ordinal_prediction_egfr
@@ -29,9 +46,9 @@ parameters$categorical_prediction_function <- egfr$get_categorical_prediction_eg
 parameters$model <- NA
 parameters$model_variables <- variables$selected_variables_egfr
 parameters$uncertain_variables <- variables$selected_variables_egfr[variables$uncertain_variables_indicator_egfr]
-parameters$bias_factors <- variables$df_bias_percent_egfr
-parameters$bias_intercepts <- variables$df_bias_abs_egfr
-parameters$laboratory <- "lab"
+parameters$bias_factors <- parameters$bias_table_slope 
+parameters$bias_intercepts <- parameters$bias_table_intercept
+parameters$laboratory <- "ptp"
 ```
 
 ## Set bootstrap parameters.

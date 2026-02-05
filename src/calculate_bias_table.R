@@ -29,7 +29,7 @@ get_slope_table <- function(data_SKML,  reference_ptp, skml_names, non_bias_vec)
 
 
   df1 <- regression_with_ref_centre(data_SKML, reference_ptp)
-l
+
   
   # get the bias estimates in the wide format
   df2 <- df1 %>%
@@ -77,11 +77,18 @@ regression_with_ref_centre <- function(data_SKML, reference_ptp){
 
 extract_only_bias_variables <- function(data, skml_names){
 
-  df1 <- data %>% select(skml_names)
-  df2 <- df1 %>%
-    rowwise() %>%
-    filter(sum(is.na(c_across(everything()))) == 0)
-  return(df2)
+  
+  df1 <- data %>%
+    filter(if_all(all_of(skml_names), ~ !is.na(.)))
+  
+  # df1 <- data %>% select(skml_names)
+  # df2 <- df1 %>%
+  #   rowwise() %>%
+  #   filter(sum(is.na(c_across(everything()))) == 0)
+  # df3 <- df1 %>%
+  #   semi_join(df2, by = "ID")
+  
+  return(df1)
   
 }
 
