@@ -4,23 +4,23 @@ library("tidyr")
 get_intercept_table <- function(data_SKML, reference_ptp, skml_names, non_bias_vec){
 
   df1 <- regression_with_ref_centre(data_SKML, reference_ptp)
-
   
   # get the bias estimates in the wide format
   df2 <- df1 %>%
     group_by(ptp) %>%
     select(c(Bepaling, New_Intercept )) %>%
     pivot_wider(names_from = Bepaling, values_from = c(New_Intercept)) 
-  
+
   df3 <- df2 %>%
     # select("name", matches(skml_names)) %>%
     select(skml_names) %>%
     mutate(!!!setNames(as.list(rep(NA, length(non_bias_vec))), non_bias_vec))
   
+  # Remove rows with missing in intercept
+  cols_to_check <- names(skml_names)
+  df4 <- df3 %>%
+    filter(!if_any(all_of(cols_to_check), is.na))
   
-
-  df4 <- extract_only_bias_variables(df3, skml_names)
-
   return(df4)
   
 }
@@ -42,8 +42,10 @@ get_slope_table <- function(data_SKML,  reference_ptp, skml_names, non_bias_vec)
     select(skml_names) %>%
     mutate(!!!setNames(as.list(rep(NA, length(non_bias_vec))), non_bias_vec))
   
-
-  df4 <- extract_only_bias_variables(df3, skml_names)
+  # Remove rows with missing in intercept
+  cols_to_check <- names(skml_names)
+  df4 <- df3 %>%
+    filter(!if_any(all_of(cols_to_check), is.na))
 
   return(df4)
   
