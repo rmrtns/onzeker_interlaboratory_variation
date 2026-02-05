@@ -24,11 +24,10 @@ discordance_status <-
     parameters$bias_intercepts,
     parameters$laboratory,
     parameters$continuous_prediction_function,
+    parameters$ordinal_prediction_function,
     parameters$categorical_prediction_function,
     model = parameters$model,
-    model_variables = parameters$model_variables,
-    model_outcome = parameters$model_outcome,
-    model_cut_off = parameters$model_cut_off
+    model_variables = parameters$model_variables
   )
 
 write.csv(
@@ -45,7 +44,7 @@ write.csv(
 ```{r, echo=FALSE}
 discordance$plot_distribution_per_laboratory(
   discordance_status, 
-  "absolute_difference"
+  "continuous_difference"
 )
 ```
 
@@ -54,7 +53,7 @@ discordance$plot_distribution_per_laboratory(
 ```{r, echo=FALSE}
 discordance$plot_distribution_per_laboratory(
   discordance_status, 
-  "percentage_difference"
+  "continuous_percentage_difference"
 )
 ```
 
@@ -66,12 +65,12 @@ The histograms and QQ-plots show the distribution of bootstrapped estimates and 
 bootstrapped_discordant_predictions <- 
   discordance_status %>%
   group_split(laboratory) %>%
-  set_names(unique(discordance_status[["laboratory"]])) %>%
+  set_names(unlist(group_keys(discordance_status %>% group_by(laboratory)))) %>%
   purrr::map(
     function(x){
       boot(
         x,
-        discordance$get_distribution_of_bias_measures_as_vector,
+        discordance$get_summary_of_discordance_measures_as_vector,
         parameters$bootstrap_number_of_samples
       )
     }
@@ -83,7 +82,7 @@ bootstrapped_discordant_predictions <-
 ```{r, echo=FALSE}
 bootstrapped_ci_discordance_status <- bootstrapped$get_bootstrapped_ci_all_laboratories(
   bootstrapped_discordant_predictions,
-  discordance$get_variable_names_from_distribution_of_bias_measures_as_vector(discordance_status), 
+  discordance$get_variable_names_from_summary_of_discordance_measures_as_vector(discordance_status), 
   parameters$bootstrap_confidence_level, 
   parameters$bootstrap_methods
 )
@@ -111,40 +110,13 @@ write.csv(
 print$print_table_summary(summary_discordance_status, 4)
 ```
 
--   Histogram and distribution of median absolute difference:
+- Histogram and distribution of mean absolute error for continuous predictions:
 
 ```{r, echo=FALSE}
-histogram_absolute_difference <- comparison$get_histogram(
+histogram_continuous_mae <- comparison$get_histogram(
   summary_discordance_status, 
-  "absolute_difference_median",
-  "Median absolute difference",
-  parameters$histogram_method,
-  parameters$histogram_method_label,
-  parameters$histogram_absolute_difference_binwidth,
-  parameters$histogram_absolute_difference_x_range,
-  parameters$histogram_absolute_difference_y_range
-)
-
-plot(histogram_absolute_difference)
-```
-
-```{r, echo=FALSE, message=FALSE, warning=FALSE}
-distribution_absolute_difference <- comparison$get_distribution_table(
-  summary_discordance_status, 
-  "absolute_difference_median", 
-  "laboratory"
-)
-
-print$print_table_distribution(distribution_absolute_difference, 4)
-```
-
--   Histogram and distribution of median percentage difference:
-
-```{r, echo=FALSE}
-histogram_percentage_difference <- comparison$get_histogram(
-  summary_discordance_status, 
-  "percentage_difference_median",
-  "Percentage absolute difference",
+  "continuous_mae",
+  "Mean absolute error",
   parameters$histogram_method,
   parameters$histogram_method_label,
   parameters$histogram_percentage_difference_binwidth,
@@ -152,25 +124,50 @@ histogram_percentage_difference <- comparison$get_histogram(
   parameters$histogram_percentage_difference_y_range
 )
 
-plot(histogram_percentage_difference)
+plot(histogram_continuous_mae)
 ```
 
 ```{r, echo=FALSE, message=FALSE, warning=FALSE}
-distribution_percentage_difference <- comparison$get_distribution_table(
+distribution_continuous_mae <- comparison$get_distribution_table(
   summary_discordance_status, 
-  "percentage_difference_median", 
+  "continuous_mae", 
   "laboratory"
 )
 
-print$print_table_distribution(distribution_percentage_difference, 4)
+print$print_table_distribution(distribution_continuous_mae, 4)
 ```
 
--   Histogram and distribution of percentage discordant:
-
+- Histogram and distribution of root mean squared error (rmse) for continuous predictions:
 ```{r, echo=FALSE}
-histogram_percentage_discordant <- comparison$get_histogram(
+histogram_continuous_rmse <- comparison$get_histogram(
   summary_discordance_status, 
-  "percentage_discordant",
+  "continuous_rmse",
+  "Root mean squared error",
+  parameters$histogram_method,
+  parameters$histogram_method_label,
+  parameters$histogram_absolute_difference_binwidth,
+  parameters$histogram_absolute_difference_x_range,
+  parameters$histogram_absolute_difference_y_range
+)
+
+plot(histogram_continuous_rmse)
+```
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+distribution_continuous_rmse <- comparison$get_distribution_table(
+  summary_discordance_status, 
+  "continuous_rmse", 
+  "laboratory"
+)
+
+print$print_table_distribution(distribution_continuous_rmse, 4)
+```
+
+- Histogram and distribution of percentage discordant for dichotomous predictions:
+```{r, echo=FALSE}
+histogram_dichotomous_percentage_discordant <- comparison$get_histogram(
+  summary_discordance_status, 
+  "dichotomous_percentage_discordant",
   "Percentage discordant",
   parameters$histogram_method,
   parameters$histogram_method_label,
@@ -179,22 +176,22 @@ histogram_percentage_discordant <- comparison$get_histogram(
   parameters$histogram_percentage_discordant_y_range
 )
 
-plot(histogram_percentage_discordant)
+plot(histogram_dichotomous_percentage_discordant)
 ```
 
 ```{r, echo=FALSE, message=FALSE, warning=FALSE}
-distribution_percentage_discordant <- comparison$get_distribution_table(
+distribution_dichotomous_percentage_discordant <- comparison$get_distribution_table(
   summary_discordance_status, 
-  "percentage_discordant", 
+  "dichotomous_percentage_discordant", 
   "laboratory"
 )
 
-print$print_table_distribution(distribution_percentage_discordant, 4)
+print$print_table_distribution(distribution_dichotomous_percentage_discordant, 4)
 ```
 
 ```{r, echo=FALSE}
 ## Save plots.
-saveRDS(histogram_absolute_difference, parameters$path_and_name_histogram_absolute_difference)
-saveRDS(histogram_absolute_difference, parameters$path_and_name_histogram_percentage_difference)
-saveRDS(histogram_absolute_difference, parameters$path_and_name_histogram_percentage_discordant)
+saveRDS(histogram_continuous_mae, parameters$path_and_name_histogram_continuous_mae)
+saveRDS(histogram_continuous_rmse, parameters$path_and_name_histogram_continuous_rmse)
+saveRDS(histogram_dichotomous_percentage_discordant, parameters$path_and_name_histogram_dichotomous_percentage_discordant)
 ```

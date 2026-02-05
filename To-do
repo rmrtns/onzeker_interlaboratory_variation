@@ -6,13 +6,9 @@ Passing-Bablok methode – keuze referentie specifiek laboratorium of SKML-conse
 	Parameter toevoegen in markdown templates
 Passing-Bablok methode – Inladen resultaten via markdown templates				        Ruben				          December 2025
 Simuleren bias a.h.v. resultaten Passing-Bablok							                Ruben				          December 2025
-Toevoegen Colab-predictiemodel									                        Tom				              December 2025
-Toevoegen Friedewald formule									                        Tom
+Toevoegen Friedewald formule									                        Remy
 Toevoegen RISK-INDEX										                            ?
-Toevoegen ‘discordantie’ continue uitkomsten							                Ruben/Tom			          December 2025 / Januari 2026
-	Berekening
-	CSV
-Toevoegen ‘discordantie’ ordinale uitkomsten							                Tom				              December 2025
+Toevoegen Brier-score													                ?				              Februari 2026
 	Berekening
 	CSV
 Toevoegen tolerance ranges o.b.v. TAe en state-of-the-art                               Ruben?                        Februari 2026
