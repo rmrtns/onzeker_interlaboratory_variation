@@ -1,4 +1,5 @@
 source('src/paba_regression.R')
+library(mcr)
 
 # parameters 
 N <- 16
