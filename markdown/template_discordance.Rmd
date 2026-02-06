@@ -4,12 +4,6 @@ library(boot)
 library(dplyr)
 ```
 
-```{r setup, include=FALSE}
-## Set wd
-knitr::opts_chunk$set(echo = TRUE)
-knitr::opts_knit$set(root.dir = rprojroot::find_rstudio_root_file())
-```
-
 
 ```{r, include=FALSE, warning=FALSE, message=FALSE}
 ## Import functions and variables.
