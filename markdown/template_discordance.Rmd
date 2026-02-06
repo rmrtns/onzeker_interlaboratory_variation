@@ -17,22 +17,11 @@ source('src/simulate_discordance.R', local = discordance <- new.env())
 source('src/bootstrapped_ci.R', local = bootstrapped <- new.env())
 source('src/comparison.R', local = comparison <- new.env())
 source('src/print_table.R', local = print <- new.env())
-source('src/skml_functions.R', local = skml <- new.env())
-```
-
-```{r, include=FALSE, warning=FALSE, message=FALSE}
-## Run regression based on SKML data
-skml
-
-
 ```
 
 ## Simulate predictions and calculate % discordance.
 
 ```{r, echo=FALSE}
-
-
-
 discordance_status <-
   discordance$simulate_bias_induced_discordance(
     parameters$data,
