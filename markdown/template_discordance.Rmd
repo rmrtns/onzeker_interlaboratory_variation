@@ -4,17 +4,35 @@ library(boot)
 library(dplyr)
 ```
 
+```{r setup, include=FALSE}
+## Set wd
+knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_knit$set(root.dir = rprojroot::find_rstudio_root_file())
+```
+
+
 ```{r, include=FALSE, warning=FALSE, message=FALSE}
 ## Import functions and variables.
 source('src/simulate_discordance.R', local = discordance <- new.env())
 source('src/bootstrapped_ci.R', local = bootstrapped <- new.env())
 source('src/comparison.R', local = comparison <- new.env())
 source('src/print_table.R', local = print <- new.env())
+source('src/skml_functions.R', local = skml <- new.env())
+```
+
+```{r, include=FALSE, warning=FALSE, message=FALSE}
+## Run regression based on SKML data
+skml
+
+
 ```
 
 ## Simulate predictions and calculate % discordance.
 
 ```{r, echo=FALSE}
+
+
+
 discordance_status <-
   discordance$simulate_bias_induced_discordance(
     parameters$data,
@@ -110,7 +128,7 @@ write.csv(
 print$print_table_summary(summary_discordance_status, 4)
 ```
 
-- Histogram and distribution of mean absolute error for continuous predictions:
+-   Histogram and distribution of mean absolute error for continuous predictions:
 
 ```{r, echo=FALSE}
 histogram_continuous_mae <- comparison$get_histogram(
@@ -137,7 +155,8 @@ distribution_continuous_mae <- comparison$get_distribution_table(
 print$print_table_distribution(distribution_continuous_mae, 4)
 ```
 
-- Histogram and distribution of root mean squared error (rmse) for continuous predictions:
+-   Histogram and distribution of root mean squared error (rmse) for continuous predictions:
+
 ```{r, echo=FALSE}
 histogram_continuous_rmse <- comparison$get_histogram(
   summary_discordance_status, 
@@ -163,7 +182,8 @@ distribution_continuous_rmse <- comparison$get_distribution_table(
 print$print_table_distribution(distribution_continuous_rmse, 4)
 ```
 
-- Histogram and distribution of percentage discordant for dichotomous predictions:
+-   Histogram and distribution of percentage discordant for dichotomous predictions:
+
 ```{r, echo=FALSE}
 histogram_dichotomous_percentage_discordant <- comparison$get_histogram(
   summary_discordance_status, 
