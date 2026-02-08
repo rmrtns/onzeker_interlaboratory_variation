@@ -16,32 +16,37 @@ library(dplyr) # load after xgboost to prevent masking slice function from dplyr
 library(purrr)
 
 source('src/simulate_bias.R', local = bias <- new.env())
-source('src/save_database.R', local = save_database <- new.env())
+source('src/save_output.R', local = save <- new.env())
 
 
-simulate_bias_induced_discordance <- function(data, identifier, variables, bias_factors, bias_intercepts, laboratory, continuous_prediction_function, ordinal_prediction_function, categorical_prediction_function, ...){ 
-    stopifnot(nrow(bias_factors) == nrow(bias_intercepts))
-    is_prediction_function_entered(continuous_prediction_function, ordinal_prediction_function, categorical_prediction_function)
-    predict_continuous <- create_pointer_to_prediction_function(continuous_prediction_function)
-    predict_ordinal <- create_pointer_to_prediction_function(ordinal_prediction_function)
-    predict_categorical <- create_pointer_to_prediction_function(categorical_prediction_function)
-    dots_arguments <- list(...)
-    list_of_simulated_discordances <- list()
-    reference_predictions <- get_reference_predictions(data, identifier, predict_continuous, predict_ordinal, predict_categorical, dots_arguments)
-    constant_data <- bias$create_constant_data(data, variables)
-    for (row in 1:nrow(bias_factors)){
-      simulated_data <- bias$simulate_bias(data, identifier, variables, bias_factors[[variables]][row], bias_intercepts[[variables]][row]) 
-      combined_data <- left_join(constant_data, simulated_data, by = c(identifier))
-      combined_data_with_predictions <- get_predictions(combined_data, identifier, predict_continuous, predict_ordinal, predict_categorical, dots_arguments)
-      # save_database$save_database_data(combined_data_with_predictions)
-      simulated_predictions <- combined_data_with_predictions %>% select(all_of(identifier), continuous_prediction, ordinal_prediction, categorical_prediction)
-      simulated_and_reference_predictions <- left_join(simulated_predictions, reference_predictions, by = identifier)
-      simulated_discordances_per_record <- get_discordance_measures(simulated_and_reference_predictions, identifier)
-      list_of_simulated_discordances[[bias_factors[[laboratory]][row]]] <- cbind(laboratory = bias_factors[[laboratory]][row], simulated_discordances_per_record)
-    }
-    simulated_discordances <- bind_rows(list_of_simulated_discordances)
-    return(simulated_discordances)
+simulate_bias_induced_discordance <- function(data, identifier, variables, bias_factors, bias_intercepts, laboratory, continuous_prediction_function, ordinal_prediction_function, categorical_prediction_function, base_dir, ...){ 
+  is_bias_entered_correctly(bias_factors, bias_intercepts)
+  is_prediction_function_entered(continuous_prediction_function, ordinal_prediction_function, categorical_prediction_function)
+  predict_continuous <- create_pointer_to_prediction_function(continuous_prediction_function)
+  predict_ordinal <- create_pointer_to_prediction_function(ordinal_prediction_function)
+  predict_categorical <- create_pointer_to_prediction_function(categorical_prediction_function)
+  dots_arguments <- list(...)
+  list_of_simulated_discordances <- list()
+  reference_predictions <- get_reference_predictions(data, identifier, predict_continuous, predict_ordinal, predict_categorical, dots_arguments)
+  constant_data <- bias$create_constant_data(data, variables)
+  for (row in 1:nrow(bias_factors)){
+    simulated_data <- bias$simulate_bias(data, identifier, variables, bias_factors[[variables]][row], bias_intercepts[[variables]][row]) 
+    combined_data <- left_join(constant_data, simulated_data, by = c(identifier))
+    combined_data_with_predictions <- get_predictions(combined_data, identifier, predict_continuous, predict_ordinal, predict_categorical, dots_arguments)
+    # save$save_database_data(combined_data_with_predictions, base_dir, bias_factors[[laboratory]][row])
+    simulated_predictions <- combined_data_with_predictions %>% select(all_of(identifier), continuous_prediction, ordinal_prediction, categorical_prediction)
+    simulated_and_reference_predictions <- left_join(simulated_predictions, reference_predictions, by = identifier)
+    simulated_discordances_per_record <- get_discordance_measures(simulated_and_reference_predictions, identifier)
+    list_of_simulated_discordances[[bias_factors[[laboratory]][row]]] <- cbind(laboratory = bias_factors[[laboratory]][row], simulated_discordances_per_record)
   }
+  simulated_discordances <- bind_rows(list_of_simulated_discordances)
+  return(simulated_discordances)
+}
+
+
+is_bias_entered_correctly <- function(bias_factors, bias_intercepts){
+  stopifnot(nrow(bias_factors) == nrow(bias_intercepts))
+}
 
 
 is_prediction_function_entered <- function(continuous_prediction_function, ordinal_prediction_function, categorical_prediction_function){
@@ -242,7 +247,7 @@ summarise_ordinal_discordance_measures <- function(data){
   discordance_measures <- data %>% summarise(
     ordinal_median_difference = median(ordinal_difference),
     ordinal_mae = mean(ordinal_absolute_error),
-    ordinal_micro_rmse = sqrt(mean(continuous_squared_error)),
+    ordinal_micro_rmse = sqrt(mean(ordinal_squared_error)),
     ordinal_macro_rmse = get_macro_rmse(data, "ordinal_squared_error", "ordinal_reference"),
     ordinal_percentage_discordant = get_percentage_discordant(data, ordinal_discordant, ordinal)
   )
