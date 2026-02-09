@@ -11,6 +11,7 @@ library(dplyr)
 source('src/confusion_matrix.R', local = confusion <- new.env())
 source('src/bootstrapped_ci.R', local = bootstrapped <- new.env())
 source('src/print_table.R', local = print <- new.env())
+source('src/save_output.R', local = save <- new.env())
 ```
 
 ```{r, echo=FALSE}
@@ -31,7 +32,7 @@ discordance_status <- left_join(
 bootstrapped_crossover <- 
   discordance_status %>%
   group_split(laboratory) %>%
-  set_names(unique(discordance_status[["laboratory"]])) %>%
+  set_names(unlist(group_keys(discordance_status %>% group_by(laboratory)))) %>%
   purrr::map(
     function(x){
       boot(
@@ -55,10 +56,13 @@ bootstrapped_ci_crossover <- bootstrapped$get_bootstrapped_ci_all_laboratories(
   parameters$bootstrap_methods
 )
 
-write.csv(
-  bootstrapped_ci_crossover,
-  parameters$path_and_name_stats_with_ci,
-  row.names = FALSE
+save$save_summary(
+  bootstrapped_ci_crossover, 
+  parameters$path_output, 
+  parameters$model_name, 
+  "crossover",
+  parameters$population,
+  "stats_with_ci"
 )
 
 print$print_table_bootstrapped_summary(bootstrapped_ci_crossover, 4)
@@ -68,10 +72,13 @@ print$print_table_bootstrapped_summary(bootstrapped_ci_crossover, 4)
 ```{r, echo=FALSE}
 summary_crossover <- bootstrapped$get_dataframe_without_ci(bootstrapped_ci_crossover)
 
-write.csv(
-  summary_crossover,
-  parameters$path_and_name_stats_without_ci,
-  row.names = FALSE
+save$save_summary(
+  summary_crossover, 
+  parameters$path_output, 
+  parameters$model_name, 
+  "crossover",
+  parameters$population,
+  "stats_without_ci"
 )
 
 print$print_table_summary(summary_crossover, 4)

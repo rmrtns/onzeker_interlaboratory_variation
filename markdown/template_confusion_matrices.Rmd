@@ -12,6 +12,7 @@ source('src/confusion_matrix.R', local = confusion <- new.env())
 source('src/bootstrapped_ci.R', local = bootstrapped <- new.env())
 source('src/comparison.R', local = comparison <- new.env())
 source('src/print_table.R', local = print <- new.env())
+source('src/save_output.R', local = save <- new.env())
 ```
 
 ```{r, echo=FALSE}
@@ -34,7 +35,7 @@ discordance_status <- left_join(
 bootstrapped_performance_measures <- 
   discordance_status %>%
   group_split(laboratory) %>%
-  set_names(unique(discordance_status[["laboratory"]])) %>%
+  set_names(unlist(group_keys(discordance_status %>% group_by(laboratory)))) %>%
   purrr::map(
     function(x){
       boot(
@@ -50,7 +51,7 @@ bootstrapped_performance_measures <-
 
 - Table with  bootstrapped summary statistics.
 ```{r, echo=FALSE}
-bootstrapped_ci_performance_measures <<- bootstrapped$get_bootstrapped_ci_all_laboratories(
+bootstrapped_ci_performance_measures <- bootstrapped$get_bootstrapped_ci_all_laboratories(
   bootstrapped_performance_measures,
   confusion$get_variable_names_from_summmary_performance_measures_as_vector(
     discordance_status,
@@ -61,10 +62,13 @@ bootstrapped_ci_performance_measures <<- bootstrapped$get_bootstrapped_ci_all_la
   parameters$bootstrap_methods
 )
 
-write.csv(
-  bootstrapped_ci_performance_measures,
-  parameters$path_and_name_stats_with_ci,
-  row.names = FALSE
+save$save_summary(
+  bootstrapped_ci_performance_measures, 
+  parameters$path_output, 
+  parameters$model_name, 
+  "confusion_matrix",
+  parameters$population,
+  "stats_with_ci"
 )
 
 print$print_table_bootstrapped_summary(bootstrapped_ci_performance_measures, 4)
@@ -74,17 +78,21 @@ print$print_table_bootstrapped_summary(bootstrapped_ci_performance_measures, 4)
 ```{r, echo=FALSE}
 summary_performance_measures <- bootstrapped$get_dataframe_without_ci(bootstrapped_ci_performance_measures)
 
-write.csv(
-  summary_performance_measures,
-  parameters$path_and_name_stats_without_ci,
-  row.names = FALSE
+save$save_summary(
+  summary_performance_measures, 
+  parameters$path_output, 
+  parameters$model_name, 
+  "confusion_matrix",
+  parameters$population,
+  "stats_without_ci"
 )
 
 print$print_table_summary(summary_performance_measures, 4)
 ```
 
-- Histogram of auroc:
-```{r, echo=FALSE}
+```{r, results = 'asis', echo=FALSE}
+cat("* Histogram and distribution of area under the receiver operating characteristic curve:")
+
 histogram_auroc <- comparison$get_histogram(
   summary_performance_measures, 
   "auroc",
@@ -94,6 +102,14 @@ histogram_auroc <- comparison$get_histogram(
   parameters$histogram_auroc_binwidth,
   parameters$histogram_auroc_x_range,
   parameters$histogram_auroc_y_range
+)
+
+save$save_histogram(
+  histogram_auroc, 
+  parameters$path_output, 
+  parameters$model_name, 
+  "confusion_matrix",
+  parameters$population
 )
 
 plot(histogram_auroc)
@@ -109,8 +125,45 @@ distribution_auroc <- comparison$get_distribution_table(
 print$print_table_summary(distribution_auroc, 4)
 ```
 
-- Histogram of sensitivity:
-```{r, echo=FALSE}
+```{r, results = 'asis', echo=FALSE}
+cat("* Histogram and distribution of accuracy:")
+
+histogram_accuracy <- comparison$get_histogram(
+  summary_performance_measures, 
+  "accuracy",
+  "Accuracy (%)",
+  parameters$histogram_method,
+  parameters$histogram_method_label,
+  parameters$histogram_sensitivity_binwidth,
+  parameters$histogram_sensitivity_x_range,
+  parameters$histogram_sensitivity_y_range
+)
+
+save$save_histogram(
+  histogram_accuracy, 
+  parameters$path_output, 
+  parameters$model_name, 
+  "confusion_matrix",
+  parameters$population
+)
+
+plot(histogram_accuracy)
+```
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+distribution_accuracy <- comparison$get_distribution_table(
+  summary_performance_measures, 
+  "accuracy", 
+  "laboratory"
+)
+
+print$print_table_distribution(distribution_accuracy, 4)
+```
+
+
+```{r, results = 'asis', echo=FALSE}
+cat("* Histogram and distribution of sensitivity:")
+
 histogram_sensitivity <- comparison$get_histogram(
   summary_performance_measures, 
   "sensitivity",
@@ -120,6 +173,14 @@ histogram_sensitivity <- comparison$get_histogram(
   parameters$histogram_sensitivity_binwidth,
   parameters$histogram_sensitivity_x_range,
   parameters$histogram_sensitivity_y_range
+)
+
+save$save_histogram(
+  histogram_sensitivity, 
+  parameters$path_output, 
+  parameters$model_name, 
+  "confusion_matrix",
+  parameters$population
 )
 
 plot(histogram_sensitivity)
@@ -135,8 +196,9 @@ distribution_sensitivity <- comparison$get_distribution_table(
 print$print_table_distribution(distribution_sensitivity, 4)
 ```
 
-- Histogram of percentage discordant:
-```{r, echo=FALSE}
+```{r, results = 'asis', echo=FALSE}
+cat("* Histogram and distribution of specificity:")
+
 histogram_specificity <- comparison$get_histogram(
   summary_performance_measures, 
   "specificity",
@@ -146,6 +208,14 @@ histogram_specificity <- comparison$get_histogram(
   parameters$histogram_specificity_binwidth,
   parameters$histogram_specificity_x_range,
   parameters$histogram_specificity_y_range
+)
+
+save$save_histogram(
+  histogram_specificity, 
+  parameters$path_output, 
+  parameters$model_name, 
+  "confusion_matrix",
+  parameters$population
 )
 
 plot(histogram_specificity)
@@ -161,9 +231,72 @@ distribution_specificity <- comparison$get_distribution_table(
 print$print_table_distribution(distribution_specificity, 4)
 ```
 
-```{r, echo=FALSE}
-## Save plots.
-saveRDS(histogram_auroc, parameters$path_and_name_histogram_auroc)
-saveRDS(histogram_sensitivity, parameters$path_and_name_histogram_sensitivity)
-saveRDS(histogram_specificity, parameters$path_and_name_histogram_specificity)
+```{r, results = 'asis', echo=FALSE}
+cat("* Histogram and distribution of positive predictive value:")
+
+histogram_ppv <- comparison$get_histogram(
+  summary_performance_measures, 
+  "pos_pred_value",
+  "Positive predictive value (%)",
+  parameters$histogram_method,
+  parameters$histogram_method_label,
+  parameters$histogram_sensitivity_binwidth,
+  parameters$histogram_sensitivity_x_range,
+  parameters$histogram_sensitivity_y_range
+)
+
+save$save_histogram(
+  histogram_ppv, 
+  parameters$path_output, 
+  parameters$model_name, 
+  "confusion_matrix",
+  parameters$population
+)
+
+plot(histogram_ppv)
+```
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+distribution_ppv <- comparison$get_distribution_table(
+  summary_performance_measures, 
+  "pos_pred_value", 
+  "laboratory"
+)
+
+print$print_table_distribution(distribution_ppv, 4)
+```
+
+```{r, results = 'asis', echo=FALSE}
+cat("* Histogram and distribution of negative predictive value:")
+
+histogram_npv <- comparison$get_histogram(
+  summary_performance_measures, 
+  "neg_pred_value",
+  "Negative predictive value (%)",
+  parameters$histogram_method,
+  parameters$histogram_method_label,
+  parameters$histogram_sensitivity_binwidth,
+  parameters$histogram_sensitivity_x_range,
+  parameters$histogram_sensitivity_y_range
+)
+
+save$save_histogram(
+  histogram_npv, 
+  parameters$path_output, 
+  parameters$model_name, 
+  "confusion_matrix",
+  parameters$population
+)
+
+plot(histogram_npv)
+```
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+distribution_npv <- comparison$get_distribution_table(
+  summary_performance_measures, 
+  "neg_pred_value", 
+  "laboratory"
+)
+
+print$print_table_distribution(distribution_npv, 4)
 ```
