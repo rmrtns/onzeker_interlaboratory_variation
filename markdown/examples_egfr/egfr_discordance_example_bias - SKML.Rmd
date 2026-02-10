@@ -79,6 +79,7 @@ parameters$histogram_percentage_discordant_y_range <- c(0, 10)
 ## Set directories to save results.
 
 ```{r}
+parameters$path_output <- 'out/egfr/simulations_discordance/'
 parameters$path_and_name_simulated_results <- 'out/egfr/simulations_discordance/egfr_discordance_test_data_bias.csv'
 parameters$path_and_name_stats_with_ci <- 'out/egfr/simulations_discordance/egfr_discordance_test_data_stats_with_ci.csv'
 parameters$path_and_name_stats_without_ci <-
