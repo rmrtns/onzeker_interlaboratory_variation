@@ -18,7 +18,7 @@ library(purrr)
 ```
 
 ```{r, include=FALSE, warning=FALSE, message=FALSE}
-
+# to be removed.
 source('src/colab_specific_functions.R', local = colab_functions <- new.env())
 ```
 
@@ -34,16 +34,13 @@ parameters$discordance_data <-
 parameters$identifier <- "Pat"
 parameters$model_outcome <- "CoLab_score"
 parameters$model_outcome_class_TRUE <-  "1"
-# parameters$bootstrap_number_of_samples <- 50
-# parameters$bootstrap_confidence_level <- 0.95
-# parameters$bootstrap_methods <- c("perc") #c("norm", "perc")
 ```
 
 ## Set bootstrap parameters.
 ```{r}
 parameters$bootstrap_number_of_samples <- 50
 parameters$bootstrap_confidence_level <- 0.95
-parameters$bootstrap_methods <- c("norm", "perc")
+parameters$bootstrap_methods <- c("perc")
 ```
 
 ## Set plot parameters.
@@ -61,18 +58,11 @@ parameters$histogram_specificity_x_range <- c(0.5, 1.0)
 parameters$histogram_specificity_y_range <- c(0, 10)
 ```
 
-## Set directories to save results.
+## Set parameters to save results.
 ```{r}
-parameters$path_and_name_combined_stats <- 'out/colab/simulations_confusion_matrix/colab_confusion_matrix_test_data_bias_combined_stats.csv'
-parameters$path_and_name_stats_with_ci <- 'out/colab/simulations_confusion_matrix/colab_confusion_matrix_test_data_bias_stats_with_ci.csv'
-parameters$path_and_name_stats_without_ci <-
-  'out/colab/simulations_confusion_matrix/colab_confusion_matrix_test_data_bias_stats_without_ci.csv'
-parameters$path_and_name_histogram_auroc <- 
-  'out/colab/simulations_confusion_matrix/colab_confusion_matrix_test_data_histogram_auroc.rds'
-parameters$path_and_name_histogram_sensitivity <- 
-  'out/colab/simulations_confusion_matrix/colab_confusion_matrix_test_data_histogram_sensitivity.rds'
-parameters$path_and_name_histogram_specificity <- 
-  'out/colab/simulations_confusion_matrix/colab_confusion_matrix_test_data_histogram_specificity.rds'
+parameters$model_name <- 'colab'
+parameters$population <- 'ed'
+parameters$path_output <- 'out/colab/simulations_confusion_matrix/'
 ```
 
 ```{r, child='markdown/template_confusion_matrices.Rmd'}

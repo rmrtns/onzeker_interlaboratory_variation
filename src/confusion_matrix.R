@@ -99,7 +99,7 @@ calculate_confusion_matrix_reference_results <- function(data, outcome){
 calculate_percentage_discordant_per_simulation <- function(data, category){
   data %>% 
     group_by(!!sym(category)) %>%
-    summarise(percentage_discordant = sum(discordant) / nrow(data) * 100) %>%
+    summarise(percentage_discordant = sum(dichotomous_discordant) / nrow(data) * 100) %>%
     ungroup()
 }
 
