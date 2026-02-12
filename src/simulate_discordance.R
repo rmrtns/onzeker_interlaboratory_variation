@@ -30,6 +30,7 @@ simulate_bias_induced_discordance <- function(data, identifier, variables, bias_
   reference_predictions <- get_reference_predictions(data, identifier, predict_continuous, predict_ordinal, predict_categorical, dots_arguments)
   constant_data <- bias$create_constant_data(data, variables)
   for (row in 1:nrow(bias_factors)){
+    # simulated_data <- bias$simulate_bias(data, identifier, variables, bias_factors[row,], bias_intercepts[row,]) 
     simulated_data <- bias$simulate_bias(data, identifier, variables, bias_factors[[variables]][row], bias_intercepts[[variables]][row]) 
     combined_data <- left_join(constant_data, simulated_data, by = c(identifier))
     combined_data_with_predictions <- get_predictions(combined_data, identifier, predict_continuous, predict_ordinal, predict_categorical, dots_arguments)
@@ -135,9 +136,9 @@ get_discordance_continuous_prediction <- function(data){
 
 get_discordance_ordinal_prediction <- function(data){
   data %>% mutate(
-    ordinal_difference = ordinal_prediction - ordinal_reference,
-    ordinal_absolute_error = abs(ordinal_reference - ordinal_prediction),
-    ordinal_squared_error = (ordinal_reference - ordinal_prediction)**2,
+    ordinal_difference = as.numeric(ordinal_prediction) - as.numeric(ordinal_reference),
+    ordinal_absolute_error = abs(as.numeric(ordinal_reference) - as.numeric(ordinal_prediction)),
+    ordinal_squared_error = (as.numeric(ordinal_reference) - as.numeric(ordinal_prediction))**2,
     ordinal_discordant = case_when(
       ordinal_prediction != ordinal_reference ~ TRUE,
       ordinal_prediction == ordinal_reference ~ FALSE,
