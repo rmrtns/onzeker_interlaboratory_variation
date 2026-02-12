@@ -34,29 +34,14 @@ get_continuous_prediction_colab <- function(data, dots_arguments){
 
 
 get_ordinal_prediction_colab <- function(data, dots_arguments){
-  if_else (as.numeric(data[["continuous_prediction"]]) < -5.83,
-           true = 0,
-           false = if_else(
-             as.numeric(data[["continuous_prediction"]]) >= -5.83 & as.numeric(data[["continuous_prediction"]]) < -4.03,
-             true = 1,
-             false = if_else(
-               as.numeric(data[["continuous_prediction"]]) >= -4.03 & as.numeric(data[["continuous_prediction"]]) < -3.29,
-               true = 2,
-               false = if_else(
-                 as.numeric(data[["continuous_prediction"]]) >= -3.29 & as.numeric(data[["continuous_prediction"]]) < -2.34,
-                 true = 3,
-                 false = if_else(
-                   as.numeric(data[["continuous_prediction"]]) >= -2.34 & as.numeric(data[["continuous_prediction"]]) < -1.64,
-                   true = 4,
-                   false = if_else(
-                     as.numeric(data[["continuous_prediction"]]) >= 1.64,
-                     true = 5,
-                     false = NA)
-                 )
-               )
-             )
-           ),
-           missing = NA)
+  cut_offs <- c(-5.83, -4.03, -3.29, -2.34, -1.64)
+  
+  cut(
+    as.numeric(data[["continuous_prediction"]]),
+    c(-Inf, cut_offs, Inf),
+    labels = seq (0, length(cut_offs)),
+    ordered_result = TRUE
+  )
 }
 
 
