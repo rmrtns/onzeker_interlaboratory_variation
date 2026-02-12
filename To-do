@@ -1,23 +1,35 @@
 Synchroniseren in Github										                        Ruben en Tom
 Passing-Bablok methode – algemeen principe							                    Gereed
-Passing-Bablok methode - correctie formuele transformatie referentie laboratorium       Ruben
-Passing-Bablok methode – keuze referentie specifiek laboratorium of SKML-consensus		Ruben				          December 2025
+Passing-Bablok methode - correctie formuele transformatie referentie laboratorium       Ruben                         Gereed
+Passing-Bablok methode – keuze referentie specifiek laboratorium of SKML-consensus		Ruben				          Gereed
 	Optie toevoegen aan functie
 	Parameter toevoegen in markdown templates
-Passing-Bablok methode – Inladen resultaten via markdown templates				        Ruben				          December 2025
-Simuleren bias a.h.v. resultaten Passing-Bablok							                Ruben				          December 2025
-Toevoegen Friedewald formule									                        Remy
-Toevoegen RISK-INDEX										                            ?
+Passing-Bablok methode – Inladen resultaten via markdown templates				        Ruben en Tom		          Gereed
+Simuleren bias a.h.v. resultaten Passing-Bablok							                Ruben en Tom		          Gereed
+Toevoegen Friedewald formule									                        Remy                          Gereed
 Toevoegen Brier-score													                ?				              Februari 2026
 	Berekening
 	CSV
-Toevoegen tolerance ranges o.b.v. TAe en state-of-the-art                               Ruben?                        Februari 2026
-Rapportage 												                                Afstemmen			          Februari 2026
+Toevoegen tolerance ranges o.b.v. TAe en state-of-the-art                               Ruben                         Februari 2026
+Rapportage 												                                Remy			              Februari 2026
+Histogrammen                                                                            Remy en Tom                   Februari 2026
+Code verifiëren                                                                         Tom                           Februari 2026
+    Handmatig aantal patiënten berekenen
 Code opschonen                                                                          Tom/Ruben                     Februari 2026
     Gerelateerde src files samenvoegen
     Temp files etc verwijderen
     Colab-specifieke code verwijderen uit markdown templates
         In databestand referentiepopulatie eenmalig log-transormatie tergugdraaien
         Log-transformatie verplaatsen naar predict_colab.R
+Simulatie Colab-score in medewerkers                                                    Tom                           Maart 2026
+Simulatie eGFR in eerstelijns populatie                                                 Tom                           Maart 2026
+Simulatie eGFR in tweedelijns populatie                                                 Tom                           Maart 2026
+Simulatie Friedewald in eerstelijns populatie                                           Tom                           Maart 2026
+Simulatie Friedewald in tweedelijns populatie                                           Tom                           Maart 2026
+RISK-index trainen                                                                      Ruben en Tom                  Maart 2026
+Toevoegen RISK-INDEX										                            Ruben en Tom                  Maart 2026
+Simulatie RISK-index                                                                    Ruben en Tom                  Maart 2026
+Additionele analyse methodefactor                                                       Ruben en Tom                  Maart 2026
+Additionele analyse herkalibreren                                                       Ruben en Tom                  Maart 2026
 
 Exports RISK en Colab continu controleren								                Remy				          Nieuwe export volgt begin februari 2026
