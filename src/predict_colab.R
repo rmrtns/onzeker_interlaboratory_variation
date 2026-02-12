@@ -21,10 +21,10 @@ get_continuous_prediction_colab <- function(data, dots_arguments){
     data[[WBC]]*-0.129800+
     data[[EOS]]*-6.834000+
     data[[BASO]]*-47.70000+
-    data[[BILI]]*-1.142000+
-    data[[LD]]*5.369000+
-    data[[AF]]*-3.114000+
-    data[[GGT]]*0.360500+
+    log10(data[[BILI]])*-1.142000+
+    log10(data[[LD]])*5.369000+
+    log10(data[[AF]])*-3.114000+
+    log10(data[[GGT]])*0.360500+
     data[[ALB]]*-0.115600+
     data[[CRP]]*0.002560+
     data[[age]]*0.002275              
@@ -49,7 +49,7 @@ get_ordinal_prediction_colab <- function(data, dots_arguments){
                    as.numeric(data[["continuous_prediction"]]) >= -2.34 & as.numeric(data[["continuous_prediction"]]) < -1.64,
                    true = 4,
                    false = if_else(
-                     as.numeric(data[["continuous_prediction"]]) >= 1.64,
+                     as.numeric(data[["continuous_prediction"]]) >= -1.64,
                      true = 5,
                      false = NA)
                  )
