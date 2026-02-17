@@ -33,6 +33,7 @@ discordance_status <-
     model_variables = parameters$model_variables
   )
 
+
 save$save_summary(
   discordance_status, 
   parameters$path_output, 
@@ -40,6 +41,7 @@ save$save_summary(
   "discordance",
   parameters$population,
   "bias_per_individual"
+
 )
 ```
 

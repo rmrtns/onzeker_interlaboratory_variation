@@ -21,10 +21,10 @@ get_continuous_prediction_colab <- function(data, dots_arguments){
     data[[WBC]]*-0.129800+
     data[[EOS]]*-6.834000+
     data[[BASO]]*-47.70000+
-    data[[BILI]]*-1.142000+
-    data[[LD]]*5.369000+
-    data[[AF]]*-3.114000+
-    data[[GGT]]*0.360500+
+    log10(data[[BILI]])*-1.142000+
+    log10(data[[LD]])*5.369000+
+    log10(data[[AF]])*-3.114000+
+    log10(data[[GGT]])*0.360500+
     data[[ALB]]*-0.115600+
     data[[CRP]]*0.002560+
     data[[age]]*0.002275              
@@ -34,6 +34,7 @@ get_continuous_prediction_colab <- function(data, dots_arguments){
 
 
 get_ordinal_prediction_colab <- function(data, dots_arguments){
+
   cut_offs <- c(-5.83, -4.03, -3.29, -2.34, -1.64)
   
   cut(
@@ -42,6 +43,7 @@ get_ordinal_prediction_colab <- function(data, dots_arguments){
     labels = seq (0, length(cut_offs)),
     ordered_result = TRUE
   )
+
 }
 
 
