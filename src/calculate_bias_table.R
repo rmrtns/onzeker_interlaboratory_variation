@@ -3,7 +3,7 @@ library(tidyr)
 
 
 get_bias_table <- function(data_SKML, reference_ptp, skml_names, non_bias_vec){
-  
+
   df1 <- regression_with_ref_centre(data_SKML, reference_ptp)
   # get the bias estimates in the wide format
   # Remove rows with missing in intercept
@@ -34,41 +34,10 @@ get_bias_table <- function(data_SKML, reference_ptp, skml_names, non_bias_vec){
   
 }
 
-# get_slope_table <- function(data_SKML,  reference_ptp, skml_names, non_bias_vec){
-# 
-#   
-# 
-#   df1 <- regression_with_ref_centre(data_SKML, reference_ptp)
-# 
-#   
-#   
-#   # get the bias estimates in the wide format
-#   df2 <- df1 %>%
-#     group_by(ptp) %>%
-#     select(c(ptp, Bepaling, New_Intercept )) %>%
-#     pivot_wider(names_from = Bepaling, values_from = c(New_Slope)) %>% 
-# 
-#   df3 <- df2 %>%
-#     # select("name", matches(skml_names)) %>%
-#     select(skml_names) %>%
-#     mutate(!!!setNames(as.list(rep(NA, length(non_bias_vec))), non_bias_vec))
-#   
-#   # Remove rows with missing in intercept
-#   cols_to_check <- names(skml_names)
-#   df4 <- df3 %>%
-#     filter(!if_any(all_of(cols_to_check), is.na))
-# 
-#   
-# 
-#   return(df4)
-#   
-# }
-
-
 # set one centre as the reference centre 
 
 regression_with_ref_centre <- function(data_SKML, reference_ptp){
-  
+
   df0 <- data_SKML %>%
     group_by(Bepaling, ptp) %>%
     filter(ctr == min(ctr))
@@ -102,9 +71,6 @@ regression_with_ref_centre <- function(data_SKML, reference_ptp){
 
 extract_only_bias_variables <- function(data, skml_names){
 
-  
-
-  
   df1 <- data %>%
     filter(if_all(all_of(skml_names), ~ !is.na(.)))
   

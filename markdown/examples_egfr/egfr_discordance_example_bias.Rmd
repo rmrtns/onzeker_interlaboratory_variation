@@ -29,13 +29,22 @@ parameters <- new.env()
 parameters$data <- read.csv('data/test_data.csv')
 
 # temp 
-
-parameters$SKML_data_full <- read.csv("data/paba_data.csv")
-parameters$ref_ptp <- 11 
+parameters$SKML_data <- read.csv("data/paba_data.csv")
 parameters$skml_names <- c("creatinine" = "Kreatinine")
-parameters$non_bias_vec <- c("age", "sex",  "egfr")
-parameters$bias_table_intercept <- bias$get_intercept_table(parameters$SKML_data_full, parameters$ref_ptp, parameters$skml_names, parameters$non_bias_vec) # dit naar template
-parameters$bias_table_slope <- bias$get_slope_table(parameters$SKML_data_full, parameters$ref_ptp, parameters$skml_names, parameters$non_bias_vec) # dit in naar templet
+parameters$no_bias_variables <- parameters$model_variables[!parameters$model_variables %in% parameters$uncertain_variables]
+parameters$ref_ptp <- NA
+parameters$bias_tables <- bias$get_bias_table(parameters$SKML_data,
+                                              parameters$ref_ptp,
+                                              parameters$skml_names,
+                                              parameters$no_bias_variables)
+parameters$bias_intercepts <- parameters$bias_tables$intercepts
+parameters$bias_factors <- parameters$bias_tables$slopes
+
+
+
+# parameters$non_bias_vec <- c("age", "sex",  "egfr")
+# parameters$bias_table_intercept <- bias$get_intercept_table(parameters$SKML_data_full, parameters$ref_ptp, parameters$skml_names, parameters$non_bias_vec) # dit naar template
+# parameters$bias_table_slope <- bias$get_slope_table(parameters$SKML_data_full, parameters$ref_ptp, parameters$skml_names, parameters$non_bias_vec) # dit in naar templet
 
 # temp 
 
@@ -47,9 +56,7 @@ parameters$categorical_prediction_function <- egfr$get_categorical_prediction_eg
 parameters$model <- NA
 parameters$model_variables <- variables$selected_variables_egfr
 parameters$uncertain_variables <- variables$selected_variables_egfr[variables$uncertain_variables_indicator_egfr]
-parameters$bias_factors <- parameters$bias_table_slope 
-parameters$bias_intercepts <- parameters$bias_table_intercept
-parameters$laboratory <- "ptp"
+parameters$laboratory <- "lab"
 ```
 
 ## Set bootstrap parameters.

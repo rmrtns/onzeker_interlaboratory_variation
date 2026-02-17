@@ -71,9 +71,8 @@ parameters$bias_tables <- bias$get_bias_table(parameters$SKML_data,
                                               parameters$skml_names,
                                               parameters$no_bias_variables)
 
-parameters$bias_intercepts <- parameters$bias_tables$intercepts[1:3,]
-parameters$bias_factors <- parameters$bias_tables$slopes[1:3,]
-
+parameters$bias_intercepts <- parameters$bias_tables$intercepts
+parameters$bias_factors <- parameters$bias_tables$slopes
 
 # temp
 
@@ -96,7 +95,7 @@ parameters$bias_factors <- parameters$bias_tables$slopes[1:3,]
 
 ## Set bootstrap parameters.
 ```{r}
-parameters$bootstrap_number_of_samples <- 50
+parameters$bootstrap_number_of_samples <- 1000
 parameters$bootstrap_confidence_level <- 0.95
 parameters$bootstrap_methods <- c("perc") #c("norm", "perc")
 ```
