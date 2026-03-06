@@ -15,24 +15,39 @@ get_histogram <- function(data, variable, variable_label, method, method_label, 
     theme_classic()
 }
 
-
 get_distribution_table <- function(data, variable, method){
   results_reference <- data %>% filter(laboratory == "reference") %>% group_by(laboratory) %>% get_distribution(., variable)
-  distribution_altm <- data %>% get_distribution(., variable) %>% mutate(laboratory = "ALTM") %>% relocate(laboratory)
+  distribution_altm <- data %>% get_distribution(., variable) %>% mutate(laboratory = "all labs") %>% relocate(laboratory)
   distribution_per_method <- data %>% group_by(!!sym(method)) %>% get_distribution(., variable)
   distribution_table <- bind_rows(results_reference, distribution_altm, distribution_per_method)
 }
-
 
 get_distribution <- function(data, variable){
   data %>%
     summarize(
       n = n(),
-      median = median(!!sym(variable)),
-      robust_sd = get_robust_sd(!!sym(variable))
+      mean = median(!!sym(variable)),
+      `robust sd` = get_robust_sd(!!sym(variable)),
+      min = get_quantile(!!sym(variable), probs = c(0)),
+      `qauntile 2.5%` = get_quantile(!!sym(variable), probs = c(0.025)),
+      `qauntile 25%` = get_quantile(!!sym(variable), probs = c(0.25)),
+      `qauntile 75%` = get_quantile(!!sym(variable), probs = c(0.75)),
+      `qauntile 97.5%` = get_quantile(!!sym(variable), probs = c(0.975)),
+      max = get_quantile(!!sym(variable), probs = c(1))
     )
 }
 
+get_quantile <- function(x, probs){
+  n = n()
+  qnt = quantile(x,probs)
+  
+  qauntile_number = case_when(
+    n < 19 ~ NA,  #based on at least 1/q observations for 95%
+    n >= 20 ~ qnt
+  )
+  
+  qauntile_number
+}
 
 get_robust_sd <- function(x){
   mad = mad(x)
