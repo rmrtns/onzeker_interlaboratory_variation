@@ -1,3 +1,6 @@
+# This is an analysis script to analyze the linearity assumption of
+# the PaBa regressions. This script is not needed for the markdown reports.
+
 library(dplyr)
 library(mcr)
 
