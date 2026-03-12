@@ -79,7 +79,7 @@ ref_cent <- ref_cent %>%
 # New slope = slope_ptp/slope_ref
 paba_regs_new <- left_join(subset(paba_regs, ptp != ref_ptp_no), 
                            ref_cent, by = "Bepaling") %>% 
-  mutate(New_Intercept = -((Ref_Slope*Ref_Intercept)/Ref_Slope) + Intercept) %>% 
+  mutate(New_Intercept = -((Slope*Ref_Intercept)/Ref_Slope) + Intercept) %>% 
   mutate(New_Slope = Slope/Ref_Slope)
 
 
@@ -189,10 +189,10 @@ fancy_print_qs <- function(result_vec){
   cat(sprintf("%.3f [%.3f - %.3f]", qs[2], qs[1], qs[3]))
 }
 
-fancy_print_qs(df.ptp_coords$sensitivity*100)
-fancy_print_qs(df.ptp_coords$specificity*100)
-fancy_print_qs(df.ptp_coords$ppv*100)
-fancy_print_qs(df.ptp_coords$npv*100)
+fancy_print_qs(df.ptp_coords$sensitivity)
+fancy_print_qs(df.ptp_coords$specificity)
+fancy_print_qs(df.ptp_coords$ppv)
+fancy_print_qs(df.ptp_coords$npv)
 fancy_print_qs(df.ptp_coords$tp)
 fancy_print_qs(df.ptp_coords$tn)
 fancy_print_qs(df.ptp_coords$fp)

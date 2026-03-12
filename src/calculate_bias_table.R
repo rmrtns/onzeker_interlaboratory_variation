@@ -74,7 +74,7 @@ extract_only_bias_variables <- function(data, skml_names){
   df1 <- data %>%
     filter(if_all(all_of(skml_names), ~ !is.na(.)))
   
-  # df1 <- data %>% select(skml_names)
+  # df1 <- data %>% select((all_of(skml_names))
   # df2 <- df1 %>%
   #   rowwise() %>%
   #   filter(sum(is.na(c_across(everything()))) == 0)
