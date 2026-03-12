@@ -1,7 +1,7 @@
 
 # Functions to calculate continuous ldl cholesterol and ordinal and dichotomised cholesterol targets.
 
-get_continuous_prediction_egfr <- function(data, dots_arguments){
+get_continuous_prediction_ldl <- function(data, dots_arguments){
   tc <- dots_arguments[["model_variables"]]["total_cholesterol"]
   hdl <- dots_arguments[["model_variables"]]["hdl"]
   triglycerides <- dots_arguments[["model_variables"]]["triglycerides"]
@@ -13,7 +13,7 @@ get_continuous_prediction_egfr <- function(data, dots_arguments){
 }
 
 
-get_ordinal_prediction_egfr <- function(data, dots_arguments){
+get_ordinal_prediction_ldl <- function(data, dots_arguments){
   cut_offs <- c(1.8, 2.6)
   
   cut(
@@ -25,6 +25,6 @@ get_ordinal_prediction_egfr <- function(data, dots_arguments){
 }
 
 
-get_categorical_prediction_egfr <- function(data, dots_arguments){
+get_categorical_prediction_ldl <- function(data, dots_arguments){
   as.numeric(data[["continuous_prediction"]]) < 2.6
 }
