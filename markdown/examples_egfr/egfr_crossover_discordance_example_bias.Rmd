@@ -36,6 +36,20 @@ parameters$bootstrap_confidence_level <- 0.95
 parameters$bootstrap_methods <- c("perc")
 ```
 
+## Set plot parameters.
+```{r}
+parameters$histogram_method <- "laboratory"
+parameters$histogram_method_label <- "Laboratory"
+parameters$histogram_absolute_difference_binwidth <-  0.5
+parameters$histogram_absolute_difference_x_range <- c(-10, 10)
+parameters$histogram_absolute_difference_y_range <- c(0, 10)
+parameters$histogram_percentage_difference_binwidth <-  0.5
+parameters$histogram_percentage_difference_x_range <- c(-20, 20)
+parameters$histogram_percentage_difference_y_range <- c(0, 10)
+parameters$histogram_percentage_discordant_binwidth <-  0.5
+parameters$histogram_percentage_discordant_x_range <- c(0, 20)
+parameters$histogram_percentage_discordant_y_range <- c(0, 10)
+```
 
 ## Set parameters to save results.
 ```{r}

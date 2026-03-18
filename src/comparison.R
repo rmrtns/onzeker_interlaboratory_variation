@@ -93,7 +93,7 @@ get_robust_sd <- function(x){
   sd = sd(x)
   sd2 = sd_for_2(x)
   n = n()
-  
+
   robust_sd = case_when(
     n < 2 ~ NA,
     n == 2 & sd2 > 0 ~ sd2,

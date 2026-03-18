@@ -10,6 +10,7 @@ library(dplyr)
 ## Import functions and variables.
 source('src/confusion_matrix.R', local = confusion <- new.env())
 source('src/bootstrapped_ci.R', local = bootstrapped <- new.env())
+source('src/comparison.R', local = comparison <- new.env())
 source('src/print_table.R', local = print <- new.env())
 source('src/save_output.R', local = save <- new.env())
 ```
@@ -82,4 +83,74 @@ save$save_summary(
 )
 
 print$print_table_summary(summary_crossover, 4)
+```
+
+```{r, results = 'asis', echo=FALSE}
+cat("* Histogram and distribution of percentage point difference between the probability discordant false negative and true positive results:")
+
+histogram_fn_minus_tp_percentage_point_diff <- comparison$get_histogram(
+  summary_crossover, 
+  "fn_minus_tp_percentage_point_diff",
+  "Probability discordant false negative - true positive (%)",
+  parameters$histogram_method,
+  parameters$histogram_method_label,
+  parameters$histogram_percentage_difference_binwidth,
+  parameters$histogram_percentage_difference_x_range,
+  parameters$histogram_percentage_difference_y_range
+)
+
+save$save_histogram(
+  histogram_fn_minus_tp_percentage_point_diff, 
+  parameters$path_output, 
+  parameters$model_name, 
+  "crossover",
+  parameters$population
+)
+
+plot(histogram_fn_minus_tp_percentage_point_diff)
+```
+
+```{r, results = 'asis', echo=FALSE, message=FALSE, warning=FALSE}
+distribution_fn_minus_tp_percentage_point_diff <- comparison$get_distribution_table(
+  summary_crossover, 
+  "fn_minus_tp_percentage_point_diff", 
+  "laboratory"
+)
+
+print$print_table_distribution(distribution_fn_minus_tp_percentage_point_diff, 4)
+```
+
+```{r, results = 'asis', echo=FALSE}
+cat("* Histogram and distribution of percentage point difference between the probability discordant false positive and true negative results:")
+
+histogram_fp_minus_tn_percentage_point_diff <- comparison$get_histogram(
+  summary_crossover, 
+  "fp_minus_tn_percentage_point_diff",
+  "Probability discordant false positive - true negative (%)",
+  parameters$histogram_method,
+  parameters$histogram_method_label,
+  parameters$histogram_percentage_difference_binwidth,
+  parameters$histogram_percentage_difference_x_range,
+  parameters$histogram_percentage_difference_y_range
+)
+
+save$save_histogram(
+  histogram_fp_minus_tn_percentage_point_diff, 
+  parameters$path_output, 
+  parameters$model_name, 
+  "crossover",
+  parameters$population
+)
+
+plot(histogram_fp_minus_tn_percentage_point_diff)
+```
+
+```{r, results = 'asis', echo=FALSE, message=FALSE, warning=FALSE}
+distribution_fp_minus_tn_percentage_point_diff <- comparison$get_distribution_table(
+  summary_crossover, 
+  "fp_minus_tn_percentage_point_diff", 
+  "laboratory"
+)
+
+print$print_table_distribution(distribution_fp_minus_tn_percentage_point_diff, 4)
 ```
