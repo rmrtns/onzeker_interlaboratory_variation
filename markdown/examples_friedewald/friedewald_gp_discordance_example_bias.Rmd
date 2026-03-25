@@ -1,0 +1,101 @@
+---
+title: 'Friedewald: Discordant predictions related to bias in gp population'
+output:
+  html_document: default
+  pdf_document: default
+date: "Report generated on: `r format(Sys.time(), '%Y-%m-%d')`"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, comment = NA)
+knitr::opts_knit$set(root.dir = rprojroot::find_rstudio_root_file())
+set.seed(seed = 200)
+```
+
+## Import functions and variables.
+```{r, include=FALSE, warning=FALSE, message=FALSE}
+source('src/variables_friedewald.R', local = variables <- new.env())
+source('src/predict_friedewald.R', local = friedewald <- new.env())
+```
+
+## Set simulation parameters.
+```{r}
+parameters <- new.env()
+parameters$data <- read.csv('data/test_data.csv')
+parameters$identifier <- "id"
+parameters$continuous_prediction_function <- friedewald$get_continuous_prediction_ldl
+parameters$ordinal_prediction_function <- friedewald$get_ordinal_prediction_ldl
+parameters$categorical_prediction_function <- friedewald$get_categorical_prediction_ldl
+parameters$model <- NA
+parameters$model_variables <- variables$selected_variables_friedewald
+parameters$uncertain_variables <- variables$selected_variables_friedewald[variables$uncertain_variables_indicator_friedewald]
+parameters$laboratory <- "lab"
+```
+
+## Set bias data parameters.
+```{r}
+parameters$bias_data <- read.csv("data/paba_data.csv")
+parameters$ref_ptp <- NA
+parameters$bias_data_names <- c(
+  "cholesterol" = "Cholesterol",
+  "hdl" = "HDL-Cholesterol",
+  "triglycerides" = "Triglyceriden"
+)
+```
+
+## Set bootstrap parameters.
+```{r}
+parameters$bootstrap_number_of_samples <- 1000
+parameters$bootstrap_confidence_level <- 0.95
+parameters$bootstrap_methods <- c("perc") # c("norm", "bca")
+```
+
+## Set plot parameters.
+```{r}
+parameters$histogram_method <- "laboratory"
+parameters$histogram_method_label <- "Laboratory"
+parameters$histogram_continuous_median_prediction_binwidth <- 0.5
+parameters$histogram_continuous_median_prediction_x_range <- c(-20, 20)
+parameters$histogram_continuous_median_prediction_y_range <- c(0, 10)
+parameters$histogram_continuous_median_difference_binwidth <- 0.5
+parameters$histogram_continuous_median_difference_x_range <- c(-5, 5)
+parameters$histogram_continuous_median_difference_y_range <- c(0, 10)
+parameters$histogram_continuous_median_percentage_difference_binwidth <- 0.5
+parameters$histogram_continuous_median_percentage_difference_x_range <- c(-20, 20)
+parameters$histogram_continuous_median_percentage_difference_y_range <- c(0, 10)
+parameters$histogram_continuous_mae_binwidth <- 0.5
+parameters$histogram_continuous_mae_x_range <- c(0, 5)
+parameters$histogram_continuous_mae_y_range <- c(0, 10)
+parameters$histogram_continuous_rmse_binwidth <- 0.5
+parameters$histogram_continuous_rmse_x_range <- c(0, 5)
+parameters$histogram_continuous_rmse_y_range <- c(0, 10)
+parameters$histogram_ordinal_median_difference_binwidth <- 0.5
+parameters$histogram_ordinal_median_difference_x_range <- c(0, 5)
+parameters$histogram_ordinal_median_difference_y_range <- c(0, 10)
+parameters$histogram_ordinal_mae_binwidth <- 0.5
+parameters$histogram_ordinal_mae_x_range <- c(0, 5)
+parameters$histogram_ordinal_mae_y_range <- c(0, 10)
+parameters$histogram_ordinal_micro_rmse_binwidth <- 0.5
+parameters$histogram_ordinal_micro_rmse_x_range <- c(0, 50)
+parameters$histogram_ordinal_micro_rmse_y_range <- c(0, 10)
+parameters$histogram_ordinal_macro_rmse_binwidth <- 0.5
+parameters$histogram_ordinal_macro_rmse_x_range <- c(0, 5)
+parameters$histogram_ordinal_macro_rmse_y_range <- c(0, 10)
+parameters$histogram_ordinal_percentage_discordant_binwidth <- 0.5
+parameters$histogram_ordinal_percentage_discordant_x_range <- c(0, 100)
+parameters$histogram_ordinal_percentage_discordant_y_range <- c(0, 10)
+parameters$histogram_dichotomous_percentage_discordant_binwidth <- 0.5
+parameters$histogram_dichotomous_percentage_discordant_x_range <- c(0, 20)
+parameters$histogram_dichotomous_percentage_discordant_y_range <- c(0, 10)
+```
+
+## Set parameters to save results.
+```{r}
+parameters$model_name <- 'friedewald'
+parameters$population <- 'gp'
+parameters$path_output <- 'out/friedewald/simulations_discordance/'
+```
+
+```{r, child='markdown/template_discordance.Rmd'}
+
+```
