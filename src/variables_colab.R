@@ -25,4 +25,5 @@ uncertain_variables_indicator_colab <- c(
   TRUE,
   TRUE,
   TRUE,
-  FALSE)
+  FALSE
+)
