@@ -1,4 +1,3 @@
-
 # Functions to calculate continuous ldl cholesterol and ordinal and dichotomised cholesterol targets.
 
 get_continuous_prediction_ldl <- function(data, dots_arguments){

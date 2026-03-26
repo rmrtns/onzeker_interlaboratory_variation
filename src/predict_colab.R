@@ -1,5 +1,5 @@
-# Functions to calculate the CoLab-score, either continous (linear predictor)
-# ordinal (0 to 5) or binary (using a score of 5 as positive)
+# Functions to calculate the CoLab-score, either continous (linear predictor).
+# Ordinal (0 to 5) or binary (using a score of 5 as positive).
 
 get_continuous_prediction_colab <- function(data, dots_arguments){
   
@@ -50,4 +50,3 @@ get_ordinal_prediction_colab <- function(data, dots_arguments){
 get_categorical_prediction_colab <- function(data, dots_arguments){
   as.numeric(data[["continuous_prediction"]]) >= -1.64
 }
-

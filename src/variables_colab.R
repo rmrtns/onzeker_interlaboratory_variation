@@ -12,8 +12,6 @@ selected_variables_colab <- c(
   "age" = "age"
 )
 
-
-
 uncertain_variables_indicator_colab <- c(
   TRUE,
   TRUE,

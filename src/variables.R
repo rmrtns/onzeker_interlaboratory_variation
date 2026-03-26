@@ -28,7 +28,6 @@ df_bias_percent_egfr <- data.frame(
   egfr = c(NA, NA)
 )
 
-
 df_bias_abs_egfr <- data.frame(
   lab = c("sittard", "heerlen"),
   age = c(NA, NA),

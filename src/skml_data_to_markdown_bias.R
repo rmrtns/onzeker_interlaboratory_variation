@@ -3,10 +3,10 @@ library(tidyr)
 library(mcr)
 library(pROC)
 
-# minimal amount of observations for paba method
+# Minimal amount of observations for paba method.
 N_min = 16 
 
-# read the merged skml file 
+# Read the merged skml file.
 #   If file doesn't exist, run:
 #   source("src/new skml import.R")
 skml <- read.csv("data/skml_merged.csv")
@@ -36,7 +36,7 @@ paba.reg.fun <- function(ReferenceMethod, TestMethod){
   }
 }
 
-# perfom the paba regression
+# Perfom the paba regression.
 paba_regs_wide <- skml %>% 
   group_by(Bepaling, ptp, ctr) %>% 
   do(paba.reg.fun(.$ConsensusWaarde, .$Resultaat)) %>%
@@ -44,12 +44,7 @@ paba_regs_wide <- skml %>%
                                                      Lin_test_p, N)) %>%
   mutate(name = paste("ptp", ptp, "ctr", ctr, sep = "_"))
 
-# output in csv file
+# Output in csv file.
 write.csv(paba_regs_wide, "data/skml_bias_table.csv", row.names = FALSE)
 
 rm(list = ls())
-
-
-
-
-

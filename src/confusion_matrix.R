@@ -1,6 +1,3 @@
-# Wijzigingen:
-## In hoofdfunctie crossover complete_confusion_matrix toegevoegd om foutmelding bij ontbreken category te voorkomen.
-
 library(caret)
 library(pROC)
 library(broom)

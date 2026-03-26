@@ -35,10 +35,3 @@ simulate_bias <- function(data, identifier, variables, bias_factors, bias_interc
 
   return(simulated_bias_per_database)
 }
-
-
-# Redundant
-# multiply_variable_by_factor <- function(original, factor){
-#   return(original * factor)
-# }
-

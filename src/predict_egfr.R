@@ -1,4 +1,3 @@
-
 # Functions to calculate continuous egfr, categorical egfr and dichotomised egfr.
 ## Ethnicity is considered non-African American for all entries.
 

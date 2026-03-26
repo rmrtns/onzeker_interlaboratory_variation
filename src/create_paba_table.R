@@ -2,7 +2,6 @@ library(mcr)
 library(dplyr)
 
 
-
 paba.reg.fun <- function(ReferenceMethod, TestMethod,N){
   # Minimum sample size is N
   
@@ -23,12 +22,11 @@ paba.reg.fun <- function(ReferenceMethod, TestMethod,N){
 }
 
 
-
-# parameters 
+# Set parameters. 
 N <- 16
 data <- read.csv("data/skml_merged.csv")
 
-# calculate the passing bablock estimates of the data
+# Calculate the passing bablock estimates of the data.
 paba_data <- data %>%
   group_by(Bepaling, ptp, ctr) %>%
   do(paba.reg.fun(.$ConsensusWaarde, .$Resultaat, N)) 
