@@ -16,39 +16,12 @@ set.seed(seed = 200)
 ```{r, include=FALSE, warning=FALSE, message=FALSE}
 source('src/variables.R', local = variables <- new.env())
 source('src/predict_egfr.R', local = egfr <- new.env())
-
-# temp
-source('src/calculate_bias_table.r', local = bias <- new.env())
-
-#temp
 ```
 
 ## Set simulation parameters.
 ```{r}
 parameters <- new.env()
 parameters$data <- read.csv('data/test_data.csv')
-
-# temp 
-parameters$SKML_data <- read.csv("data/paba_data.csv")
-parameters$skml_names <- c("creatinine" = "Kreatinine")
-parameters$no_bias_variables <- parameters$model_variables[!parameters$model_variables %in% parameters$uncertain_variables]
-parameters$ref_ptp <- NA
-parameters$bias_tables <- bias$get_bias_table(parameters$SKML_data,
-                                              parameters$ref_ptp,
-                                              parameters$skml_names,
-                                              parameters$no_bias_variables)
-parameters$bias_intercepts <- parameters$bias_tables$intercepts
-parameters$bias_factors <- parameters$bias_tables$slopes
-
-
-
-# parameters$non_bias_vec <- c("age", "sex",  "egfr")
-# parameters$bias_table_intercept <- bias$get_intercept_table(parameters$SKML_data_full, parameters$ref_ptp, parameters$skml_names, parameters$non_bias_vec) # dit naar template
-# parameters$bias_table_slope <- bias$get_slope_table(parameters$SKML_data_full, parameters$ref_ptp, parameters$skml_names, parameters$non_bias_vec) # dit in naar templet
-
-# temp 
-
-
 parameters$identifier <- "id"
 parameters$continuous_prediction_function <- egfr$get_continuous_prediction_egfr
 parameters$ordinal_prediction_function <- egfr$get_ordinal_prediction_egfr
@@ -59,26 +32,57 @@ parameters$uncertain_variables <- variables$selected_variables_egfr[variables$un
 parameters$laboratory <- "lab"
 ```
 
+## Set bias data parameters.
+```{r}
+parameters$bias_data <- read.csv("data/paba_data.csv")
+parameters$ref_ptp <- NA
+parameters$bias_data_names <- c("creatinine" = "Kreatinine")
+```
+
 ## Set bootstrap parameters.
 ```{r}
-parameters$bootstrap_number_of_samples <- 100
+parameters$bootstrap_number_of_samples <- 1000
 parameters$bootstrap_confidence_level <- 0.95
-parameters$bootstrap_methods <- c("perc")
+parameters$bootstrap_methods <- c("perc") # c("norm", "bca")
 ```
 
 ## Set plot parameters.
 ```{r}
 parameters$histogram_method <- "laboratory"
 parameters$histogram_method_label <- "Laboratory"
-parameters$histogram_absolute_difference_binwidth <-  0.5
-parameters$histogram_absolute_difference_x_range <- c(-10, 10)
-parameters$histogram_absolute_difference_y_range <- c(0, 10)
-parameters$histogram_percentage_difference_binwidth <-  0.5
-parameters$histogram_percentage_difference_x_range <- c(-20, 20)
-parameters$histogram_percentage_difference_y_range <- c(0, 10)
-parameters$histogram_percentage_discordant_binwidth <-  0.5
-parameters$histogram_percentage_discordant_x_range <- c(0, 20)
-parameters$histogram_percentage_discordant_y_range <- c(0, 10)
+parameters$histogram_continuous_median_prediction_binwidth <- 0.5
+parameters$histogram_continuous_median_prediction_x_range <- c(-20, 20)
+parameters$histogram_continuous_median_prediction_y_range <- c(0, 10)
+parameters$histogram_continuous_median_difference_binwidth <- 0.5
+parameters$histogram_continuous_median_difference_x_range <- c(-5, 5)
+parameters$histogram_continuous_median_difference_y_range <- c(0, 10)
+parameters$histogram_continuous_median_percentage_difference_binwidth <- 0.5
+parameters$histogram_continuous_median_percentage_difference_x_range <- c(-20, 20)
+parameters$histogram_continuous_median_percentage_difference_y_range <- c(0, 10)
+parameters$histogram_continuous_mae_binwidth <- 0.5
+parameters$histogram_continuous_mae_x_range <- c(0, 5)
+parameters$histogram_continuous_mae_y_range <- c(0, 10)
+parameters$histogram_continuous_rmse_binwidth <- 0.5
+parameters$histogram_continuous_rmse_x_range <- c(0, 5)
+parameters$histogram_continuous_rmse_y_range <- c(0, 10)
+parameters$histogram_ordinal_median_difference_binwidth <- 0.5
+parameters$histogram_ordinal_median_difference_x_range <- c(0, 5)
+parameters$histogram_ordinal_median_difference_y_range <- c(0, 10)
+parameters$histogram_ordinal_mae_binwidth <- 0.5
+parameters$histogram_ordinal_mae_x_range <- c(0, 5)
+parameters$histogram_ordinal_mae_y_range <- c(0, 10)
+parameters$histogram_ordinal_micro_rmse_binwidth <- 0.5
+parameters$histogram_ordinal_micro_rmse_x_range <- c(0, 50)
+parameters$histogram_ordinal_micro_rmse_y_range <- c(0, 10)
+parameters$histogram_ordinal_macro_rmse_binwidth <- 0.5
+parameters$histogram_ordinal_macro_rmse_x_range <- c(0, 5)
+parameters$histogram_ordinal_macro_rmse_y_range <- c(0, 10)
+parameters$histogram_ordinal_percentage_discordant_binwidth <- 0.5
+parameters$histogram_ordinal_percentage_discordant_x_range <- c(0, 100)
+parameters$histogram_ordinal_percentage_discordant_y_range <- c(0, 10)
+parameters$histogram_dichotomous_percentage_discordant_binwidth <- 0.5
+parameters$histogram_dichotomous_percentage_discordant_x_range <- c(0, 20)
+parameters$histogram_dichotomous_percentage_discordant_y_range <- c(0, 10)
 ```
 
 ## Set parameters to save results.

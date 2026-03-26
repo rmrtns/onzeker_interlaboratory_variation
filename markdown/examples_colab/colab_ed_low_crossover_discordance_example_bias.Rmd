@@ -1,5 +1,5 @@
 ---
-title: "CoLab score: Impact of bias related discordant predictions on crossover within confusion matrices based on simulations_discordance_aggregate_results"
+title: "CoLab score: Impact of bias related discordant predictions on crossover within confusion matrices based on simulations_discordance_aggregate_results in ED population with low COVID-19 prevalence"
 output: html_document
 date: "Report generated on: `r format(Sys.time(), '%Y-%m-%d')`"
 ---
@@ -20,10 +20,10 @@ library(purrr)
 ## Set main parameters.
 ```{r}
 parameters <- new.env()
-parameters$original_data <- read.csv('data/CoLab_externe_validatie_Zuyderland.csv')
+parameters$original_data <- read.csv('data/colab_ed_low_prevalence.csv')
 parameters$discordance_data <- 
-  read.csv('out/colab/simulations_discordance/colab_discordance_ed_bias_per_individual.csv')
-parameters$identifier <- "id"
+  read.csv('out/colab/simulations_discordance/colab_discordance_ed_low_bias_per_individual.csv')
+parameters$identifier <- "Pat"
 parameters$model_outcome <- "outcome"
 parameters$model_outcome_class_TRUE <-  "1" 
 parameters$model_prediction_class_TRUE <-  "percentage_TRUE"
@@ -40,18 +40,18 @@ parameters$bootstrap_methods <- c("perc") # c("norm", "bca")
 ```{r}
 parameters$histogram_method <- "laboratory"
 parameters$histogram_method_label <- "Laboratory"
-parameters$histogram_fn_minus_tp_percentage_point_diff_binwidth <-  0.5
-parameters$histogram_fn_minus_tp_percentage_point_diff_x_range <- c(-10, 10)
-parameters$histogram_fn_minus_tp_percentage_point_diff_y_range <- c(0, 10)
-parameters$histogram_fp_minus_tn_percentage_point_diff_binwidth <-  0.5
-parameters$histogram_fp_minus_tn_percentage_point_diff_x_range <- c(-10, 10)
+parameters$histogram_fn_minus_tp_percentage_point_diff_binwidth <-  0.2
+parameters$histogram_fn_minus_tp_percentage_point_diff_x_range <- c(-5, 5)
+parameters$histogram_fn_minus_tp_percentage_point_diff_y_range <- c(0, 50)
+parameters$histogram_fp_minus_tn_percentage_point_diff_binwidth <-  0.2
+parameters$histogram_fp_minus_tn_percentage_point_diff_x_range <- c(-5, 5)
 parameters$histogram_fp_minus_tn_percentage_point_diff_y_range <- c(0, 10)
 ```
 
 ## Set parameters to save results.
 ```{r}
 parameters$model_name <- 'colab'
-parameters$population <- 'ed'
+parameters$population <- 'ed_low'
 parameters$path_output <- 'out/colab/simulations_crossover/'
 ```
 

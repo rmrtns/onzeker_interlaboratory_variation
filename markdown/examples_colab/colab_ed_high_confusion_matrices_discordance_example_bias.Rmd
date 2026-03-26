@@ -1,7 +1,7 @@
 ---
-title: "CoLab_confusion_matrices_discordance_example_bias.Rmd"
+title: "CoLab score: impact of bias on confusion matrices based on simulations_discordance in ED population with high COVID-19 prevalence"
 output: html_document
-date: "2026-01-06"
+date: "Report generated on: `r format(Sys.time(), '%Y-%m-%d')`"
 ---
 
 ```{r setup, include=FALSE}
@@ -17,22 +17,12 @@ library(tidyr)
 library(purrr)
 ```
 
-```{r, include=FALSE, warning=FALSE, message=FALSE}
-# to be removed.
-source('src/colab_specific_functions.R', local = colab_functions <- new.env())
-```
-
-
 ## Set main parameters.
 ```{r}
 parameters <- new.env()
-parameters$data_with_log <- read.csv('data/CoLab_externe_validatie_Zuyderland.csv')
-parameters$data_with_dups <- colab_functions$colab_variable_de_log(parameters$data_with_log)
-parameters$original_data <- parameters$data_with_dups[!duplicated(parameters[["data_with_dups"]][["Pat"]]),] # dit nog omzetten naar functie
-# parameters$discordance_data <- 
-#   read.csv('out/colab/simulations_discordance/colab_discordance_test_data_bias.csv')
+parameters$original_data <- read.csv('data/colab_ed_high_prevalence.csv')
 parameters$discordance_data <-
-  read.csv('out/colab/simulations_discordance/colab_discordance_ed_bias_per_individual.csv')
+  read.csv('out/colab/simulations_discordance/colab_discordance_ed_high_bias_per_individual.csv')
 parameters$identifier <- "Pat"
 parameters$model_outcome <- "outcome"
 parameters$model_outcome_class_TRUE <-  "1"
@@ -42,7 +32,7 @@ parameters$model_outcome_class_TRUE <-  "1"
 ```{r}
 parameters$bootstrap_number_of_samples <- 1000
 parameters$bootstrap_confidence_level <- 0.95
-parameters$bootstrap_methods <- c("perc")
+parameters$bootstrap_methods <- c("perc") # c("norm", "bca")
 ```
 
 ## Set plot parameters.
@@ -51,19 +41,28 @@ parameters$histogram_method <- "laboratory"
 parameters$histogram_method_label <- "Laboratory"
 parameters$histogram_auroc_binwidth <-  0.02
 parameters$histogram_auroc_x_range <- c(0.5, 1.0)
-parameters$histogram_auroc_y_range <- c(0, 10)
+parameters$histogram_auroc_y_range <- c(0, 50)
+parameters$histogram_accuracy_binwidth <- 0.02
+parameters$histogram_accuracy_x_range <- c(0.0, 1.0)
+parameters$histogram_accuracy_y_range <- c(0, 50)
 parameters$histogram_sensitivity_binwidth <-  0.02
 parameters$histogram_sensitivity_x_range <- c(0.0, 1.0)
-parameters$histogram_sensitivity_y_range <- c(0, 10)
+parameters$histogram_sensitivity_y_range <- c(0, 20)
 parameters$histogram_specificity_binwidth <-  0.02
-parameters$histogram_specificity_x_range <- c(0.5, 1.0)
-parameters$histogram_specificity_y_range <- c(0, 10)
+parameters$histogram_specificity_x_range <- c(0.0, 1.0)
+parameters$histogram_specificity_y_range <- c(0, 50)
+parameters$histogram_ppv_binwidth <- 0.02
+parameters$histogram_ppv_x_range <- c(0.0, 1.0)
+parameters$histogram_ppv_y_range <- c(0, 20)
+parameters$histogram_npv_binwidth <- 0.02
+parameters$histogram_npv_x_range <- c(0.0, 1.0)
+parameters$histogram_npv_y_range <- c(0, 50)
 ```
 
 ## Set parameters to save results.
 ```{r}
 parameters$model_name <- 'colab'
-parameters$population <- 'ed'
+parameters$population <- 'ed_high'
 parameters$path_output <- 'out/colab/simulations_confusion_matrix/'
 ```
 

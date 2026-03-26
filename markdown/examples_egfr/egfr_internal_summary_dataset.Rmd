@@ -1,0 +1,39 @@
+---
+title: 'eGFR: Summary dataset internal medicine outpatient population'
+output:
+  html_document: default
+  pdf_document: default
+date: "Report generated on: `r format(Sys.time(), '%Y-%m-%d')`"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, comment = NA)
+knitr::opts_knit$set(root.dir = rprojroot::find_rstudio_root_file())
+set.seed(seed = 200)
+```
+
+## Import functions and variables.
+```{r, include=FALSE, warning=FALSE, message=FALSE}
+source('src/variables_egfr.R', local = variables <- new.env())
+```
+
+```{r, include=FALSE, warning=FALSE, message=FALSE}
+library(dplyr)
+library(gtsummary)
+```
+
+## Read data.
+```{r}
+parameters <- new.env()
+parameters$data <- read.csv('data/test_data.csv')
+parameters$model_variables <- variables$selected_variables_egfr
+parameters$laboratory <- "lab"
+```
+
+## Summarise dataset.
+```{r, echo=FALSE}
+parameters$data %>% tbl_summary(
+  include = as.character(parameters$model_variables),
+  digits = everything() ~ 2
+)
+```

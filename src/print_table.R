@@ -6,6 +6,7 @@ print_table_bootstrapped_summary <- function(table, decimal_places){
     rownames = FALSE,
     extensions = list("FixedColumns" = NULL),
     options = list(
+      dom = "tlp",
       scrollX = TRUE,
       fixedColumns = list(leftColumns = 2)
     ) 
@@ -27,8 +28,7 @@ print_table_summary <- function(table, decimal_places){
     rownames = FALSE,
     extensions = list("FixedColumns" = NULL),
     options = list(
-      dom = "t",
-      pageLength = 20,
+      dom = "tlp",
       scrollX = TRUE,
       fixedColumns = TRUE
     ) 
@@ -51,7 +51,8 @@ print_table_distribution <- function(table, decimal_places){
     extensions = list("FixedColumns" = NULL),
     options = list(
       dom = "t",
-      pageLength = 10,
+      paging = FALSE,
+      scrollY = "200px",
       fixedColumns = list(leftColumns = 1)
     ) 
   ) %>%

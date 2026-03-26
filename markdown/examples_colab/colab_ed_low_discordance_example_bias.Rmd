@@ -1,0 +1,104 @@
+---
+title: "CoLab score: Discordant predictions related to bias in ED population with low COVID-19 prevalence"
+output: html_document
+date: "Report generated on: `r format(Sys.time(), '%Y-%m-%d')`"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_knit$set(root.dir = rprojroot::find_rstudio_root_file())
+set.seed(seed = 200)
+```
+
+## Import functions and variables.
+```{r, include=FALSE, warning=FALSE, message=FALSE}
+source('src/variables_colab.R', local = variables <- new.env())
+source('src/predict_colab.R', local = colab <- new.env())
+```
+
+## Set simulation parameters.
+```{r}
+parameters <- new.env()
+parameters$data <- read.csv('data/colab_ed_low_prevalence.csv')
+parameters$identifier <- "Pat"
+parameters$continuous_prediction_function <- colab$get_continuous_prediction_colab
+parameters$ordinal_prediction_function <- colab$get_ordinal_prediction_colab
+parameters$categorical_prediction_function <- colab$get_categorical_prediction_colab
+parameters$model <- NA
+parameters$model_variables <- variables$selected_variables_colab
+parameters$uncertain_variables <- variables$selected_variables_colab[variables$uncertain_variables_indicator_colab]
+parameters$laboratory <- "lab"
+```
+
+## Set bias data parameters.
+```{r}
+parameters$bias_data <- read.csv('data/paba_data.csv')
+parameters$bias_data_ref_ptp <- 11 
+parameters$bias_data_names <- c(
+  "Erytrocyten_BV" =  "Erytrocyten",
+  "Leukocyten_BV" = "Leukocyten",
+  "BilirubineTotaal_BV" = "Bilirubine",
+  "LD_BV" = "LD",
+  "AlkFosf_BV" = "Alk. Fosfatase",
+  "Albumine_BV" = "Albumine" ,
+  "GGT_BV" = "Gamma-GT",
+  "CRP_BV" = "CRP"
+)
+```
+
+## Set bootstrap parameters.
+```{r}
+parameters$bootstrap_number_of_samples <- 1000
+parameters$bootstrap_confidence_level <- 0.95
+parameters$bootstrap_methods <- c("perc") # c("norm", "bca")
+```
+
+## Set plot parameters.
+```{r}
+parameters$histogram_method <- "laboratory"
+parameters$histogram_method_label <- "Laboratory"
+parameters$histogram_continuous_median_prediction_binwidth <- 0.05
+parameters$histogram_continuous_median_prediction_x_range <- c(-6, -4)
+parameters$histogram_continuous_median_prediction_y_range <- c(0, 10)
+parameters$histogram_continuous_median_difference_binwidth <- 0.05
+parameters$histogram_continuous_median_difference_x_range <- c(-1, 1)
+parameters$histogram_continuous_median_difference_y_range <- c(0, 10)
+parameters$histogram_continuous_median_percentage_difference_binwidth <- 0.5
+parameters$histogram_continuous_median_percentage_difference_x_range <- c(-5, 20)
+parameters$histogram_continuous_median_percentage_difference_y_range <- c(0, 10)
+parameters$histogram_continuous_mae_binwidth <- 0.05
+parameters$histogram_continuous_mae_x_range <- c(0, 1)
+parameters$histogram_continuous_mae_y_range <- c(0, 10)
+parameters$histogram_continuous_rmse_binwidth <- 0.05
+parameters$histogram_continuous_rmse_x_range <- c(0, 1)
+parameters$histogram_continuous_rmse_y_range <- c(0, 10)
+parameters$histogram_ordinal_median_difference_binwidth <- 0.05
+parameters$histogram_ordinal_median_difference_x_range <- c(0, 1)
+parameters$histogram_ordinal_median_difference_y_range <- c(0, 50)
+parameters$histogram_ordinal_mae_binwidth <- 0.05
+parameters$histogram_ordinal_mae_x_range <- c(0, 1)
+parameters$histogram_ordinal_mae_y_range <- c(0, 10)
+parameters$histogram_ordinal_micro_rmse_binwidth <- 0.05
+parameters$histogram_ordinal_micro_rmse_x_range <- c(0, 1)
+parameters$histogram_ordinal_micro_rmse_y_range <- c(0, 10)
+parameters$histogram_ordinal_macro_rmse_binwidth <- 0.05
+parameters$histogram_ordinal_macro_rmse_x_range <- c(0, 1)
+parameters$histogram_ordinal_macro_rmse_y_range <- c(0, 10)
+parameters$histogram_ordinal_percentage_discordant_binwidth <- 1
+parameters$histogram_ordinal_percentage_discordant_x_range <- c(0, 50)
+parameters$histogram_ordinal_percentage_discordant_y_range <- c(0, 10)
+parameters$histogram_dichotomous_percentage_discordant_binwidth <- 0.2
+parameters$histogram_dichotomous_percentage_discordant_x_range <- c(0, 5)
+parameters$histogram_dichotomous_percentage_discordant_y_range <- c(0, 10)
+```
+
+## Set parameters to save results.
+```{r}
+parameters$model_name <- 'colab'
+parameters$population <- 'ed_low'
+parameters$path_output <- 'out/colab/simulations_discordance/'
+```
+
+```{r, child='markdown/template_discordance.Rmd'}
+
+```

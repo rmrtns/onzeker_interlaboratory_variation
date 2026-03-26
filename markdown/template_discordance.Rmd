@@ -4,14 +4,27 @@ library(boot)
 library(dplyr)
 ```
 
-
 ```{r, include=FALSE, warning=FALSE, message=FALSE}
 ## Import functions and variables.
+source('src/calculate_bias_table.R', local = bias <- new.env())
 source('src/simulate_discordance.R', local = discordance <- new.env())
 source('src/bootstrapped_ci.R', local = bootstrapped <- new.env())
 source('src/comparison.R', local = comparison <- new.env())
 source('src/print_table.R', local = print <- new.env())
 source('src/save_output.R', local = save <- new.env())
+```
+
+```{r, echo=FALSE}
+## Prepare bias data.
+bias_tables <- bias$get_bias_table(
+  parameters$bias_data,
+  parameters$bias_data_ref_ptp,
+  parameters$bias_data_names,
+  parameters$model_variables[!parameters$model_variables %in% parameters$uncertain_variables]
+)
+
+bias_intercepts <- bias_tables$intercepts
+bias_factors <- bias_tables$slopes
 ```
 
 ## Simulate predictions and calculate % discordance.
@@ -22,8 +35,8 @@ discordance_status <-
     parameters$data,
     parameters$identifier,
     parameters$uncertain_variables,
-    parameters$bias_factors,
-    parameters$bias_intercepts,
+    bias_factors,
+    bias_intercepts,
     parameters$laboratory,
     parameters$continuous_prediction_function,
     parameters$ordinal_prediction_function,
@@ -41,27 +54,6 @@ save$save_summary(
   "discordance",
   parameters$population,
   "bias_per_individual"
-
-)
-```
-
-## Summarise results.
-
--   Histogram and QQ-plot of difference continuous prediction:
-
-```{r, echo=FALSE}
-discordance$plot_distribution_per_laboratory(
-  discordance_status, 
-  "continuous_difference"
-)
-```
-
--   Histogram and QQ-plot of percentage difference continuous prediction:
-
-```{r, echo=FALSE}
-discordance$plot_distribution_per_laboratory(
-  discordance_status, 
-  "continuous_percentage_difference"
 )
 ```
 
@@ -133,9 +125,9 @@ histogram_continuous_median_prediction <- comparison$get_histogram(
   "Median continuous prediction",
   parameters$histogram_method,
   parameters$histogram_method_label,
-  parameters$histogram_percentage_difference_binwidth,
-  parameters$histogram_percentage_difference_x_range,
-  parameters$histogram_percentage_difference_y_range
+  parameters$histogram_continuous_median_prediction_binwidth,
+  parameters$histogram_continuous_median_prediction_x_range,
+  parameters$histogram_continuous_median_prediction_y_range
 )
 
 save$save_histogram(
@@ -168,9 +160,9 @@ histogram_continuous_median_difference <- comparison$get_histogram(
   "Median difference",
   parameters$histogram_method,
   parameters$histogram_method_label,
-  parameters$histogram_percentage_difference_binwidth,
-  parameters$histogram_percentage_difference_x_range,
-  parameters$histogram_percentage_difference_y_range
+  parameters$histogram_continuous_median_difference_binwidth,
+  parameters$histogram_continuous_median_difference_x_range,
+  parameters$histogram_continuous_median_difference_y_range
 )
 
 save$save_histogram(
@@ -203,9 +195,9 @@ histogram_continuous_median_percentage_difference <- comparison$get_histogram(
   "Median percentage difference",
   parameters$histogram_method,
   parameters$histogram_method_label,
-  parameters$histogram_percentage_difference_binwidth,
-  parameters$histogram_percentage_difference_x_range,
-  parameters$histogram_percentage_difference_y_range
+  parameters$histogram_continuous_median_percentage_difference_binwidth,
+  parameters$histogram_continuous_median_percentage_difference_x_range,
+  parameters$histogram_continuous_median_percentage_difference_y_range
 )
 
 save$save_histogram(
@@ -238,9 +230,9 @@ histogram_continuous_mae <- comparison$get_histogram(
   "Mean absolute error",
   parameters$histogram_method,
   parameters$histogram_method_label,
-  parameters$histogram_percentage_difference_binwidth,
-  parameters$histogram_percentage_difference_x_range,
-  parameters$histogram_percentage_difference_y_range
+  parameters$histogram_continuous_mae_binwidth,
+  parameters$histogram_continuous_mae_x_range,
+  parameters$histogram_continuous_mae_y_range
 )
 
 save$save_histogram(
@@ -273,9 +265,9 @@ histogram_continuous_rmse <- comparison$get_histogram(
   "Root mean squared error",
   parameters$histogram_method,
   parameters$histogram_method_label,
-  parameters$histogram_absolute_difference_binwidth,
-  parameters$histogram_absolute_difference_x_range,
-  parameters$histogram_absolute_difference_y_range
+  parameters$histogram_continuous_rmse_binwidth,
+  parameters$histogram_continuous_rmse_x_range,
+  parameters$histogram_continuous_rmse_y_range
 )
 
 save$save_histogram(
@@ -308,9 +300,9 @@ histogram_ordinal_median_difference <- comparison$get_histogram(
   "Median difference",
   parameters$histogram_method,
   parameters$histogram_method_label,
-  parameters$histogram_absolute_difference_binwidth,
-  parameters$histogram_absolute_difference_x_range,
-  parameters$histogram_absolute_difference_y_range
+  parameters$histogram_ordinal_median_difference_binwidth,
+  parameters$histogram_ordinal_median_difference_x_range,
+  parameters$histogram_ordinal_median_difference_y_range
 )
 
 save$save_histogram(
@@ -343,9 +335,9 @@ histogram_ordinal_mae <- comparison$get_histogram(
   "Mean absolute error",
   parameters$histogram_method,
   parameters$histogram_method_label,
-  parameters$histogram_absolute_difference_binwidth,
-  parameters$histogram_absolute_difference_x_range,
-  parameters$histogram_absolute_difference_y_range
+  parameters$histogram_ordinal_mae_binwidth,
+  parameters$histogram_ordinal_mae_x_range,
+  parameters$histogram_ordinal_mae_y_range
 )
 
 save$save_histogram(
@@ -378,9 +370,9 @@ histogram_ordinal_micro_rmse <- comparison$get_histogram(
   "Micro-averaged root mean squared error",
   parameters$histogram_method,
   parameters$histogram_method_label,
-  parameters$histogram_absolute_difference_binwidth,
-  parameters$histogram_absolute_difference_x_range,
-  parameters$histogram_absolute_difference_y_range
+  parameters$histogram_ordinal_micro_rmse_binwidth,
+  parameters$histogram_ordinal_micro_rmse_x_range,
+  parameters$histogram_ordinal_micro_rmse_y_range
 )
 
 save$save_histogram(
@@ -413,9 +405,9 @@ histogram_ordinal_macro_rmse <- comparison$get_histogram(
   "Macro-averaged root mean squared error",
   parameters$histogram_method,
   parameters$histogram_method_label,
-  parameters$histogram_absolute_difference_binwidth,
-  parameters$histogram_absolute_difference_x_range,
-  parameters$histogram_absolute_difference_y_range
+  parameters$histogram_ordinal_macro_rmse_binwidth,
+  parameters$histogram_ordinal_macro_rmse_x_range,
+  parameters$histogram_ordinal_macro_rmse_y_range
 )
 
 save$save_histogram(
@@ -448,9 +440,9 @@ histogram_ordinal_percentage_discordant <- comparison$get_histogram(
   "Percentage discordant",
   parameters$histogram_method,
   parameters$histogram_method_label,
-  parameters$histogram_absolute_difference_binwidth,
-  parameters$histogram_absolute_difference_x_range,
-  parameters$histogram_absolute_difference_y_range
+  parameters$histogram_ordinal_percentage_discordant_binwidth,
+  parameters$histogram_ordinal_percentage_discordant_x_range,
+  parameters$histogram_ordinal_percentage_discordant_y_range
 )
 
 save$save_histogram(
@@ -483,9 +475,9 @@ histogram_dichotomous_percentage_discordant <- comparison$get_histogram(
   "Percentage discordant",
   parameters$histogram_method,
   parameters$histogram_method_label,
-  parameters$histogram_percentage_discordant_binwidth,
-  parameters$histogram_percentage_discordant_x_range,
-  parameters$histogram_percentage_discordant_y_range
+  parameters$histogram_dichotomous_percentage_discordant_binwidth,
+  parameters$histogram_dichotomous_percentage_discordant_x_range,
+  parameters$histogram_dichotomous_percentage_discordant_y_range
 )
 
 save$save_histogram(
