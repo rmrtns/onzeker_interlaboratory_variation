@@ -7,20 +7,14 @@ Passing-Bablok methode – keuze referentie specifiek laboratorium of SKML-conse
 Passing-Bablok methode – Inladen resultaten via markdown templates				        Ruben en Tom		          Gereed
 Simuleren bias a.h.v. resultaten Passing-Bablok							                Ruben en Tom		          Gereed
 Toevoegen Friedewald formule									                        Remy                          Gereed
-Toevoegen Brier-score													                ?				              Februari 2026
-	Berekening
-	CSV
 Toevoegen tolerance ranges o.b.v. TAe en state-of-the-art                               Tom                           Februari 2026
 Rapportage 												                                Remy			              Gereed
-Histogrammen                                                                            Remy en Tom                   Februari 2026
-Code verifiëren                                                                         Tom                           Februari 2026
+Histogrammen                                                                            Remy en Tom                   Gereed
+Code verifiëren                                                                         Tom                           Gereed
     Handmatig aantal patiënten berekenen
 Code opschonen                                                                          Tom/Ruben                     Februari 2026
     Gerelateerde src files samenvoegen
     Temp files etc verwijderen
-    Colab-specifieke code verwijderen uit markdown templates
-        In databestand referentiepopulatie eenmalig log-transormatie tergugdraaien
-        Log-transformatie verplaatsen naar predict_colab.R
 Simulatie Colab-score in medewerkers                                                    Tom                           Maart 2026
 Simulatie eGFR in eerstelijns populatie                                                 Tom                           Maart 2026
 Simulatie eGFR in tweedelijns populatie                                                 Tom                           Maart 2026
