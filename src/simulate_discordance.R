@@ -29,7 +29,6 @@ simulate_bias_induced_discordance <- function(data, identifier, variables, bias_
   reference_predictions <- get_reference_predictions(data, identifier, predict_continuous, predict_ordinal, predict_categorical, dots_arguments)
   constant_data <- bias$create_constant_data(data, variables)
   for (row in 1:nrow(bias_factors)){
-
     simulated_data <- bias$simulate_bias(data, identifier, variables, bias_factors[row,], bias_intercepts[row,])
     combined_data <- left_join(constant_data, simulated_data, by = c(identifier))
     combined_data_with_predictions <- get_predictions(combined_data, identifier, predict_continuous, predict_ordinal, predict_categorical, dots_arguments)

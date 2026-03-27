@@ -18,9 +18,12 @@ source('src/save_output.R', local = save <- new.env())
 ## Prepare bias data.
 bias_tables <- bias$get_bias_table(
   parameters$bias_data,
-  parameters$bias_data_ref_ptp,
+  parameters$bias_data_lab_col,
+  parameters$bias_data_cluster_col,
+  parameters$bias_data_measurement_col,
   parameters$bias_data_names,
-  parameters$model_variables[!parameters$model_variables %in% parameters$uncertain_variables]
+  parameters$model_variables[!parameters$model_variables %in% parameters$uncertain_variables],
+  parameters$bias_data_reference_lab
 )
 
 bias_slopes <- bias_tables$slopes

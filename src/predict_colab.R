@@ -2,7 +2,6 @@
 # Ordinal (0 to 5) or binary (using a score of 5 as positive).
 
 get_continuous_prediction_colab <- function(data, dots_arguments){
-  
   RBC <- dots_arguments[["model_variables"]]["Erytrocyten_BV"]
   WBC <- dots_arguments[["model_variables"]]["Leukocyten_BV"]
   EOS <- dots_arguments[["model_variables"]]["EosAbs_BV"]
@@ -14,7 +13,7 @@ get_continuous_prediction_colab <- function(data, dots_arguments){
   ALB <- dots_arguments[["model_variables"]]["Albumine_BV"]
   CRP <- dots_arguments[["model_variables"]]["CRP_BV"]
   age <- dots_arguments[["model_variables"]]["age"]
-  
+
   formula <- expression(
     -6.885000+
     data[[RBC]]*0.937900+
@@ -34,7 +33,6 @@ get_continuous_prediction_colab <- function(data, dots_arguments){
 
 
 get_ordinal_prediction_colab <- function(data, dots_arguments){
-
   cut_offs <- c(-5.83, -4.03, -3.29, -2.34, -1.64)
   
   cut(

@@ -35,8 +35,10 @@ parameters$laboratory <- "lab"
 ## Set bias data parameters.
 ```{r}
 parameters$bias_data <- read.csv('data/paba_data.csv')
-parameters$ref_ptp <- NA
+parameters$bias_data_lab_col <- "ptp"
+parameters$bias_data_measurement_col <- "Bepaling"
 parameters$bias_data_names <- c("creatinine" = "Kreatinine")
+parameters$bias_data_reference_lab <- 11
 ```
 
 ## Set bootstrap parameters.

@@ -33,7 +33,9 @@ parameters$laboratory <- "lab"
 ## Set bias data parameters.
 ```{r}
 parameters$bias_data <- read.csv('data/paba_data.csv')
-parameters$bias_data_ref_ptp <- 11 
+parameters$bias_data_lab_col <- "ptp"
+parameters$bias_data_cluster_col <- "ctr"
+parameters$bias_data_measurement_col <- "Bepaling"
 parameters$bias_data_names <- c(
   "Erytrocyten_BV" =  "Erytrocyten",
   "Leukocyten_BV" = "Leukocyten",
@@ -44,6 +46,7 @@ parameters$bias_data_names <- c(
   "GGT_BV" = "Gamma-GT",
   "CRP_BV" = "CRP"
 )
+parameters$bias_data_reference_lab <- 11
 ```
 
 ## Set bootstrap parameters.
