@@ -23,8 +23,8 @@ bias_tables <- bias$get_bias_table(
   parameters$model_variables[!parameters$model_variables %in% parameters$uncertain_variables]
 )
 
+bias_slopes <- bias_tables$slopes
 bias_intercepts <- bias_tables$intercepts
-bias_factors <- bias_tables$slopes
 ```
 
 ## Simulate predictions and calculate % discordance.
@@ -35,7 +35,7 @@ discordance_status <-
     parameters$data,
     parameters$identifier,
     parameters$uncertain_variables,
-    bias_factors,
+    bias_slopes,
     bias_intercepts,
     parameters$laboratory,
     parameters$continuous_prediction_function,
@@ -45,7 +45,6 @@ discordance_status <-
     model = parameters$model,
     model_variables = parameters$model_variables
   )
-
 
 save$save_summary(
   discordance_status, 
