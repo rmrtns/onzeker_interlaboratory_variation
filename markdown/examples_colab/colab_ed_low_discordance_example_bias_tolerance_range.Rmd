@@ -18,6 +18,7 @@ source('src/predict_colab.R', local = colab <- new.env())
 
 ```{r, include=FALSE, warning=FALSE, message=FALSE}
 library(tidyr)
+library(dplyr)
 ```
 
 ## Set simulation parameters.
