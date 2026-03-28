@@ -36,9 +36,10 @@ get_ordinal_prediction_colab <- function(data, dots_arguments){
   cut_offs <- c(-5.83, -4.03, -3.29, -2.34, -1.64)
   
   cut(
-    as.numeric(data[["continuous_prediction"]]),
-    c(-Inf, cut_offs, Inf),
+    as.numeric(as.character(data[["continuous_prediction"]])),
+    breaks = c(-Inf, cut_offs, Inf),
     labels = seq (0, length(cut_offs)),
+    include.lowest = TRUE,
     ordered_result = TRUE
   )
 

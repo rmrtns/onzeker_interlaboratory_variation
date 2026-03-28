@@ -1,13 +1,3 @@
-# Wijzigingen:
-## Toevoegen simulate_bias_induced_discordance
-## Recode_zero verplaatsen: 
-### In geval van bias leidt de situatie van 0 waarnemingen voor een specifieke categorie potentieel tot NA en mogelijk een foutieve berekening van het percentage discordante waarnemingen.
-### Bij de simulatie van variatie gebeurt dit niet, omdat door het samplen volgens een normale verdeling, de oorspronkelijke waarneming altijd voorkomt.
-## Categorical_prediction vervangen door dichotomous_prediction.
-## summarise_discordance_measures toevoegen aan markdown.
-## get_variable_names_from_summary_of_discordance_measures_as_vector toevoegen aan markdown.
-## Hoe macro-rmse berekenen, bij zowel continue als ordinale variabelen?
-
 library(tidyr)
 library(boot)
 library(stringr)
@@ -25,7 +15,7 @@ simulate_bias_induced_discordance <- function(data, identifier, variables, bias_
   predict_ordinal <- create_pointer_to_prediction_function(ordinal_prediction_function)
   predict_categorical <- create_pointer_to_prediction_function(categorical_prediction_function)
   dots_arguments <- list(...)
-  list_of_simulated_discordances <- list()
+  list_of_simulated_predictions_and_discordances <- list()
   reference_predictions <- get_reference_predictions(data, identifier, predict_continuous, predict_ordinal, predict_categorical, dots_arguments)
   constant_data <- bias$create_constant_data(data, variables)
   for (row in 1:nrow(bias_factors)){
@@ -36,11 +26,11 @@ simulate_bias_induced_discordance <- function(data, identifier, variables, bias_
     simulated_predictions <- combined_data_with_predictions %>% select(all_of(identifier), continuous_prediction, ordinal_prediction, categorical_prediction)
     simulated_and_reference_predictions <- left_join(simulated_predictions, reference_predictions, by = identifier)
     simulated_discordances_per_record <- get_discordance_measures(simulated_and_reference_predictions, identifier)
-    list_of_simulated_discordances[[bias_factors[[laboratory]][row]]] <- cbind(laboratory = bias_factors[[laboratory]][row], simulated_discordances_per_record)
-
+    simulated_predictions_and_discordances_per_record <- left_join(simulated_and_reference_predictions, simulated_discordances_per_record, by = c(identifier))
+    list_of_simulated_predictions_and_discordances[[bias_factors[[laboratory]][row]]] <- cbind(laboratory = bias_factors[[laboratory]][row], simulated_predictions_and_discordances_per_record)
   }
-  simulated_discordances <- bind_rows(list_of_simulated_discordances)
-  return(simulated_discordances)
+  simulated_predictions_and_discordances <- bind_rows(list_of_simulated_predictions_and_discordances)
+  return(simulated_predictions_and_discordances)
 }
 
 
@@ -90,36 +80,25 @@ get_predictions <- function(data, identifier, predict_continuous, predict_ordina
 
 
 get_discordance_measures <- function(data, identifier){
-  if (any(is.na(data[["continuous_prediction"]])) & any(is.na(data[["ordinal_prediction"]])) & any(is.na(data[["categorical_prediction"]]))){
-    stop("No continuous, ordinal and/or categorical predictions could be calculated", call. = FALSE)
-  } else if (!any(is.na(data[["continuous_prediction"]])) & any(is.na(data[["ordinal_prediction"]])) & any(is.na(data[["categorical_prediction"]]))){
-    discordance_continuous_prediction <- get_discordance_continuous_prediction(data)
-  } else if (any(is.na(data[["continuous_prediction"]])) & !any(is.na(data[["ordinal_prediction"]])) & any(is.na(data[["categorical_prediction"]]))){
-    discordance_ordinal_prediction <- get_discordance_ordinal_prediction(data)
-  } else if (any(is.na(data[["continuous_prediction"]])) & any(is.na(data[["ordinal_prediction"]])) & !any(is.na(data[["categorical_prediction"]]))){
-    discordance_dichotomous_prediction <- get_discordance_dichotomous_prediction(data)
-  } else if (!any(is.na(data[["continuous_prediction"]])) & !any(is.na(data[["ordinal_prediction"]])) & any(is.na(data[["categorical_prediction"]]))){
-    discordance_continuous_prediction <- get_discordance_continuous_prediction(data)
-    discordance_ordinal_prediction <- get_discordance_ordinal_prediction(data)
-    list(discordance_continuous_prediction, discordance_ordinal_prediction) %>%
-      reduce(left_join, by = c(identifier, "continuous_prediction", "ordinal_prediction", "continuous_reference", "ordinal_reference"))
-  } else if (!any(is.na(data[["continuous_prediction"]])) & any(is.na(data[["ordinal_prediction"]])) & !any(is.na(data[["categorical_prediction"]]))){
-    discordance_continuous_prediction <- get_discordance_continuous_prediction(data)
-    discordance_dichotomous_prediction <- get_discordance_dichotomous_prediction(data)
-    list(discordance_continuous_prediction, discordance_dichotomous_prediction) %>%
-      reduce(left_join, by = c(identifier, "continuous_prediction", "categorical_prediction", "continuous_reference", "categorical_reference"))
-  } else if (any(is.na(data[["continuous_prediction"]])) & !any(is.na(data[["ordinal_prediction"]])) & !any(is.na(data[["categorical_prediction"]]))){
-    discordance_ordinal_prediction <- get_discordance_ordinal_prediction(data)
-    discordance_dichotomous_prediction <- get_discordance_dichotomous_prediction(data)
-    list(discordance_ordinal_prediction, discordance_dichotomous_prediction) %>%
-      reduce(left_join, by = c(identifier, "ordinal_prediction", "categorical_prediction", "ordinal_reference", "categorical_reference"))
-  } else {
-    discordance_continuous_prediction <- get_discordance_continuous_prediction(data)
-    discordance_ordinal_prediction <- get_discordance_ordinal_prediction(data)
-    discordance_dichotomous_prediction <- get_discordance_dichotomous_prediction(data)
-    list(discordance_continuous_prediction, discordance_ordinal_prediction, discordance_dichotomous_prediction) %>%
-      reduce(left_join, by = c(identifier, "continuous_prediction", "ordinal_prediction", "categorical_prediction", "continuous_reference", "ordinal_reference", "categorical_reference"))
+  results <- list()
+  
+  if (all(!is.na(data$continuous_prediction))) {
+    results[["continuous"]] <- get_discordance_continuous_prediction(data)
   }
+  
+  if (all(!is.na(data$ordinal_prediction))) {
+    results[["ordinal"]] <- get_discordance_ordinal_prediction(data)
+  }
+  
+  if (all(!is.na(data$categorical_prediction))) {
+    results[["categorical"]] <- get_discordance_dichotomous_prediction(data)
+  }
+  
+  if (length(results) == 0) {
+    stop("No discordance measures could be calculated", call. = FALSE)
+  }
+  
+  reduce(results, left_join, by = identifier)
 }
 
 
@@ -129,7 +108,7 @@ get_discordance_continuous_prediction <- function(data){
     continuous_percentage_difference = continuous_difference / continuous_reference * 100,
     continuous_absolute_error = abs(continuous_reference - continuous_prediction),
     continuous_squared_error = (continuous_reference - continuous_prediction)**2
-  )
+  ) %>% select(-c(continuous_prediction, ordinal_prediction, categorical_prediction, continuous_reference, ordinal_reference, categorical_reference))
 }
 
 
@@ -143,7 +122,7 @@ get_discordance_ordinal_prediction <- function(data){
       ordinal_prediction == ordinal_reference ~ FALSE,
       TRUE ~ NA
     )
-  )
+  ) %>% select(-c(continuous_prediction, ordinal_prediction, categorical_prediction, continuous_reference, ordinal_reference, categorical_reference))
 }
 
 
@@ -154,7 +133,7 @@ get_discordance_dichotomous_prediction <- function(data){
       categorical_prediction == categorical_reference ~ FALSE,
       TRUE ~ NA
     )
-  )
+  ) %>% select(-c(continuous_prediction, ordinal_prediction, categorical_prediction, continuous_reference, ordinal_reference, categorical_reference))
 }
 
 
@@ -172,7 +151,7 @@ plot_distribution_per_laboratory <- function(data, variable){
 
 
 plot_distribution_histogram <- function(data, variable, reference){
-  ggplot(data = data, aes(x = !!sym(variable), y = after_stat(density))) +
+  ggplot(data = data, aes(x = .data[[variable]], y = after_stat(density))) +
     geom_histogram(bins = ceiling(length(data[[variable]])/25), color = "black", fill = "white") +
     geom_vline(xintercept = reference, color = "black", linetype = "dashed") +
     labs(title = str_wrap(paste0("Histogram ", variable), width = 8),
@@ -183,7 +162,7 @@ plot_distribution_histogram <- function(data, variable, reference){
 
 
 plot_distribution_qqplot <- function(data, variable){
-  ggplot(data = data, aes(sample = !!sym(variable))) +
+  ggplot(data = data, aes(sample = .data[[variable]])) +
     geom_qq() +
     geom_qq_line() +
     labs(title = str_wrap(paste0("QQ plot ", variable), width = 8),
@@ -201,32 +180,24 @@ get_summary_of_discordance_measures_as_vector <- function(data, indices){
 
 
 summarise_discordance_measures <- function(data){
-  if (any(is.na(data[["continuous_prediction"]])) & any(is.na(data[["ordinal_prediction"]])) & any(is.na(data[["categorical_prediction"]]))){
-    stop("No continuous, ordinal and/or categorical predictions could be calculated", call. = FALSE)
-  } else if (!any(is.na(data[["continuous_prediction"]])) & any(is.na(data[["ordinal_prediction"]])) & any(is.na(data[["categorical_prediction"]]))){
-    discordance_continuous_prediction <- summarise_continuous_discordance_measures(data)
-  } else if (any(is.na(data[["continuous_prediction"]])) & !any(is.na(data[["ordinal_prediction"]])) & any(is.na(data[["categorical_prediction"]]))){
-    discordance_ordinal_prediction <- summarise_ordinal_discordance_measures(data)
-  } else if (any(is.na(data[["continuous_prediction"]])) & any(is.na(data[["ordinal_prediction"]])) & !any(is.na(data[["categorical_prediction"]]))){
-    discordance_dichotomous_prediction <- summarise_dichotomous_discordance_measures(data)
-  } else if (!any(is.na(data[["continuous_prediction"]])) & !any(is.na(data[["ordinal_prediction"]])) & any(is.na(data[["categorical_prediction"]]))){
-    discordance_continuous_prediction <- summarise_continuous_discordance_measures(data)
-    discordance_ordinal_prediction <- summarise_ordinal_discordance_measures(data)
-    return(bind_cols(discordance_continuous_prediction, discordance_ordinal_prediction))
-  } else if (!any(is.na(data[["continuous_prediction"]])) & any(is.na(data[["ordinal_prediction"]])) & !any(is.na(data[["categorical_prediction"]]))){
-    discordance_continuous_prediction <- summarise_continuous_discordance_measures(data)
-    discordance_dichotomous_prediction <- summarise_dichotomous_discordance_measures(data)
-    return(bind_cols(discordance_continuous_prediction, discordance_dichotomous_prediction))
-  } else if (any(is.na(data[["continuous_prediction"]])) & !any(is.na(data[["ordinal_prediction"]])) & !any(is.na(data[["categorical_prediction"]]))){
-    discordance_ordinal_prediction <- summarise_ordinal_discordance_measures(data)
-    discordance_dichotomous_prediction <- summarise_dichotomous_discordance_measures(data)
-    return(bind_cols(discordance_ordinal_prediction, discordance_dichotomous_prediction))
-  } else {
-    discordance_continuous_prediction <- summarise_continuous_discordance_measures(data)
-    discordance_ordinal_prediction <- summarise_ordinal_discordance_measures(data)
-    discordance_dichotomous_prediction <- summarise_dichotomous_discordance_measures(data)
-    return(bind_cols(discordance_continuous_prediction, discordance_ordinal_prediction, discordance_dichotomous_prediction))
+  results <- list()
+
+  if (all(!is.na(data$continuous_prediction))) {
+    results[["continuous"]] <- summarise_continuous_discordance_measures(data)
   }
+
+  if (all(!is.na(data$ordinal_prediction))) {
+    results[["ordinal"]] <- summarise_ordinal_discordance_measures(data)
+  }
+
+  if (all(!is.na(data$categorical_prediction))) {
+    results[["categorical"]] <- summarise_dichotomous_discordance_measures(data)
+  }
+
+  if (length(results) == 0) {
+    stop("No continuous, ordinal and/or categorical predictions could be summarised.", call. = FALSE)
+  }
+  test <- bind_cols(results)
 }
 
 
@@ -269,9 +240,9 @@ summarise_dichotomous_discordance_measures <- function(data){
 
 get_macro_rmse <- function(data, variable, group){
   data %>%
-    group_by(!!sym(group)) %>%
+    group_by(.data[[group]]) %>%
     summarise(
-      rmse = sqrt(mean(!!sym(variable))),
+      rmse = sqrt(mean(.data[[variable]])),
       .groups = "drop"
     ) %>%
     summarise(
@@ -282,7 +253,7 @@ get_macro_rmse <- function(data, variable, group){
 
 get_percentage_per_prediction_class <- function(data, prediction){
   data %>%
-    group_by(!!sym(prediction)) %>%
+    group_by(.data[[prediction]]) %>%
     summarise(percentage_per_prediction_class = n() / nrow(data) * 100) %>%
     pivot_wider(
       names_from = prediction,

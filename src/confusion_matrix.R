@@ -84,10 +84,10 @@ calculate_confusion_matrix_reference_results <- function(data, outcome){
   data %>%
     mutate(
       confusion_matrix = case_when(
-        categorical_reference == 1 & categorical_reference == !!sym(outcome) ~ "true_positive",
-        categorical_reference == 1 & categorical_reference != !!sym(outcome) ~ "false_positive",
-        categorical_reference == 0 & categorical_reference == !!sym(outcome) ~ "true_negative",
-        categorical_reference == 0 & categorical_reference != !!sym(outcome) ~ "false_negative"
+        categorical_reference == 1 & .data[[outcome]] == 1 ~ "true_positive",
+        categorical_reference == 1 & .data[[outcome]] == 0 ~ "false_positive",
+        categorical_reference == 0 & .data[[outcome]] == 0 ~ "true_negative",
+        categorical_reference == 0 & .data[[outcome]] == 1 ~ "false_negative"
       )
     )
 }
@@ -95,7 +95,7 @@ calculate_confusion_matrix_reference_results <- function(data, outcome){
 
 calculate_percentage_discordant_per_simulation <- function(data, category){
   data %>% 
-    group_by(!!sym(category)) %>%
+    group_by(.data[[outcome]]) %>%
     summarise(percentage_discordant = sum(dichotomous_discordant) / nrow(data) * 100) %>%
     ungroup()
 }

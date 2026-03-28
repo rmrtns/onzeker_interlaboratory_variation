@@ -39,7 +39,7 @@ plot_boot_out <- function(boot_out, variables){
 
 
 plot_boot_out_histogram <- function(variables, variable_index, data, x, reference){
-  ggplot(data = data, aes(x = !!sym(x), y = after_stat(density))) +
+  ggplot(data = data, aes(x = .data[[x]], y = after_stat(density))) +
     geom_histogram(bins = ceiling(length(data[[x]])/25), color = "black", fill = "white") +
     geom_vline(xintercept = reference, color = "black", linetype = "dashed") +
     labs(title = paste0("Histogram of t* for \n ", variables[[variable_index]]),
@@ -50,7 +50,7 @@ plot_boot_out_histogram <- function(variables, variable_index, data, x, referenc
 
 
 plot_boot_out_qqplot <- function(variables, variable_index, data, x){
-  ggplot(data = data, aes(sample = !!sym(x))) +
+  ggplot(data = data, aes(sample = .data[[x]])) +
     geom_qq() +
     geom_qq_line() +
     labs(title = paste0("QQ plot of t* for \n ", variables[[variable_index]]),
