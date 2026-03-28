@@ -1,4 +1,3 @@
-
 library(boot)
 # const function copied from source code boot
 library(dplyr)
@@ -8,9 +7,9 @@ library(ggpubr)
 # https://stackoverflow.com/questions/65524427/using-bootboot-function-with-grouped-variables-in-r for grouped bootstrapping
 
 get_bootstrapped_ci_all_laboratories <- function(boot_out_list, variables, confidence_level, methods){
-  laboratory <- names(boot_out_list)
+  laboratories <- names(boot_out_list)
   list_of_bootstrapped_cis <- list()
-  for (lab in laboratory){
+  for (lab in laboratories){
     bootstrapped_ci_per_laboratory <- get_bootstrapped_ci_per_laboratory(boot_out_list[[lab]], variables, confidence_level, methods)
     list_of_bootstrapped_cis[[lab]] <- cbind(laboratory = lab, bootstrapped_ci_per_laboratory)
   }
@@ -24,40 +23,6 @@ get_bootstrapped_ci_per_laboratory <- function(boot_out, variables, confidence_l
   cis_per_variable <- get_bootstrapped_cis_per_variable(boot_out, variables, confidence_level, methods, statistics)
   # plot_boot_out(boot_out, variables) # comment this in for bootstrap histograms
   return(left_join(statistics, cis_per_variable, by = "variable"))
-}
-
-
-plot_boot_out <- function(boot_out, variables){
-  for (variable_index in 1:length(variables)){
-    t_zero <- boot_out[["t0"]][variable_index]
-    t_star <- data.frame(t = boot_out[["t"]][, variable_index])
-    histogram <- plot_boot_out_histogram(variables, variable_index, t_star, "t", t_zero)
-    qqplot <- plot_boot_out_qqplot(variables, variable_index, t_star, "t")
-    plot(ggarrange(histogram, qqplot))
-  }
-}
-
-
-plot_boot_out_histogram <- function(variables, variable_index, data, x, reference){
-  ggplot(data = data, aes(x = .data[[x]], y = after_stat(density))) +
-    geom_histogram(bins = ceiling(length(data[[x]])/25), color = "black", fill = "white") +
-    geom_vline(xintercept = reference, color = "black", linetype = "dashed") +
-    labs(title = paste0("Histogram of t* for \n ", variables[[variable_index]]),
-         x = "t*") +
-    theme_classic() +
-    theme(plot.title = element_text(hjust = 0.5))
-}
-
-
-plot_boot_out_qqplot <- function(variables, variable_index, data, x){
-  ggplot(data = data, aes(sample = .data[[x]])) +
-    geom_qq() +
-    geom_qq_line() +
-    labs(title = paste0("QQ plot of t* for \n ", variables[[variable_index]]),
-         x = "Theoretical",
-         y = "t*") +
-    theme_classic() +
-    theme(plot.title = element_text(hjust = 0.5))
 }
 
 
@@ -144,4 +109,38 @@ get_dataframe_without_ci <- function(dataframe_of_ci){
       names_from = variable,
       values_from = original
     )
+}
+
+
+plot_boot_out <- function(boot_out, variables){
+  for (variable_index in 1:length(variables)){
+    t_zero <- boot_out[["t0"]][variable_index]
+    t_star <- data.frame(t = boot_out[["t"]][, variable_index])
+    histogram <- plot_boot_out_histogram(variables, variable_index, t_star, "t", t_zero)
+    qqplot <- plot_boot_out_qqplot(variables, variable_index, t_star, "t")
+    plot(ggarrange(histogram, qqplot))
+  }
+}
+
+
+plot_boot_out_histogram <- function(variables, variable_index, data, x, reference){
+  ggplot(data = data, aes(x = .data[[x]], y = after_stat(density))) +
+    geom_histogram(bins = ceiling(length(data[[x]])/25), color = "black", fill = "white") +
+    geom_vline(xintercept = reference, color = "black", linetype = "dashed") +
+    labs(title = paste0("Histogram of t* for \n ", variables[[variable_index]]),
+         x = "t*") +
+    theme_classic() +
+    theme(plot.title = element_text(hjust = 0.5))
+}
+
+
+plot_boot_out_qqplot <- function(variables, variable_index, data, x){
+  ggplot(data = data, aes(sample = .data[[x]])) +
+    geom_qq() +
+    geom_qq_line() +
+    labs(title = paste0("QQ plot of t* for \n ", variables[[variable_index]]),
+         x = "Theoretical",
+         y = "t*") +
+    theme_classic() +
+    theme(plot.title = element_text(hjust = 0.5))
 }

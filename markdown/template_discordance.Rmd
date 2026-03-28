@@ -59,11 +59,13 @@ save$save_summary(
 )
 ```
 
-## Calculate discordance measures,
+## Calculate discordance measures.
 
-The distribution of bootstrapped estimates and the bootstrap bias estimate determine the appropriateness of normal and percentile bootstrapped confidence intervals. Bias-corrected and accelerated (BCa) confidence intervals correct for bias and skewness in the distribution of bootstrapped estimates but require more computational time.
+```{r, eval = !is.na(parameters$bootstrap_number_of_samples), results = 'asis', echo=FALSE}
+cat("The distribution of bootstrapped estimates and the bootstrap bias estimate determine the appropriateness of normal and percentile bootstrapped confidence intervals. Bias-corrected and accelerated (BCa) confidence intervals correct for bias and skewness in the distribution of bootstrapped estimates but require more computational time.")
+```
 
-```{r, echo=FALSE}
+```{r, eval = !is.na(parameters$bootstrap_number_of_samples), echo=FALSE}
 bootstrapped_discordant_predictions <- 
   discordance_status %>%
   group_split(laboratory) %>%
@@ -79,9 +81,11 @@ bootstrapped_discordant_predictions <-
   )
 ```
 
--   Table with bootstrapped summary statistics:
+```{r, eval = !is.na(parameters$bootstrap_number_of_samples), results = 'asis', echo=FALSE}
+cat("-  Table with bootstrapped summary statistics:")
+```
 
-```{r, echo=FALSE}
+```{r, eval = !is.na(parameters$bootstrap_number_of_samples), echo=FALSE}
 bootstrapped_ci_discordance_status <- bootstrapped$get_bootstrapped_ci_all_laboratories(
   bootstrapped_discordant_predictions,
   discordance$get_variable_names_from_summary_of_discordance_measures_as_vector(discordance_status), 
@@ -101,9 +105,24 @@ save$save_summary(
 print$print_table_bootstrapped_summary(bootstrapped_ci_discordance_status, 4)
 ```
 
--   Compact table with summary statistics.
+- Compact table with summary statistics.
 
-```{r, echo=FALSE}
+```{r, eval = is.na(parameters$bootstrap_number_of_samples), echo=FALSE}
+summary_discordance_status <- discordance$get_summary_of_discordance_measures_all_laboratories(discordance_status)
+
+save$save_summary(
+  summary_discordance_status, 
+  parameters$path_output, 
+  parameters$model_name, 
+  "discordance",
+  parameters$population,
+  "stats_without_ci"
+)
+
+print$print_table_summary(summary_discordance_status, 4)
+```
+
+```{r, eval = !is.na(parameters$bootstrap_number_of_samples), echo=FALSE}
 summary_discordance_status <- bootstrapped$get_dataframe_without_ci(bootstrapped_ci_discordance_status)
 
 save$save_summary(

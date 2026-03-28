@@ -6,6 +6,18 @@ library(dplyr)
 
 # Functions to create and summarise results of confusion matrices.
 
+get_summary_performance_measures_all_laboratories <- function(data, outcome, outcome_class_TRUE){
+  laboratories <- as.character(unique(data[["laboratory"]]))
+  list_of_summaries <- list()
+  for (lab in laboratories){
+    data_per_lab <- data %>% filter(laboratory == lab)
+    summary_per_laboratory <- get_summmary_performance_measures(data_per_lab, outcome, outcome_class_TRUE)
+    list_of_summaries[[lab]] <- bind_cols(laboratory = lab, summary_per_laboratory)
+  }
+  return(bind_rows(list_of_summaries))
+}
+
+
 get_summmary_performance_measures_as_vector <- function(data, indices, outcome, outcome_class_TRUE){
   data_sample <- data[indices,]
   summary <- list(c(get_summmary_performance_measures(data_sample, outcome, outcome_class_TRUE)))
@@ -37,7 +49,8 @@ calculate_confusion_matrix <- function(data, outcome, outcome_class_TRUE){
   confusion_matrix <- confusionMatrix(
     as.factor(as.numeric(data[["categorical_prediction"]])),
     as.factor(as.numeric(data[[outcome]])),
-    positive = as.character(as.numeric(outcome_class_TRUE)))
+    positive = as.character(outcome_class_TRUE)
+  )
 }
 
 
@@ -61,6 +74,31 @@ tidy_confusion_matrix <- function(confusion_matrix){
 
 
 # Functions to assess 'crossing-over' in confusion matrices based on aggregate results of discordance status.
+
+get_crossover_summary_all_laboratories <- function(data, outcome, outcome_class_TRUE){
+  laboratories <- as.character(unique(data[["laboratory"]]))
+  list_of_summaries <- list()
+  for (lab in laboratories){
+    data_per_lab <- data %>% filter(laboratory == lab)
+    summary_per_laboratory <- calculate_crossover_within_confusion_matrix(data_per_lab, outcome, outcome_class_TRUE)
+    list_of_summaries[[lab]] <- bind_cols(laboratory = lab, summary_per_laboratory)
+  }
+  return(bind_rows(list_of_summaries))
+}
+
+
+get_crossover_summary_as_vector <- function(data, indices, outcome, outcome_class_TRUE) {
+  data_sample <- data[indices,]
+  data_sample_summary_crossover <- calculate_crossover_within_confusion_matrix(data_sample, outcome, outcome_class_TRUE)
+  return(unlist(data_sample_summary_crossover, use.names = FALSE))
+}
+
+
+get_variables_names_from_crossover_summary_as_vector <- function(data, outcome, outcome_class_TRUE){
+  summary <- list(names(calculate_crossover_within_confusion_matrix(data, outcome, outcome_class_TRUE)))
+  return(unlist(summary))
+}
+
 
 calculate_crossover_within_confusion_matrix <- function(data, outcome, outcome_class_TRUE){
   data_with_recoded_categorical_reference <- recode_categorical_reference(data)
@@ -120,20 +158,9 @@ summarise_crossover <- function(data){
       values_from = percentage_discordant,
       names_prefix = "percentage_discordant_"
     ) %>%
-    mutate(fn_minus_tp_percentage_point_diff = percentage_discordant_false_negative - percentage_discordant_true_positive,
-           fp_minus_tn_percentage_point_diff = percentage_discordant_false_positive - percentage_discordant_true_negative,
-           percentage_discordant_sum = percentage_discordant_false_negative + percentage_discordant_true_positive + percentage_discordant_false_positive + percentage_discordant_true_negative)
-}
-
-
-get_crossover_summary_as_vector <- function(data, indices, outcome, outcome_class_TRUE) {
-  data_sample <- data[indices,]
-  data_sample_summary_crossover <- calculate_crossover_within_confusion_matrix(data_sample, outcome, outcome_class_TRUE)
-  return(unlist(data_sample_summary_crossover, use.names = FALSE))
-}
-
-
-get_variables_names_from_crossover_summary_as_vector <- function(data, outcome, outcome_class_TRUE){
-  summary <- list(names(calculate_crossover_within_confusion_matrix(data, outcome, outcome_class_TRUE)))
-  return(unlist(summary))
+    mutate(
+      fn_minus_tp_percentage_point_diff = percentage_discordant_false_negative - percentage_discordant_true_positive,
+      fp_minus_tn_percentage_point_diff = percentage_discordant_false_positive - percentage_discordant_true_negative,
+      percentage_discordant_sum = percentage_discordant_false_negative + percentage_discordant_true_positive + percentage_discordant_false_positive + percentage_discordant_true_negative
+    )
 }

@@ -1,5 +1,5 @@
 ---
-title: 'eGFR: Discordant predictions related to bias in internal medicine outpatient population'
+title: 'Friedewald: Discordant predictions related to bias in cardiology outpatient population'
 output:
   html_document: default
   pdf_document: default
@@ -14,8 +14,8 @@ set.seed(seed = 200)
 
 ## Import functions and variables.
 ```{r, include=FALSE, warning=FALSE, message=FALSE}
-source('src/variables_egfr.R', local = variables <- new.env())
-source('src/predict_egfr.R', local = egfr <- new.env())
+source('src/variables_friedewald.R', local = variables <- new.env())
+source('src/predict_friedewald.R', local = friedewald <- new.env())
 ```
 
 ## Set simulation parameters.
@@ -23,12 +23,12 @@ source('src/predict_egfr.R', local = egfr <- new.env())
 parameters <- new.env()
 parameters$data <- read.csv('data/test_data.csv')
 parameters$identifier <- "id"
-parameters$continuous_prediction_function <- egfr$get_continuous_prediction_egfr
-parameters$ordinal_prediction_function <- egfr$get_ordinal_prediction_egfr
-parameters$categorical_prediction_function <- egfr$get_categorical_prediction_egfr
+parameters$continuous_prediction_function <- friedewald$get_continuous_prediction_ldl
+parameters$ordinal_prediction_function <- friedewald$get_ordinal_prediction_ldl
+parameters$categorical_prediction_function <- friedewald$get_categorical_prediction_ldl
 parameters$model <- NA
-parameters$model_variables <- variables$selected_variables_egfr
-parameters$uncertain_variables <- variables$selected_variables_egfr[variables$uncertain_variables_indicator_egfr]
+parameters$model_variables <- variables$selected_variables_friedewald
+parameters$uncertain_variables <- variables$selected_variables_friedewald[variables$uncertain_variables_indicator_friedewald]
 parameters$laboratory <- "lab"
 ```
 
@@ -38,15 +38,19 @@ parameters$bias_data <- read.csv('data/paba_data.csv')
 parameters$bias_data_lab_col <- "ptp"
 parameters$bias_data_cluster_col <- "ctr"
 parameters$bias_data_measurement_col <- "Bepaling"
-parameters$bias_data_names <- c("creatinine" = "Kreatinine")
+parameters$bias_data_names <- c(
+  "cholesterol" = "Cholesterol",
+  "hdl" = "HDL-Cholesterol",
+  "triglycerides" = "Triglyceriden"
+)
 parameters$bias_data_reference_lab <- 11
 ```
 
-## Set bootstrap parameters.
+## Set bootstrap parameters for results of individual laboratories.
 ```{r}
-parameters$bootstrap_number_of_samples <- 1000
-parameters$bootstrap_confidence_level <- 0.95
-parameters$bootstrap_methods <- c("perc") # c("norm", "bca")
+parameters$bootstrap_number_of_samples <- NA
+parameters$bootstrap_confidence_level <- NA
+parameters$bootstrap_methods <- NA # choose from c("perc¨, "norm", "bca")
 ```
 
 ## Set plot parameters.
@@ -90,9 +94,9 @@ parameters$histogram_categorical_percentage_discordant_y_range <- c(0, 10)
 
 ## Set parameters to save results.
 ```{r}
-parameters$model_name <- 'egfr'
-parameters$population <- 'internal'
-parameters$path_output <- 'out/egfr/simulations_discordance/'
+parameters$model_name <- 'friedewald'
+parameters$population <- 'cardio'
+parameters$path_output <- 'out/friedewald/simulations_discordance/'
 ```
 
 ```{r, child='markdown/template_discordance.Rmd'}

@@ -31,7 +31,11 @@ discordance_status <- left_join(
 
 ## Calculate confusion matrix derived measures.
 
-```{r, echo=FALSE, warning=FALSE, message=FALSE}
+```{r, eval = !is.na(parameters$bootstrap_number_of_samples), results = 'asis', echo=FALSE}
+cat("The distribution of bootstrapped estimates and the bootstrap bias estimate determine the appropriateness of normal and percentile bootstrapped confidence intervals. Bias-corrected and accelerated (BCa) confidence intervals correct for bias and skewness in the distribution of bootstrapped estimates but require more computational time.")
+```
+
+```{r, eval = !is.na(parameters$bootstrap_number_of_samples), echo=FALSE, message=FALSE}
 bootstrapped_performance_measures <- 
   discordance_status %>%
   group_split(laboratory) %>%
@@ -49,8 +53,11 @@ bootstrapped_performance_measures <-
   )
 ```
 
-- Table with  bootstrapped summary statistics.
-```{r, echo=FALSE}
+```{r, eval = !is.na(parameters$bootstrap_number_of_samples), results = 'asis', echo=FALSE}
+cat("-  Table with bootstrapped summary statistics:")
+```
+
+```{r, eval = !is.na(parameters$bootstrap_number_of_samples), echo=FALSE, message=FALSE}
 bootstrapped_ci_performance_measures <- bootstrapped$get_bootstrapped_ci_all_laboratories(
   bootstrapped_performance_measures,
   confusion$get_variable_names_from_summmary_performance_measures_as_vector(
@@ -75,7 +82,27 @@ print$print_table_bootstrapped_summary(bootstrapped_ci_performance_measures, 4)
 ```
 
 - Compact table with summary statistics.
-```{r, echo=FALSE}
+
+```{r, eval = is.na(parameters$bootstrap_number_of_samples), echo=FALSE, message=FALSE}
+summary_performance_measures <- confusion$get_summary_performance_measures_all_laboratories(
+  discordance_status, 
+  parameters$model_outcome, 
+  parameters$model_outcome_class_TRUE
+)
+
+save$save_summary(
+  summary_performance_measures, 
+  parameters$path_output, 
+  parameters$model_name, 
+  "confusion_matrix",
+  parameters$population,
+  "stats_without_ci"
+)
+
+print$print_table_summary(summary_performance_measures, 4)
+```
+
+```{r, eval = !is.na(parameters$bootstrap_number_of_samples), echo=FALSE}
 summary_performance_measures <- bootstrapped$get_dataframe_without_ci(bootstrapped_ci_performance_measures)
 
 save$save_summary(

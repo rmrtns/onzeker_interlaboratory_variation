@@ -173,6 +173,18 @@ plot_distribution_qqplot <- function(data, variable){
 }
 
 
+get_summary_of_discordance_measures_all_laboratories <- function(data){
+  laboratories <- as.character(unique(data[["laboratory"]]))
+  list_of_summaries <- list()
+  for (lab in laboratories){
+    data_per_lab <- data %>% filter(laboratory == lab)
+    summary_per_laboratory <- summarise_discordance_measures(data_per_lab)
+    list_of_summaries[[lab]] <- bind_cols(laboratory = lab, summary_per_laboratory)
+  }
+  return(bind_rows(list_of_summaries))
+}
+
+
 get_summary_of_discordance_measures_as_vector <- function(data, indices){
   data_sample <- data[indices,]
   return(unlist(summarise_discordance_measures(data_sample), use.names = FALSE))
@@ -197,7 +209,8 @@ summarise_discordance_measures <- function(data){
   if (length(results) == 0) {
     stop("No continuous, ordinal and/or categorical predictions could be summarised.", call. = FALSE)
   }
-  test <- bind_cols(results)
+  
+  bind_cols(results)
 }
 
 
@@ -220,7 +233,7 @@ summarise_ordinal_discordance_measures <- function(data){
     ordinal_mae = mean(ordinal_absolute_error),
     ordinal_micro_rmse = sqrt(mean(ordinal_squared_error)),
     ordinal_macro_rmse = get_macro_rmse(data, "ordinal_squared_error", "ordinal_reference"),
-    ordinal_percentage_discordant = get_percentage_discordant(data, "ordinal_discordant", ordinal)
+    ordinal_percentage_discordant = mean(ordinal_discordant) * 100
   )
   
   return(bind_cols(percentage_per_prediction_class, discordance_measures))
@@ -231,9 +244,9 @@ summarise_categorical_discordance_measures <- function(data){
   percentage_per_prediction_class <- get_percentage_per_prediction_class(data, "categorical_prediction")
   
   discordance_measures <- data %>% summarise(
-    categorical_percentage_discordant = get_percentage_discordant(data, "categorical_discordant", categorical)
+    categorical_percentage_discordant = mean(categorical_discordant) * 100
   )
-  
+
   return(bind_cols(percentage_per_prediction_class, discordance_measures))
 }
 
@@ -247,7 +260,7 @@ get_macro_rmse <- function(data, variable, group){
     ) %>%
     summarise(
       macro_rmse = mean(rmse)
-    )
+    ) %>% unlist()
 }
 
 
@@ -261,13 +274,6 @@ get_percentage_per_prediction_class <- function(data, prediction){
       values_from = "percentage_per_prediction_class"
     ) %>%
     ungroup()
-}
-
-
-get_percentage_discordant <- function(data, variable, prefix){
-  data %>% summarise(
-    "{{prefix}}_percentage_discordant":= mean(.data[[variable]]) * 100
-  )
 }
 
 

@@ -25,7 +25,7 @@ library(gtsummary)
 ## Read data.
 ```{r}
 parameters <- new.env()
-parameters$data <- read.csv('data/test_data.csv')
+parameters$data <- read.csv('data/colab_healthcare.csv')
 parameters$model_variables <- variables$selected_variables_colab
 parameters$laboratory <- "lab"
 ```

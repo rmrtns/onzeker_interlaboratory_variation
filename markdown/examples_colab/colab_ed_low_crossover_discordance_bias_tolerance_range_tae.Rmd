@@ -1,0 +1,59 @@
+---
+title: "CoLab score: TAE-based tolerance ranges for impact of bias related discordant predictions on crossover within confusion matrices based on simulations_discordance_aggregate_results in ED population with low COVID-19 prevalence"
+output: html_document
+date: "Report generated on: `r format(Sys.time(), '%Y-%m-%d')`"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_knit$set(root.dir = rprojroot::find_rstudio_root_file())
+set.seed(seed = 200)
+```
+
+## Load libraries.
+```{r, include=FALSE, warning=FALSE, message=FALSE}
+library(DT)
+library(tidyr)
+library(purrr)
+```
+
+## Set main parameters.
+```{r}
+parameters <- new.env()
+parameters$original_data <- read.csv('data/colab_ed_low_prevalence.csv')
+parameters$discordance_data <- 
+  read.csv('out/colab/simulations_discordance/colab_discordance_ed_low_tol_tae_bias_per_individual.csv')
+parameters$identifier <- "Pat"
+parameters$model_outcome <- "outcome"
+parameters$model_outcome_class_TRUE <-  "1" 
+```
+
+## Set bootstrap parameters for results of individual laboratories.
+```{r}
+parameters$bootstrap_number_of_samples <- NA
+parameters$bootstrap_confidence_level <- NA
+parameters$bootstrap_methods <- NA # choose from c("perc¨, "norm", "bca")
+```
+
+## Set plot parameters.
+```{r}
+parameters$histogram_method <- "laboratory"
+parameters$histogram_method_label <- "Laboratory"
+parameters$histogram_fn_minus_tp_percentage_point_diff_binwidth <-  0.2
+parameters$histogram_fn_minus_tp_percentage_point_diff_x_range <- c(-5, 5)
+parameters$histogram_fn_minus_tp_percentage_point_diff_y_range <- c(0, 50)
+parameters$histogram_fp_minus_tn_percentage_point_diff_binwidth <-  0.2
+parameters$histogram_fp_minus_tn_percentage_point_diff_x_range <- c(-5, 5)
+parameters$histogram_fp_minus_tn_percentage_point_diff_y_range <- c(0, 10)
+```
+
+## Set parameters to save results.
+```{r}
+parameters$model_name <- 'colab'
+parameters$population <- 'ed_low_tol_tae'
+parameters$path_output <- 'out/colab/simulations_crossover/'
+```
+
+```{r, child='markdown/template_crossover.Rmd'}
+
+```

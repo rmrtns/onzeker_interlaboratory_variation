@@ -1,0 +1,71 @@
+---
+title: "CoLab score: Impact of bias on confusion matrices based on simulations_discordance in healthcare-worker population"
+output: html_document
+date: "Report generated on: `r format(Sys.time(), '%Y-%m-%d')`"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_knit$set(root.dir = rprojroot::find_rstudio_root_file())
+set.seed(seed = 200)
+```
+
+## Load libraries.
+```{r, include=FALSE, warning=FALSE, message=FALSE}
+library(DT)
+library(tidyr)
+library(purrr)
+```
+
+## Set main parameters.
+```{r}
+parameters <- new.env()
+parameters$original_data <- read.csv('data/colab_healthcare.csv')
+parameters$discordance_data <-
+  read.csv('out/colab/simulations_discordance/colab_discordance_healthcare_bias_per_individual.csv')
+parameters$identifier <- "Pat"
+parameters$model_outcome <- "outcome"
+parameters$model_outcome_class_TRUE <-  "1"
+```
+
+## Set bootstrap parameters for results of individual laboratories.
+```{r}
+parameters$bootstrap_number_of_samples <- NA
+parameters$bootstrap_confidence_level <- NA
+parameters$bootstrap_methods <- NA # choose from c("perc¨, "norm", "bca")
+```
+
+## Set plot parameters.
+```{r}
+parameters$histogram_method <- "laboratory"
+parameters$histogram_method_label <- "Laboratory"
+parameters$histogram_auroc_binwidth <-  0.02
+parameters$histogram_auroc_x_range <- c(0.5, 1.0)
+parameters$histogram_auroc_y_range <- c(0, 50)
+parameters$histogram_accuracy_binwidth <- 0.02
+parameters$histogram_accuracy_x_range <- c(0.0, 1.0)
+parameters$histogram_accuracy_y_range <- c(0, 50)
+parameters$histogram_sensitivity_binwidth <-  0.02
+parameters$histogram_sensitivity_x_range <- c(0.0, 1.0)
+parameters$histogram_sensitivity_y_range <- c(0, 20)
+parameters$histogram_specificity_binwidth <-  0.02
+parameters$histogram_specificity_x_range <- c(0.0, 1.0)
+parameters$histogram_specificity_y_range <- c(0, 50)
+parameters$histogram_ppv_binwidth <- 0.02
+parameters$histogram_ppv_x_range <- c(0.0, 1.0)
+parameters$histogram_ppv_y_range <- c(0, 20)
+parameters$histogram_npv_binwidth <- 0.02
+parameters$histogram_npv_x_range <- c(0.0, 1.0)
+parameters$histogram_npv_y_range <- c(0, 50)
+```
+
+## Set parameters to save results.
+```{r}
+parameters$model_name <- 'colab'
+parameters$population <- 'healthcare'
+parameters$path_output <- 'out/colab/simulations_confusion_matrix/'
+```
+
+```{r, child='markdown/template_confusion_matrices.Rmd'}
+
+```

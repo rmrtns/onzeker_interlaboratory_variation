@@ -28,11 +28,11 @@ parameters$model_outcome <- "mgfr_dichotomous"
 parameters$model_outcome_class_TRUE <-  "1" 
 ```
 
-## Set bootstrap parameters.
+## Set bootstrap parameters for results of individual laboratories.
 ```{r}
-parameters$bootstrap_number_of_samples <- 1000
-parameters$bootstrap_confidence_level <- 0.95
-parameters$bootstrap_methods <- c("perc")
+parameters$bootstrap_number_of_samples <- NA
+parameters$bootstrap_confidence_level <- NA
+parameters$bootstrap_methods <- NA # choose from c("perc¨, "norm", "bca")
 ```
 
 ## Set plot parameters.

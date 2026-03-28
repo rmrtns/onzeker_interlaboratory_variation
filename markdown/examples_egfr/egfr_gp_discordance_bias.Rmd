@@ -1,5 +1,5 @@
 ---
-title: 'eGFR: Discordant predictions related to bias in test_data'
+title: 'eGFR: Discordant predictions related to bias in gp population'
 output:
   html_document: default
   pdf_document: default
@@ -14,7 +14,7 @@ set.seed(seed = 200)
 
 ## Import functions and variables.
 ```{r, include=FALSE, warning=FALSE, message=FALSE}
-source('src/variables.R', local = variables <- new.env())
+source('src/variables_egfr.R', local = variables <- new.env())
 source('src/predict_egfr.R', local = egfr <- new.env())
 ```
 
@@ -34,7 +34,7 @@ parameters$laboratory <- "lab"
 
 ## Set bias data parameters.
 ```{r}
-parameters$bias_data <- read.csv("data/paba_data.csv")
+parameters$bias_data <- read.csv('data/paba_data.csv')
 parameters$bias_data_lab_col <- "ptp"
 parameters$bias_data_cluster_col <- "ctr"
 parameters$bias_data_measurement_col <- "Bepaling"
@@ -42,11 +42,11 @@ parameters$bias_data_names <- c("creatinine" = "Kreatinine")
 parameters$bias_data_reference_lab <- 11
 ```
 
-## Set bootstrap parameters.
+## Set bootstrap parameters for results of individual laboratories.
 ```{r}
-parameters$bootstrap_number_of_samples <- 1000
-parameters$bootstrap_confidence_level <- 0.95
-parameters$bootstrap_methods <- c("perc") # c("norm", "bca")
+parameters$bootstrap_number_of_samples <- NA
+parameters$bootstrap_confidence_level <- NA
+parameters$bootstrap_methods <- NA # choose from c("perc¨, "norm", "bca")
 ```
 
 ## Set plot parameters.
