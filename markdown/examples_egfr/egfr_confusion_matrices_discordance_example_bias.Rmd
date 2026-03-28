@@ -24,8 +24,8 @@ parameters$original_data <- read.csv('data/test_data.csv')
 parameters$discordance_data <- 
   read.csv('out/egfr/simulations_discordance/egfr_discordance_gp_bias_per_individual.csv')
 parameters$identifier <- "id"
-parameters$model_outcome <- "mgfr_dichotomous"
-parameters$model_outcome_class_TRUE <-  "1"
+parameters$model_outcome <- "mgfr_ordinal"
+parameters$model_outcome_class_TRUE <-  "0"
 ```
 
 ## Set bootstrap parameters.

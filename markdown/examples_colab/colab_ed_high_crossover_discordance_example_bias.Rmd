@@ -26,7 +26,6 @@ parameters$discordance_data <-
 parameters$identifier <- "Pat"
 parameters$model_outcome <- "outcome"
 parameters$model_outcome_class_TRUE <-  "1" 
-parameters$model_prediction_class_TRUE <-  "percentage_TRUE"
 ```
 
 ## Set bootstrap parameters.

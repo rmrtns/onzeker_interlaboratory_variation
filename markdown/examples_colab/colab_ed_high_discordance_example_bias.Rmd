@@ -34,6 +34,7 @@ parameters$laboratory <- "lab"
 ```{r}
 parameters$bias_data <- read.csv('data/paba_data.csv')
 parameters$bias_data_lab_col <- "ptp"
+parameters$bias_data_cluster_col <- "ctr"
 parameters$bias_data_measurement_col <- "Bepaling"
 parameters$bias_data_names <- c(
   "Erytrocyten_BV" =  "Erytrocyten",
@@ -89,9 +90,9 @@ parameters$histogram_ordinal_macro_rmse_y_range <- c(0, 10)
 parameters$histogram_ordinal_percentage_discordant_binwidth <- 1
 parameters$histogram_ordinal_percentage_discordant_x_range <- c(0, 50)
 parameters$histogram_ordinal_percentage_discordant_y_range <- c(0, 10)
-parameters$histogram_dichotomous_percentage_discordant_binwidth <- 0.2
-parameters$histogram_dichotomous_percentage_discordant_x_range <- c(0, 5)
-parameters$histogram_dichotomous_percentage_discordant_y_range <- c(0, 10)
+parameters$histogram_categorical_percentage_discordant_binwidth <- 0.2
+parameters$histogram_categorical_percentage_discordant_x_range <- c(0, 5)
+parameters$histogram_categorical_percentage_discordant_y_range <- c(0, 10)
 ```
 
 ## Set parameters to save results.

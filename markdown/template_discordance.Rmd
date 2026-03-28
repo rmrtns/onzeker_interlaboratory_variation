@@ -469,36 +469,36 @@ print$print_table_distribution(distribution_ordinal_percentage_discordant, 4)
 ```
 
 ```{r, eval = is.function(parameters$categorical_prediction_function), results = 'asis', echo=FALSE}
-cat("* Histogram and distribution of percentage discordant for dichotomous predictions:")
+cat("* Histogram and distribution of percentage discordant for categorical predictions:")
 
-histogram_dichotomous_percentage_discordant <- comparison$get_histogram(
+histogram_categorical_percentage_discordant <- comparison$get_histogram(
   summary_discordance_status, 
-  "dichotomous_percentage_discordant",
+  "categorical_percentage_discordant",
   "Percentage discordant",
   parameters$histogram_method,
   parameters$histogram_method_label,
-  parameters$histogram_dichotomous_percentage_discordant_binwidth,
-  parameters$histogram_dichotomous_percentage_discordant_x_range,
-  parameters$histogram_dichotomous_percentage_discordant_y_range
+  parameters$histogram_categorical_percentage_discordant_binwidth,
+  parameters$histogram_categorical_percentage_discordant_x_range,
+  parameters$histogram_categorical_percentage_discordant_y_range
 )
 
 save$save_histogram(
-  histogram_dichotomous_percentage_discordant, 
+  histogram_categorical_percentage_discordant, 
   parameters$path_output, 
   parameters$model_name,
   "discordance",
   parameters$population
 )
 
-plot(histogram_dichotomous_percentage_discordant)
+plot(histogram_categorical_percentage_discordant)
 ```
 
 ```{r, eval = is.function(parameters$categorical_prediction_function), results = 'asis', echo=FALSE, message=FALSE, warning=FALSE}
-distribution_dichotomous_percentage_discordant <- comparison$get_distribution_table(
+distribution_categorical_percentage_discordant <- comparison$get_distribution_table(
   summary_discordance_status, 
-  "dichotomous_percentage_discordant", 
+  "categorical_percentage_discordant", 
   "laboratory"
 )
 
-print$print_table_distribution(distribution_dichotomous_percentage_discordant, 4)
+print$print_table_distribution(distribution_categorical_percentage_discordant, 4)
 ```

@@ -26,7 +26,6 @@ parameters$discordance_data <-
 parameters$identifier <- "id"
 parameters$model_outcome <- "mgfr_dichotomous"
 parameters$model_outcome_class_TRUE <-  "1" 
-parameters$model_prediction_class_TRUE <-  "percentage_TRUE"
 ```
 
 ## Set bootstrap parameters.

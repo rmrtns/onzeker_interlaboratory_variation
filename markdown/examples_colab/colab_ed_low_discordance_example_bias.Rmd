@@ -51,7 +51,7 @@ parameters$bias_data_reference_lab <- 11
 
 ## Set bootstrap parameters.
 ```{r}
-parameters$bootstrap_number_of_samples <- 1000
+parameters$bootstrap_number_of_samples <- 10
 parameters$bootstrap_confidence_level <- 0.95
 parameters$bootstrap_methods <- c("perc") # c("norm", "bca")
 ```
@@ -90,9 +90,9 @@ parameters$histogram_ordinal_macro_rmse_y_range <- c(0, 10)
 parameters$histogram_ordinal_percentage_discordant_binwidth <- 1
 parameters$histogram_ordinal_percentage_discordant_x_range <- c(0, 50)
 parameters$histogram_ordinal_percentage_discordant_y_range <- c(0, 10)
-parameters$histogram_dichotomous_percentage_discordant_binwidth <- 0.2
-parameters$histogram_dichotomous_percentage_discordant_x_range <- c(0, 5)
-parameters$histogram_dichotomous_percentage_discordant_y_range <- c(0, 10)
+parameters$histogram_categorical_percentage_discordant_binwidth <- 0.2
+parameters$histogram_categorical_percentage_discordant_x_range <- c(0, 5)
+parameters$histogram_categorical_percentage_discordant_y_range <- c(0, 10)
 ```
 
 ## Set parameters to save results.

@@ -62,9 +62,9 @@ tidy_confusion_matrix <- function(confusion_matrix){
 
 # Functions to assess 'crossing-over' in confusion matrices based on aggregate results of discordance status.
 
-calculate_crossover_within_confusion_matrix <- function(data, outcome){
+calculate_crossover_within_confusion_matrix <- function(data, outcome, outcome_class_TRUE){
   data_with_recoded_categorical_reference <- recode_categorical_reference(data)
-  data_with_confusion_matrix <- calculate_confusion_matrix_reference_results(data_with_recoded_categorical_reference, outcome)
+  data_with_confusion_matrix <- calculate_confusion_matrix_reference_results(data_with_recoded_categorical_reference, outcome, outcome_class_TRUE)
   percentage_discordant_per_simulation <- calculate_percentage_discordant_per_simulation(data_with_confusion_matrix, "confusion_matrix")
   percentage_discordant_per_simulation_completed <- add_empty_categories_confusion_matrix(percentage_discordant_per_simulation)
   summary <- summarise_crossover(percentage_discordant_per_simulation_completed)
@@ -80,23 +80,22 @@ recode_categorical_reference <- function(data){
 }
 
 
-calculate_confusion_matrix_reference_results <- function(data, outcome){
+calculate_confusion_matrix_reference_results <- function(data, outcome, outcome_class_TRUE){
   data %>%
     mutate(
       confusion_matrix = case_when(
-        categorical_reference == 1 & .data[[outcome]] == 1 ~ "true_positive",
-        categorical_reference == 1 & .data[[outcome]] == 0 ~ "false_positive",
-        categorical_reference == 0 & .data[[outcome]] == 0 ~ "true_negative",
-        categorical_reference == 0 & .data[[outcome]] == 1 ~ "false_negative"
+        categorical_reference == as.numeric(outcome_class_TRUE) & .data[[outcome]] == as.numeric(outcome_class_TRUE) ~ "true_positive",
+        categorical_reference == as.numeric(outcome_class_TRUE) & .data[[outcome]] != as.numeric(outcome_class_TRUE) ~ "false_positive",
+        categorical_reference != as.numeric(outcome_class_TRUE) & .data[[outcome]] != as.numeric(outcome_class_TRUE) ~ "true_negative",
+        categorical_reference != as.numeric(outcome_class_TRUE) & .data[[outcome]] == as.numeric(outcome_class_TRUE) ~ "false_negative"
       )
     )
 }
 
-
-calculate_percentage_discordant_per_simulation <- function(data, category){
+calculate_percentage_discordant_per_simulation <- function(data, confusion_matrix){
   data %>% 
-    group_by(.data[[outcome]]) %>%
-    summarise(percentage_discordant = sum(dichotomous_discordant) / nrow(data) * 100) %>%
+    group_by(.data[[confusion_matrix]]) %>%
+    summarise(percentage_discordant = sum(categorical_discordant) / nrow(data) * 100) %>%
     ungroup()
 }
 
@@ -127,14 +126,14 @@ summarise_crossover <- function(data){
 }
 
 
-get_crossover_summary_as_vector <- function(data, indices, outcome) {
+get_crossover_summary_as_vector <- function(data, indices, outcome, outcome_class_TRUE) {
   data_sample <- data[indices,]
-  data_sample_summary_crossover <- calculate_crossover_within_confusion_matrix(data_sample, outcome)
+  data_sample_summary_crossover <- calculate_crossover_within_confusion_matrix(data_sample, outcome, outcome_class_TRUE)
   return(unlist(data_sample_summary_crossover, use.names = FALSE))
 }
 
 
-get_variables_names_from_crossover_summary_as_vector <- function(data, outcome){
-  summary <- list(names(calculate_crossover_within_confusion_matrix(data, outcome)))
+get_variables_names_from_crossover_summary_as_vector <- function(data, outcome, outcome_class_TRUE){
+  summary <- list(names(calculate_crossover_within_confusion_matrix(data, outcome, outcome_class_TRUE)))
   return(unlist(summary))
 }

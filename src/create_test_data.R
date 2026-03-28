@@ -25,23 +25,22 @@ test_data <- test_data %>%
   mutate(
     egfr = calculate_egfr(.),
     egfr_ordinal = case_when(
-      egfr < 60 ~ 1,
-      egfr >= 60 & egfr < 90 ~ 2,
-      egfr >= 90 ~ 3
+      egfr < 60 ~ 0,
+      egfr >= 60 & egfr < 90 ~ 1,
+      egfr >= 90 ~ 2
     ),
     egfr_dichotomous = case_when(
-      egfr < 60 ~ 1,
-      TRUE ~ 0
+      egfr < 60 ~ 0,
+      TRUE ~ 1
     ),
     mgfr_ordinal = case_when(
-      egfr_ordinal == 1 ~ sample(c(0, 1), n_subj, replace = TRUE, prob = c(0.20, 0.80)),
-      egfr_ordinal == 2 ~ sample(c(0, 1), n_subj, replace = TRUE, prob = c(0.90, 0.10)),
-      egfr_ordinal == 3 ~ sample(c(0, 1), n_subj, replace = TRUE, prob = c(0.10, 0.90))
+      egfr_ordinal == 0 ~ sample(c(0, 1, 2), n_subj, replace = TRUE, prob = c(0.80, 0.10, 0.10)),
+      egfr_ordinal == 1 ~ sample(c(0, 1, 2), n_subj, replace = TRUE, prob = c(0.10, 0.80, 0.10)),
+      egfr_ordinal == 2 ~ sample(c(0, 1, 2), n_subj, replace = TRUE, prob = c(0.10, 0.10, 0.80))
     ),
     mgfr_dichotomous = case_when(
-      egfr_dichotomous == 1 ~ sample(c(0, 1), n_subj, replace = TRUE, prob = c(0.20, 0.80)),
-      egfr_dichotomous == 0 ~ sample(c(0, 1), n_subj, replace = TRUE, prob = c(0.90, 0.10)) 
-    )
+      egfr_ordinal == 0 ~ 0,
+      TRUE ~ 1) 
   )
 
 write.csv(test_data, "data/test_data.csv", row.names = FALSE)

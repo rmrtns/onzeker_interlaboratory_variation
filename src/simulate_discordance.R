@@ -91,7 +91,7 @@ get_discordance_measures <- function(data, identifier){
   }
   
   if (all(!is.na(data$categorical_prediction))) {
-    results[["categorical"]] <- get_discordance_dichotomous_prediction(data)
+    results[["categorical"]] <- get_discordance_categorical_prediction(data)
   }
   
   if (length(results) == 0) {
@@ -126,9 +126,9 @@ get_discordance_ordinal_prediction <- function(data){
 }
 
 
-get_discordance_dichotomous_prediction <- function(data){
+get_discordance_categorical_prediction <- function(data){
   data %>% mutate(
-    dichotomous_discordant = case_when(
+    categorical_discordant = case_when(
       categorical_prediction != categorical_reference ~ TRUE,
       categorical_prediction == categorical_reference ~ FALSE,
       TRUE ~ NA
@@ -191,7 +191,7 @@ summarise_discordance_measures <- function(data){
   }
 
   if (all(!is.na(data$categorical_prediction))) {
-    results[["categorical"]] <- summarise_dichotomous_discordance_measures(data)
+    results[["categorical"]] <- summarise_categorical_discordance_measures(data)
   }
 
   if (length(results) == 0) {
@@ -220,18 +220,18 @@ summarise_ordinal_discordance_measures <- function(data){
     ordinal_mae = mean(ordinal_absolute_error),
     ordinal_micro_rmse = sqrt(mean(ordinal_squared_error)),
     ordinal_macro_rmse = get_macro_rmse(data, "ordinal_squared_error", "ordinal_reference"),
-    ordinal_percentage_discordant = get_percentage_discordant(data, ordinal_discordant, ordinal)
+    ordinal_percentage_discordant = get_percentage_discordant(data, "ordinal_discordant", ordinal)
   )
   
   return(bind_cols(percentage_per_prediction_class, discordance_measures))
 }
 
 
-summarise_dichotomous_discordance_measures <- function(data){
+summarise_categorical_discordance_measures <- function(data){
   percentage_per_prediction_class <- get_percentage_per_prediction_class(data, "categorical_prediction")
   
   discordance_measures <- data %>% summarise(
-    dichotomous_percentage_discordant = get_percentage_discordant(data, dichotomous_discordant, dichotomous)
+    categorical_percentage_discordant = get_percentage_discordant(data, "categorical_discordant", categorical)
   )
   
   return(bind_cols(percentage_per_prediction_class, discordance_measures))
@@ -256,7 +256,7 @@ get_percentage_per_prediction_class <- function(data, prediction){
     group_by(.data[[prediction]]) %>%
     summarise(percentage_per_prediction_class = n() / nrow(data) * 100) %>%
     pivot_wider(
-      names_from = prediction,
+      names_from = all_of(prediction),
       names_prefix = paste0("percentage_", prediction, "_"),
       values_from = "percentage_per_prediction_class"
     ) %>%
@@ -266,14 +266,7 @@ get_percentage_per_prediction_class <- function(data, prediction){
 
 get_percentage_discordant <- function(data, variable, prefix){
   data %>% summarise(
-    "{{prefix}}_percentage_discordant":= sum(data %>% select({{variable}})) / nrow(.) * 100
-  )
-}
-
-
-summarise_distribution_categorical_bias_measures <- function(data, variable){
-  data %>% summarise(
-    "percentage_{{variable}}" := sum(data %>% select({{variable}})) / nrow(.) * 100
+    "{{prefix}}_percentage_discordant":= mean(.data[[variable]]) * 100
   )
 }
 
