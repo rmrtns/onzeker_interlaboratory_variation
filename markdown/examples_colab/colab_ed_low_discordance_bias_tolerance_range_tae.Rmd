@@ -38,14 +38,14 @@ parameters$laboratory <- "lab"
 ## Set tolerance ranges for individual laboratory tests.
 ```{r}
 tolerance_range_individual_tests_slopes <- list( 
-  Erytrocyten_BV =      c((0.960), (1.040)),
-  Leukocyten_BV =       c((0.858), (1.142)),
-  BilirubineTotaal_BV = c((0.753), (1.247)),
-  LD_BV =               c((0.935), (1.068)),
-  AlkFosf_BV =          c((0.899), (1.101)),
-  GGT_BV =              c((0.817), (1.183)),
-  Albumine_BV =         c((0.967), (1.033)),
-  CRP_BV =              c((0.479), (1.521))
+  Erytrocyten_BV =      c(0.960, 1.040),
+  Leukocyten_BV =       c(0.858, 1.142),
+  BilirubineTotaal_BV = c(0.753, 1.247),
+  LD_BV =               c(0.935, 1.068),
+  AlkFosf_BV =          c(0.899, 1.101),
+  GGT_BV =              c(0.817, 1.183),
+  Albumine_BV =         c(0.967, 1.033),
+  CRP_BV =              c(0.479, 1.521)
 )
 
 all_combos_slopes <- expand.grid(tolerance_range_individual_tests_slopes)
@@ -98,7 +98,6 @@ all_combos_combined <- left_join(
 all_combos_combined <- all_combos_combined %>%
   select(Bepaling, ptp, Intercept, Slope) %>%
   arrange(Bepaling)
-
 ```
 
 ## Set bias data parameters.
@@ -136,6 +135,10 @@ parameters$histogram_continuous_median_difference_binwidth <- 0.05
 parameters$histogram_continuous_median_percentage_difference_binwidth <- 0.5
 parameters$histogram_continuous_mae_binwidth <- 0.05
 parameters$histogram_continuous_rmse_binwidth <- 0.05
+parameters$histogram_continuous_mape_binwidth <- 5
+parameters$histogram_continuous_smape_binwidth <- 1
+parameters$histogram_continuous_rmspe_binwidth <- 500
+parameters$histogram_continuous_srmspe_binwidth <- 2
 parameters$histogram_ordinal_median_difference_binwidth <- 0.05
 parameters$histogram_ordinal_mae_binwidth <- 0.05
 parameters$histogram_ordinal_micro_rmse_binwidth <- 0.05

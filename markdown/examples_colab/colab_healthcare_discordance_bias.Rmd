@@ -75,6 +75,18 @@ parameters$histogram_continuous_mae_y_range <- c(0, 10)
 parameters$histogram_continuous_rmse_binwidth <- 0.05
 parameters$histogram_continuous_rmse_x_range <- c(0, 1)
 parameters$histogram_continuous_rmse_y_range <- c(0, 10)
+parameters$histogram_continuous_mape_binwidth <- 5
+parameters$histogram_continuous_mape_x_range <- c(0, 100)
+parameters$histogram_continuous_mape_y_range <- c(0, 10)
+parameters$histogram_continuous_smape_binwidth <- 1
+parameters$histogram_continuous_smape_x_range <- c(0, 20)
+parameters$histogram_continuous_smape_y_range <- c(0, 10)
+parameters$histogram_continuous_rmspe_binwidth <- 500
+parameters$histogram_continuous_rmspe_x_range <- c(0, 10000)
+parameters$histogram_continuous_rmspe_y_range <- c(0, 20)
+parameters$histogram_continuous_srmspe_binwidth <- 2
+parameters$histogram_continuous_srmspe_x_range <- c(0, 50)
+parameters$histogram_continuous_srmspe_y_range <- c(0, 10)
 parameters$histogram_ordinal_median_difference_binwidth <- 0.05
 parameters$histogram_ordinal_median_difference_x_range <- c(0, 1)
 parameters$histogram_ordinal_median_difference_y_range <- c(0, 50)

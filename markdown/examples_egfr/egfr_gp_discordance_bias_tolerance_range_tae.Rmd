@@ -1,5 +1,5 @@
 ---
-title: "CoLab score: SA-based tolerance ranges for discordant predictions related to bias in healthcare-worker population"
+title: "eGFR: TAe-based tolerance ranges for discordant predictions related to bias in gp population"
 output: html_document
 date: "Report generated on: `r format(Sys.time(), '%Y-%m-%d')`"
 ---
@@ -12,8 +12,8 @@ set.seed(seed = 200)
 
 ## Import functions and variables.
 ```{r, include=FALSE, warning=FALSE, message=FALSE}
-source('src/variables_colab.R', local = variables <- new.env())
-source('src/predict_colab.R', local = colab <- new.env())
+source('src/variables_egfr.R', local = variables <- new.env())
+source('src/predict_egfr.R', local = egfr <- new.env())
 ```
 
 ```{r, include=FALSE, warning=FALSE, message=FALSE}
@@ -24,54 +24,38 @@ library(dplyr)
 ## Set simulation parameters.
 ```{r}
 parameters <- new.env()
-parameters$data <- read.csv('data/colab_healthcare.csv')
-parameters$identifier <- "Pat"
-parameters$continuous_prediction_function <- colab$get_continuous_prediction_colab
-parameters$ordinal_prediction_function <- colab$get_ordinal_prediction_colab
-parameters$categorical_prediction_function <- colab$get_categorical_prediction_colab
+parameters$data <- read.csv('data/test_data.csv')
+parameters$identifier <- "id"
+parameters$continuous_prediction_function <- egfr$get_continuous_prediction_egfr
+parameters$ordinal_prediction_function <- egfr$get_ordinal_prediction_egfr
+parameters$categorical_prediction_function <- egfr$get_categorical_prediction_egfr
 parameters$model <- NA
-parameters$model_variables <- variables$selected_variables_colab
-parameters$uncertain_variables <- variables$selected_variables_colab[variables$uncertain_variables_indicator_colab]
+parameters$model_variables <- variables$selected_variables_egfr
+parameters$uncertain_variables <- variables$selected_variables_egfr[variables$uncertain_variables_indicator_egfr]
 parameters$laboratory <- "lab"
 ```
 
 ## Set tolerance ranges for individual laboratory tests.
 ```{r}
 tolerance_range_individual_tests_slopes <- list( 
-  Erytrocyten_BV =      c((0.963), (1.037)),
-  Leukocyten_BV =       c((0.921), (1.079)),
-  BilirubineTotaal_BV = c((0.853), (1.141)),
-  LD_BV =               c((0.893), (1.107)),
-  AlkFosf_BV =          c((0.885), (1.115)),
-  GGT_BV =              c((0.905), (1.095)),
-  Albumine_BV =         c((0.917), (1.083)),
-  CRP_BV =              c((0.845), (1.155))
+  creatinine = c(0.922, 1.078)
 )
 
 all_combos_slopes <- expand.grid(tolerance_range_individual_tests_slopes)
 all_combos_slopes <- all_combos_slopes %>%
   mutate(ptp = row_number(),
          age = NA,
-         EosAbs_BV = NA,
-         BasoAbs_BV = NA) # Set model variables without bias in de simulations to NA to reduce computation time.
+         sex = NA) # Set model variables without bias in de simulations to NA to reduce computation time.
 
 tolerance_range_individual_tests_intercepts <- list(
-  Erytrocyten_BV = c(0, 0),
-  Leukocyten_BV = c(0, 0),
-  BilirubineTotaal_BV = c(0, 0),
-  LD_BV = c(0, 0),
-  AlkFosf_BV = c(0, 0),
-  GGT_BV = c(0, 0),
-  Albumine_BV = c(0, 0),
-  CRP_BV = c(0, 0)
+  creatinine = c(0, 0)
 )
 
 all_combos_intercepts <- expand.grid(tolerance_range_individual_tests_intercepts)
 all_combos_intercepts <- all_combos_intercepts %>%
   mutate(ptp = row_number(),
          age = NA,
-         EosAbs_BV = NA,
-         BasoAbs_BV = NA) # Set model variables without bias in de simulations to NA to reduce computation time.
+         sex = NA) # Set model variables without bias in de simulations to NA to reduce computation time.
 ```
 
 ```{r, echo=FALSE}
@@ -102,20 +86,11 @@ all_combos_combined <- all_combos_combined %>%
 
 ## Set bias data parameters.
 ```{r}
-parameters$bias_data <- all_combos_combined
+parameters$bias_data <- read.csv('data/paba_data.csv')
 parameters$bias_data_lab_col <- "ptp"
-parameters$bias_data_cluster_col <- NA
+parameters$bias_data_cluster_col <- "ctr"
 parameters$bias_data_measurement_col <- "Bepaling"
-parameters$bias_data_names <- c(
-  "Erytrocyten_BV" =  "Erytrocyten_BV",
-  "Leukocyten_BV" = "Leukocyten_BV",
-  "BilirubineTotaal_BV" = "BilirubineTotaal_BV",
-  "LD_BV" = "LD_BV",
-  "AlkFosf_BV" = "AlkFosf_BV",
-  "Albumine_BV" = "Albumine_BV" ,
-  "GGT_BV" = "GGT_BV",
-  "CRP_BV" = "CRP_BV"
-)
+parameters$bias_data_names <- c("creatinine" = "creatinine")
 parameters$bias_data_reference_lab <- NA
 ```
 
@@ -149,9 +124,9 @@ parameters$histogram_categorical_percentage_discordant_binwidth <- 0.2
 
 ## Set parameters to save results.
 ```{r}
-parameters$model_name <- 'colab'
-parameters$population <- 'healthcare_tol_sa'
-parameters$path_output <- 'out/colab/simulations_discordance/'
+parameters$model_name <- 'egfr'
+parameters$population <- 'gp_tol_tae'
+parameters$path_output <- 'out/egfr/simulations_discordance/'
 ```
 
 ```{r, child='markdown/template_discordance.Rmd'}

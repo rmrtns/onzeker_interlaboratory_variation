@@ -50,7 +50,8 @@ get_distribution <- function(data, variable){
 
 
 get_quantile <- function(x, probs){
-  n = n()
+  x <- x[is.finite(x)]
+  n <- length(x)
   qnt = quantile(x, probs)
   
   qauntile_number = case_when(
@@ -62,24 +63,63 @@ get_quantile <- function(x, probs){
 }
 
 
-get_robust_sd <- function(x){
-  mad = mad(x)
-  niqr = normalized_iqr(x)
-  sd = sd(x)
-  sd2 = sd_for_2(x)
-  n = n()
+# get_robust_sd <- function(x){
+#   mad = mad(x)
+#   niqr = normalized_iqr(x)
+#   sd = sd(x)
+#   sd2 = sd_for_2(x)
+#   n = n()
+# 
+#   robust_sd = case_when(
+#     n < 2 ~ NA,
+#     n == 2 & sd2 > 0 ~ sd2,
+#     n == 2 & sd == 0 ~ NA,
+#     n > 2 & mad > 0 ~ mad,
+#     n > 2 & mad == 0 & niqr > 0 ~ niqr,
+#     n > 2 & mad == 0 & niqr == 0 & sd > 0 ~ sd,
+#     n > 2 & mad == 0 & niqr == 0 & sd == 0 ~ NA
+#   )
+# 
+#   robust_sd
+# }
 
-  robust_sd = case_when(
-    n < 2 ~ NA,
-    n == 2 & sd2 > 0 ~ sd2,
-    n == 2 & sd == 0 ~ NA,
-    n > 2 & mad > 0 ~ mad,
-    n > 2 & mad == 0 & niqr > 0 ~ niqr,
-    n > 2 & mad == 0 & niqr == 0 & sd > 0 ~ sd,
-    n > 2 & mad == 0 & niqr == 0 & sd == 0 ~ NA
-  )
+
+get_robust_sd <- function(x){
+  x <- x[is.finite(x)]
+  n <- length(x)
   
-  robust_sd
+  if (n < 2){
+    return(NA_real_)
+  }
+  
+  if (n == 2){
+    sd <- sd(x)
+    sd2 <- sd_for_2(x)
+    
+    if (sd == 0){
+      return(NA_real_)
+    } else if (sd > 0){
+      return(sd2)
+    } else {
+      return(sd)
+    }
+  }
+  
+  if (n > 2){
+    mad = mad(x)
+    niqr = normalized_iqr(x)
+    sd = sd(x)
+    
+    if (mad > 0){
+      return(mad)
+    } else if (niqr > 0){
+      return(niqr)
+    } else if (sd > 0){
+      return(sd)
+    } else{
+      return(NA_real_)
+    }
+  }
 }
 
 
