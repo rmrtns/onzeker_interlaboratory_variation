@@ -197,7 +197,7 @@ save$save_histogram(
 plot(histogram_continuous_median_difference)
 ```
 
-```{r, eval = is.function(parameters$continuous_prediction_function), results = 'asis', echo=FALSE, message=FALSE, warning=FALSE}
+```{r, eval = is.function(parameters$continuous_prediction_function), results = 'asis', echo=FALSE, message=FALSE}
 distribution_continuous_median_difference <- comparison$get_distribution_table(
   summary_discordance_status, 
   "continuous_median_difference", 
@@ -232,7 +232,7 @@ save$save_histogram(
 plot(histogram_continuous_median_percentage_difference)
 ```
 
-```{r, eval = is.function(parameters$continuous_prediction_function), results = 'asis', echo=FALSE, message=FALSE, warning=FALSE}
+```{r, eval = is.function(parameters$continuous_prediction_function), results = 'asis', echo=FALSE, message=FALSE}
 distribution_continuous_median_percentage_difference <- comparison$get_distribution_table(
   summary_discordance_status, 
   "continuous_median_percentage_difference", 
@@ -267,7 +267,7 @@ save$save_histogram(
 plot(histogram_continuous_mae)
 ```
 
-```{r, eval = is.function(parameters$continuous_prediction_function), results = 'asis', echo=FALSE, message=FALSE, warning=FALSE}
+```{r, eval = is.function(parameters$continuous_prediction_function), results = 'asis', echo=FALSE, message=FALSE}
 distribution_continuous_mae <- comparison$get_distribution_table(
   summary_discordance_status, 
   "continuous_mae", 
@@ -302,7 +302,7 @@ save$save_histogram(
 plot(histogram_continuous_rmse)
 ```
 
-```{r, eval = is.function(parameters$continuous_prediction_function), results = 'asis', echo=FALSE, message=FALSE, warning=FALSE}
+```{r, eval = is.function(parameters$continuous_prediction_function), results = 'asis', echo=FALSE, message=FALSE}
 distribution_continuous_rmse <- comparison$get_distribution_table(
   summary_discordance_status, 
   "continuous_rmse", 
@@ -337,7 +337,7 @@ save$save_histogram(
 plot(histogram_continuous_mape)
 ```
 
-```{r, eval = is.function(parameters$continuous_prediction_function), results = 'asis', echo=FALSE, message=FALSE, warning=FALSE}
+```{r, eval = is.function(parameters$continuous_prediction_function), results = 'asis', echo=FALSE, message=FALSE}
 distribution_continuous_mape <- comparison$get_distribution_table(
   summary_discordance_status, 
   "continuous_mape", 
@@ -372,7 +372,7 @@ save$save_histogram(
 plot(histogram_continuous_smape)
 ```
 
-```{r, eval = is.function(parameters$continuous_prediction_function), results = 'asis', echo=FALSE, message=FALSE, warning=FALSE}
+```{r, eval = is.function(parameters$continuous_prediction_function), results = 'asis', echo=FALSE, message=FALSE}
 distribution_continuous_smape <- comparison$get_distribution_table(
   summary_discordance_status, 
   "continuous_smape", 
@@ -407,7 +407,7 @@ save$save_histogram(
 plot(histogram_continuous_rmspe)
 ```
 
-```{r, eval = is.function(parameters$continuous_prediction_function), results = 'asis', echo=FALSE, message=FALSE, warning=FALSE}
+```{r, eval = is.function(parameters$continuous_prediction_function), results = 'asis', echo=FALSE, message=FALSE}
 distribution_continuous_rmspe <- comparison$get_distribution_table(
   summary_discordance_status, 
   "continuous_rmspe", 
@@ -442,7 +442,7 @@ save$save_histogram(
 plot(histogram_continuous_srmspe)
 ```
 
-```{r, eval = is.function(parameters$continuous_prediction_function), results = 'asis', echo=FALSE, message=FALSE, warning=FALSE}
+```{r, eval = is.function(parameters$continuous_prediction_function), results = 'asis', echo=FALSE, message=FALSE}
 distribution_continuous_srmspe <- comparison$get_distribution_table(
   summary_discordance_status, 
   "continuous_srmspe", 
@@ -477,7 +477,7 @@ save$save_histogram(
 plot(histogram_ordinal_median_difference)
 ```
 
-```{r, eval = is.function(parameters$ordinal_prediction_function), results = 'asis', echo=FALSE, message=FALSE, warning=FALSE}
+```{r, eval = is.function(parameters$ordinal_prediction_function), results = 'asis', echo=FALSE, message=FALSE}
 distribution_ordinal_median_difference <- comparison$get_distribution_table(
   summary_discordance_status, 
   "ordinal_median_difference", 
@@ -512,7 +512,7 @@ save$save_histogram(
 plot(histogram_ordinal_mae)
 ```
 
-```{r, eval = is.function(parameters$ordinal_prediction_function), results = 'asis', echo=FALSE, message=FALSE, warning=FALSE}
+```{r, eval = is.function(parameters$ordinal_prediction_function), results = 'asis', echo=FALSE, message=FALSE}
 distribution_ordinal_mae <- comparison$get_distribution_table(
   summary_discordance_status, 
   "ordinal_mae", 
@@ -547,7 +547,7 @@ save$save_histogram(
 plot(histogram_ordinal_micro_rmse)
 ```
 
-```{r, eval = is.function(parameters$ordinal_prediction_function), results = 'asis', echo=FALSE, message=FALSE, warning=FALSE}
+```{r, eval = is.function(parameters$ordinal_prediction_function), results = 'asis', echo=FALSE, message=FALSE}
 distribution_ordinal_micro_rmse <- comparison$get_distribution_table(
   summary_discordance_status, 
   "ordinal_micro_rmse", 
@@ -582,7 +582,7 @@ save$save_histogram(
 plot(histogram_ordinal_macro_rmse)
 ```
 
-```{r, eval = is.function(parameters$ordinal_prediction_function), results = 'asis', echo=FALSE, message=FALSE, warning=FALSE}
+```{r, eval = is.function(parameters$ordinal_prediction_function), results = 'asis', echo=FALSE, message=FALSE}
 distribution_ordinal_macro_rmse <- comparison$get_distribution_table(
   summary_discordance_status, 
   "ordinal_macro_rmse", 
@@ -617,7 +617,7 @@ save$save_histogram(
 plot(histogram_ordinal_percentage_discordant)
 ```
 
-```{r, eval = is.function(parameters$ordinal_prediction_function), results = 'asis', echo=FALSE, message=FALSE, warning=FALSE}
+```{r, eval = is.function(parameters$ordinal_prediction_function), results = 'asis', echo=FALSE, message=FALSE}
 distribution_ordinal_percentage_discordant <- comparison$get_distribution_table(
   summary_discordance_status, 
   "ordinal_percentage_discordant", 
@@ -652,7 +652,7 @@ save$save_histogram(
 plot(histogram_categorical_percentage_discordant)
 ```
 
-```{r, eval = is.function(parameters$categorical_prediction_function), results = 'asis', echo=FALSE, message=FALSE, warning=FALSE}
+```{r, eval = is.function(parameters$categorical_prediction_function), results = 'asis', echo=FALSE, message=FALSE}
 distribution_categorical_percentage_discordant <- comparison$get_distribution_table(
   summary_discordance_status, 
   "categorical_percentage_discordant", 

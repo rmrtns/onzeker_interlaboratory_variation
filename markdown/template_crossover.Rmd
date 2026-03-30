@@ -139,7 +139,7 @@ save$save_histogram(
 plot(histogram_fn_minus_tp_percentage_point_diff)
 ```
 
-```{r, results = 'asis', echo=FALSE, message=FALSE, warning=FALSE}
+```{r, results = 'asis', echo=FALSE, message=FALSE}
 distribution_fn_minus_tp_percentage_point_diff <- comparison$get_distribution_table(
   summary_crossover, 
   "fn_minus_tp_percentage_point_diff", 
@@ -174,7 +174,7 @@ save$save_histogram(
 plot(histogram_fp_minus_tn_percentage_point_diff)
 ```
 
-```{r, results = 'asis', echo=FALSE, message=FALSE, warning=FALSE}
+```{r, results = 'asis', echo=FALSE, message=FALSE}
 distribution_fp_minus_tn_percentage_point_diff <- comparison$get_distribution_table(
   summary_crossover, 
   "fp_minus_tn_percentage_point_diff", 

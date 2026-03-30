@@ -142,7 +142,7 @@ save$save_histogram(
 plot(histogram_auroc)
 ```
 
-```{r, echo=FALSE, message=FALSE, warning=FALSE}
+```{r, echo=FALSE, message=FALSE}
 distribution_auroc <- comparison$get_distribution_table(
   summary_performance_measures, 
   "auroc", 
@@ -177,7 +177,7 @@ save$save_histogram(
 plot(histogram_accuracy)
 ```
 
-```{r, echo=FALSE, message=FALSE, warning=FALSE}
+```{r, echo=FALSE, message=FALSE}
 distribution_accuracy <- comparison$get_distribution_table(
   summary_performance_measures, 
   "accuracy", 
@@ -213,7 +213,7 @@ save$save_histogram(
 plot(histogram_sensitivity)
 ```
 
-```{r, echo=FALSE, message=FALSE, warning=FALSE}
+```{r, echo=FALSE, message=FALSE}
 distribution_sensitivity <- comparison$get_distribution_table(
   summary_performance_measures, 
   "sensitivity", 
@@ -248,7 +248,7 @@ save$save_histogram(
 plot(histogram_specificity)
 ```
 
-```{r, echo=FALSE, message=FALSE, warning=FALSE}
+```{r, echo=FALSE, message=FALSE}
 distribution_specificity <- comparison$get_distribution_table(
   summary_performance_measures, 
   "specificity", 
@@ -283,7 +283,7 @@ save$save_histogram(
 plot(histogram_ppv)
 ```
 
-```{r, echo=FALSE, message=FALSE, warning=FALSE}
+```{r, echo=FALSE, message=FALSE}
 distribution_ppv <- comparison$get_distribution_table(
   summary_performance_measures, 
   "pos_pred_value", 
@@ -318,7 +318,7 @@ save$save_histogram(
 plot(histogram_npv)
 ```
 
-```{r, echo=FALSE, message=FALSE, warning=FALSE}
+```{r, echo=FALSE, message=FALSE}
 distribution_npv <- comparison$get_distribution_table(
   summary_performance_measures, 
   "neg_pred_value", 
