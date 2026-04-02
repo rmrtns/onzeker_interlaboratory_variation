@@ -313,143 +313,143 @@ print$print_table_distribution(distribution_continuous_rmse, 4)
 ```
 
 ```{r, eval = is.function(parameters$continuous_prediction_function), results = 'asis', echo=FALSE}
-cat("* Histogram and distribution of mean absolute percentage error (mape) for continuous predictions:")
+cat("* Histogram and distribution of trimmed mean absolute percentage error (mape) for continuous predictions:")
 
-histogram_continuous_mape <- comparison$get_histogram(
+histogram_continuous_mape_trimmed <- comparison$get_histogram(
   summary_discordance_status, 
-  "continuous_mape",
-  "Mean absolute percentage error",
+  "continuous_mape_trimmed",
+  "Trimmed mean absolute percentage error",
   parameters$histogram_method,
   parameters$histogram_method_label,
-  parameters$histogram_continuous_mape_binwidth,
-  parameters$histogram_continuous_mape_x_range,
-  parameters$histogram_continuous_mape_y_range
+  parameters$histogram_continuous_mape_trimmed_binwidth,
+  parameters$histogram_continuous_mape_trimmed_x_range,
+  parameters$histogram_continuous_mape_trimmed_y_range
 )
 
 save$save_histogram(
-  histogram_continuous_mape, 
+  histogram_continuous_mape_trimmed, 
   parameters$path_output, 
   parameters$model_name, 
   "discordance",
   parameters$population
 )
 
-plot(histogram_continuous_mape)
+plot(histogram_continuous_mape_trimmed)
 ```
 
 ```{r, eval = is.function(parameters$continuous_prediction_function), results = 'asis', echo=FALSE, message=FALSE}
-distribution_continuous_mape <- comparison$get_distribution_table(
+distribution_continuous_mape_trimmed <- comparison$get_distribution_table(
   summary_discordance_status, 
-  "continuous_mape", 
+  "continuous_mape_trimmed", 
   "laboratory"
 )
 
-print$print_table_distribution(distribution_continuous_mape, 4)
+print$print_table_distribution(distribution_continuous_mape_trimmed, 4)
 ```
 
 ```{r, eval = is.function(parameters$continuous_prediction_function), results = 'asis', echo=FALSE}
-cat("* Histogram and distribution of symmetric mean absolute percentage error (smape) for continuous predictions:")
+cat("* Histogram and distribution of median absolute percentage error (mdape) for continuous predictions:")
 
-histogram_continuous_smape <- comparison$get_histogram(
+histogram_continuous_mdape <- comparison$get_histogram(
   summary_discordance_status, 
-  "continuous_smape",
-  "Symmetric mean absolute percentage error",
+  "continuous_mdape",
+  "Median absolute percentage error",
   parameters$histogram_method,
   parameters$histogram_method_label,
-  parameters$histogram_continuous_smape_binwidth,
-  parameters$histogram_continuous_smape_x_range,
-  parameters$histogram_continuous_smape_y_range
+  parameters$histogram_continuous_mdape_binwidth,
+  parameters$histogram_continuous_mdape_x_range,
+  parameters$histogram_continuous_mdape_y_range
 )
 
 save$save_histogram(
-  histogram_continuous_smape, 
+  histogram_continuous_mdape, 
   parameters$path_output, 
   parameters$model_name, 
   "discordance",
   parameters$population
 )
 
-plot(histogram_continuous_smape)
+plot(histogram_continuous_mdape)
 ```
 
 ```{r, eval = is.function(parameters$continuous_prediction_function), results = 'asis', echo=FALSE, message=FALSE}
-distribution_continuous_smape <- comparison$get_distribution_table(
+distribution_continuous_mdape <- comparison$get_distribution_table(
   summary_discordance_status, 
-  "continuous_smape", 
+  "continuous_mdape", 
   "laboratory"
 )
 
-print$print_table_distribution(distribution_continuous_smape, 4)
+print$print_table_distribution(distribution_continuous_mdape, 4)
 ```
 
 ```{r, eval = is.function(parameters$continuous_prediction_function), results = 'asis', echo=FALSE}
-cat("* Histogram and distribution of root mean squared percentage error (rmspe) for continuous predictions:")
+cat("* Histogram and distribution of trimmed root mean squared percentage error (rmspe) for continuous predictions:")
 
-histogram_continuous_rmspe <- comparison$get_histogram(
+histogram_continuous_rmspe_trimmed <- comparison$get_histogram(
   summary_discordance_status, 
-  "continuous_rmspe",
-  "Root mean squared percentage error",
+  "continuous_rmspe_trimmed",
+  "Trimmed root mean squared percentage error",
   parameters$histogram_method,
   parameters$histogram_method_label,
-  parameters$histogram_continuous_rmspe_binwidth,
-  parameters$histogram_continuous_rmspe_x_range,
-  parameters$histogram_continuous_rmspe_y_range
+  parameters$histogram_continuous_rmspe_trimmed_binwidth,
+  parameters$histogram_continuous_rmspe_trimmed_x_range,
+  parameters$histogram_continuous_rmspe_trimmed_y_range
 )
 
 save$save_histogram(
-  histogram_continuous_rmspe, 
+  histogram_continuous_rmspe_trimmed, 
   parameters$path_output, 
   parameters$model_name, 
   "discordance",
   parameters$population
 )
 
-plot(histogram_continuous_rmspe)
+plot(histogram_continuous_rmspe_trimmed)
 ```
 
 ```{r, eval = is.function(parameters$continuous_prediction_function), results = 'asis', echo=FALSE, message=FALSE}
-distribution_continuous_rmspe <- comparison$get_distribution_table(
+distribution_continuous_rmspe_trimmed <- comparison$get_distribution_table(
   summary_discordance_status, 
-  "continuous_rmspe", 
+  "continuous_rmspe_trimmed", 
   "laboratory"
 )
 
-print$print_table_distribution(distribution_continuous_rmspe, 4)
+print$print_table_distribution(distribution_continuous_rmspe_trimmed, 4)
 ```
 
 ```{r, eval = is.function(parameters$continuous_prediction_function), results = 'asis', echo=FALSE}
-cat("* Histogram and distribution of symmetric root mean squared percentage error (srmspe) for continuous predictions:")
+cat("* Histogram and distribution of root median squared percentage error (rmdspe) for continuous predictions:")
 
-histogram_continuous_srmspe <- comparison$get_histogram(
+histogram_continuous_rmdspe <- comparison$get_histogram(
   summary_discordance_status, 
-  "continuous_srmspe",
-  "Symmetric root mean squared percentage error",
+  "continuous_rmdspe",
+  "Root median squared percentage error",
   parameters$histogram_method,
   parameters$histogram_method_label,
-  parameters$histogram_continuous_srmspe_binwidth,
-  parameters$histogram_continuous_srmspe_x_range,
-  parameters$histogram_continuous_srmspe_y_range
+  parameters$histogram_continuous_rmdspe_binwidth,
+  parameters$histogram_continuous_rmdspe_x_range,
+  parameters$histogram_continuous_rmdspe_y_range
 )
 
 save$save_histogram(
-  histogram_continuous_srmspe, 
+  histogram_continuous_rmdspe, 
   parameters$path_output, 
   parameters$model_name, 
   "discordance",
   parameters$population
 )
 
-plot(histogram_continuous_srmspe)
+plot(histogram_continuous_rmdspe)
 ```
 
 ```{r, eval = is.function(parameters$continuous_prediction_function), results = 'asis', echo=FALSE, message=FALSE}
-distribution_continuous_srmspe <- comparison$get_distribution_table(
+distribution_continuous_rmdspe <- comparison$get_distribution_table(
   summary_discordance_status, 
-  "continuous_srmspe", 
+  "continuous_rmdspe", 
   "laboratory"
 )
 
-print$print_table_distribution(distribution_continuous_srmspe, 4)
+print$print_table_distribution(distribution_continuous_rmdspe, 4)
 ```
 
 ```{r, eval = is.function(parameters$ordinal_prediction_function), results = 'asis', echo=FALSE}

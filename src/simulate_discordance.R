@@ -221,10 +221,10 @@ summarise_continuous_discordance_measures <- function(data){
     continuous_median_percentage_difference = median(continuous_percentage_difference),
     continuous_mae = mean(continuous_absolute_error),
     continuous_rmse = sqrt(mean(continuous_squared_error)),
-    continuous_mape = get_mape(data, "continuous_reference", "continuous_prediction"),
-    continuous_smape = get_smape(data, "continuous_reference", "continuous_prediction"),
-    continuous_rmspe = get_rmspe(data, "continuous_reference", "continuous_prediction"),
-    continuous_srmspe = get_srmspe(data, "continuous_reference", "continuous_prediction")
+    continuous_mape_trimmed = get_mape_trimmed(data, "continuous_reference", "continuous_prediction"),
+    continuous_mdape = get_mdape(data, "continuous_reference", "continuous_prediction"),
+    continuous_rmspe_trimmed = get_rmspe_trimmed(data, "continuous_reference", "continuous_prediction"),
+    continuous_rmdspe = get_rmdspe(data, "continuous_reference", "continuous_prediction")
   )
 }
 
@@ -255,10 +255,25 @@ summarise_categorical_discordance_measures <- function(data){
 }
 
 
-get_mape <- function(data, actual, prediction){
+get_mape_trimmed <- function(data, actual, prediction){
   data %>%
     summarise(
       mape = mean(
+        if_else(
+          .data[[actual]] == 0,
+          0,
+          (abs(.data[[prediction]] - .data[[actual]])) / abs(.data[[actual]])
+        ),
+        trim = 0.05
+      ) * 100
+    ) %>% unlist()
+}
+
+
+get_mdape <- function(data, actual, prediction){
+  data %>%
+    summarise(
+      mape = median(
         if_else(
           .data[[actual]] == 0,
           0,
@@ -269,21 +284,7 @@ get_mape <- function(data, actual, prediction){
 }
 
 
-get_smape <- function(data, actual, prediction){
-  data %>%
-    summarise(
-      smape = mean(
-        if_else(
-          (abs(.data[[actual]]) + abs(.data[[prediction]])) == 0,
-          0,
-          2 * abs(.data[[prediction]] - .data[[actual]]) / (abs(.data[[actual]]) + abs(.data[[prediction]]))
-        )
-      ) * 100
-    ) %>% unlist()
-}
-
-
-get_rmspe <- function(data, actual, prediction){
+get_rmspe_trimmed <- function(data, actual, prediction){
   data %>%
     summarise(
       rmspe = sqrt(
@@ -292,22 +293,23 @@ get_rmspe <- function(data, actual, prediction){
             .data[[actual]] == 0,
             0,
             ((.data[[prediction]] - .data[[actual]]) / .data[[actual]])**2
-          )
+          ),
+          trim = 0.05
         )
       ) * 100
     ) %>% unlist()
 }
 
 
-get_srmspe <- function(data, actual, prediction){
+get_rmdspe <- function(data, actual, prediction){
   data %>%
     summarise(
-      srmspe = sqrt(
-        mean(
+      rmspe = sqrt(
+        median(
           if_else(
-            (abs(.data[[actual]]) + abs(.data[[prediction]])) == 0,
+            .data[[actual]] == 0,
             0,
-            (2 * (.data[[prediction]] - .data[[actual]]) / (abs(.data[[actual]]) + abs(.data[[prediction]]))) ** 2
+            ((.data[[prediction]] - .data[[actual]]) / .data[[actual]])**2
           )
         )
       ) * 100

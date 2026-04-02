@@ -135,10 +135,10 @@ parameters$histogram_continuous_median_difference_binwidth <- 0.05
 parameters$histogram_continuous_median_percentage_difference_binwidth <- 0.5
 parameters$histogram_continuous_mae_binwidth <- 0.05
 parameters$histogram_continuous_rmse_binwidth <- 0.05
-parameters$histogram_continuous_mape_binwidth <- 5
-parameters$histogram_continuous_smape_binwidth <- 1
-parameters$histogram_continuous_rmspe_binwidth <- 500
-parameters$histogram_continuous_srmspe_binwidth <- 2
+parameters$histogram_continuous_mape_trimmed_binwidth <- 1
+parameters$histogram_continuous_mdape_binwidth <- 1
+parameters$histogram_continuous_rmspe_trimmed_binwidth <- 1
+parameters$histogram_continuous_rmdspe_binwidth <- 1
 parameters$histogram_ordinal_median_difference_binwidth <- 0.05
 parameters$histogram_ordinal_mae_binwidth <- 0.05
 parameters$histogram_ordinal_micro_rmse_binwidth <- 0.05
