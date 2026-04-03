@@ -95,7 +95,7 @@ get_discordance_measures <- function(data, identifier){
   }
   
   if (length(results) == 0) {
-    stop("No discordance measures could be calculated", call. = FALSE)
+    stop("No discordance measures could be calculated as all types of predictions contained missing values", call. = FALSE)
   }
   
   reduce(results, left_join, by = identifier)

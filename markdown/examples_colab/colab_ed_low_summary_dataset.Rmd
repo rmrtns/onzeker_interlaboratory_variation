@@ -27,7 +27,6 @@ library(gtsummary)
 parameters <- new.env()
 parameters$data <- read.csv('data/colab_ed_low_prevalence.csv')
 parameters$model_variables <- variables$selected_variables_colab
-parameters$laboratory <- "lab"
 ```
 
 ## Summarise dataset.

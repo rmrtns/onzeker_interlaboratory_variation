@@ -1,4 +1,5 @@
 library(tidyr)
+library(dplyr)
 
 # De-transform function.
 colab_variable_de_log <- function(data){
@@ -10,18 +11,24 @@ colab_variable_de_log <- function(data){
   return(data_nolog)
 }
 
-# Prepare colab ed dataset (low and high prevalence).
-colab_ed_with_log <- read.csv('data/CoLab_externe_validatie_Zuyderland.csv')
+# Prepare colab ed dataset (low prevalence).
+colab_ed_low_with_log <- read.csv('data/Data_colab_ED_low_prevalence.csv')
 
-colab_ed_low_prevalence_without_log <- colab_variable_de_log(colab_ed_with_log)
-
-colab_ed_low_prevalence_without_log <- colab_ed_low_prevalence_without_log %>%
-  group_by(Pat) %>%
-  slice(1) %>%
-  ungroup()
+colab_ed_low_prevalence_without_log <- colab_variable_de_log(colab_ed_low_with_log)
 
 write.csv(
   colab_ed_low_prevalence_without_log,
   paste0('data/colab_ed_low_prevalence.csv'),
+  row.names = FALSE
+)
+
+# Prepare colab ed dataset (high prevalence).
+colab_ed_high_with_log <- read.csv('data/Data_colab_ED_high_prevalence.csv')
+
+colab_ed_high_prevalence_without_log <- colab_variable_de_log(colab_ed_high_with_log)
+
+write.csv(
+  colab_ed_high_prevalence_without_log,
+  paste0('data/colab_ed_high_prevalence.csv'),
   row.names = FALSE
 )

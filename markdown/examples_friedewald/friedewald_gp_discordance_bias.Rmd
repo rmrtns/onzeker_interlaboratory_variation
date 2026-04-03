@@ -21,8 +21,8 @@ source('src/predict_friedewald.R', local = friedewald <- new.env())
 ## Set simulation parameters.
 ```{r}
 parameters <- new.env()
-parameters$data <- read.csv('data/test_data.csv')
-parameters$identifier <- "id"
+parameters$data <- read.csv('data/friedewald_gp.csv')
+parameters$identifier <- "BezoekersID"
 parameters$continuous_prediction_function <- friedewald$get_continuous_prediction_ldl
 parameters$ordinal_prediction_function <- friedewald$get_ordinal_prediction_ldl
 parameters$categorical_prediction_function <- friedewald$get_categorical_prediction_ldl
@@ -39,7 +39,7 @@ parameters$bias_data_lab_col <- "ptp"
 parameters$bias_data_cluster_col <- "ctr"
 parameters$bias_data_measurement_col <- "Bepaling"
 parameters$bias_data_names <- c(
-  "cholesterol" = "Cholesterol",
+  "total_cholesterol" = "Cholesterol",
   "hdl" = "HDL-Cholesterol",
   "triglycerides" = "Triglyceriden"
 )

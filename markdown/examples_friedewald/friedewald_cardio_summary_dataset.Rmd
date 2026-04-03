@@ -27,7 +27,6 @@ library(gtsummary)
 parameters <- new.env()
 parameters$data <- read.csv('data/test_data.csv')
 parameters$model_variables <- variables$selected_variables_friewald
-parameters$laboratory <- "lab"
 ```
 
 ## Summarise dataset.

@@ -4,11 +4,7 @@ get_continuous_prediction_ldl <- function(data, dots_arguments){
   tc <- dots_arguments[["model_variables"]]["total_cholesterol"]
   hdl <- dots_arguments[["model_variables"]]["hdl"]
   triglycerides <- dots_arguments[["model_variables"]]["triglycerides"]
-  friedewald <-  tc - hdl - (0.45 * triglycerides)
-  if_else(data[[triglycerides]] < 4.5,
-          true = eval(friedewald),
-          false = NA,
-          missing = NA)
+  friedewald <-  data[[tc]] - data[[hdl]] - (0.45 * data[[triglycerides]]) # Condition triglycerides < 4.5 mmol/L via dataset
 }
 
 

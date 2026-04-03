@@ -38,14 +38,14 @@ parameters$laboratory <- "lab"
 ## Set tolerance ranges for individual laboratory tests.
 ```{r}
 tolerance_range_individual_tests_slopes <- list( 
-  Erytrocyten_BV =      c((0.963), (1.037)),
-  Leukocyten_BV =       c((0.921), (1.079)),
-  BilirubineTotaal_BV = c((0.853), (1.141)),
-  LD_BV =               c((0.893), (1.107)),
-  AlkFosf_BV =          c((0.885), (1.115)),
-  GGT_BV =              c((0.905), (1.095)),
-  Albumine_BV =         c((0.917), (1.083)),
-  CRP_BV =              c((0.845), (1.155))
+  Erytrocyten_BV =      c(0.963, 1.037),
+  Leukocyten_BV =       c(0.921, 1.079),
+  BilirubineTotaal_BV = c(0.853, 1.141),
+  LD_BV =               c(0.893, 1.107),
+  AlkFosf_BV =          c(0.885, 1.115),
+  GGT_BV =              c(0.905, 1.095),
+  Albumine_BV =         c(0.917, 1.083),
+  CRP_BV =              c(0.845, 1.155)
 )
 
 all_combos_slopes <- expand.grid(tolerance_range_individual_tests_slopes)
@@ -56,14 +56,14 @@ all_combos_slopes <- all_combos_slopes %>%
          BasoAbs_BV = NA) # Set model variables without bias in de simulations to NA to reduce computation time.
 
 tolerance_range_individual_tests_intercepts <- list(
-  Erytrocyten_BV = c(0, 0),
-  Leukocyten_BV = c(0, 0),
+  Erytrocyten_BV =      c(0, 0),
+  Leukocyten_BV =       c(0, 0),
   BilirubineTotaal_BV = c(0, 0),
-  LD_BV = c(0, 0),
-  AlkFosf_BV = c(0, 0),
-  GGT_BV = c(0, 0),
-  Albumine_BV = c(0, 0),
-  CRP_BV = c(0, 0)
+  LD_BV =               c(0, 0),
+  AlkFosf_BV =          c(0, 0),
+  GGT_BV =              c(0, 0),
+  Albumine_BV =         c(0, 0),
+  CRP_BV =              c(0, 0)
 )
 
 all_combos_intercepts <- expand.grid(tolerance_range_individual_tests_intercepts)
