@@ -25,7 +25,7 @@ library(gtsummary)
 ## Read data.
 ```{r}
 parameters <- new.env()
-parameters$data <- read.csv('data/JuistheidFRIE-HA(Remy)_251029_anonymised_wide_format.csv')
+parameters$data <- read.csv('data/friedewald_gp.csv')
 parameters$model_variables <- variables$selected_variables_friedewald
 ```
 
