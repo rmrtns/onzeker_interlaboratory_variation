@@ -24,8 +24,8 @@ library(dplyr)
 ## Set simulation parameters.
 ```{r}
 parameters <- new.env()
-parameters$data <- read.csv('data/test_data.csv')
-parameters$identifier <- "id"
+parameters$data <- read.csv('data/friedewald_cardio.csv')
+parameters$identifier <- "BezoekersID"
 parameters$continuous_prediction_function <- friedewald$get_continuous_prediction_ldl
 parameters$ordinal_prediction_function <- friedewald$get_ordinal_prediction_ldl
 parameters$categorical_prediction_function <- friedewald$get_categorical_prediction_ldl
@@ -92,11 +92,11 @@ parameters$bias_data_lab_col <- "ptp"
 parameters$bias_data_cluster_col <- "ctr"
 parameters$bias_data_measurement_col <- "Bepaling"
 parameters$bias_data_names <- c(
-  "total_cholesterol" = "total_cholesterol",
-  "hdl" = "hdl",
-  "triglycerides" = "triglycerides"
+  "total_cholesterol" = "Cholesterol",
+  "hdl" = "HDL-Cholesterol",
+  "triglycerides" = "Triglyceriden"
 )
-parameters$bias_data_reference_lab <- NA
+parameters$bias_data_reference_lab <- 11
 ```
 
 ## Set bootstrap parameters for results of individual laboratories.
