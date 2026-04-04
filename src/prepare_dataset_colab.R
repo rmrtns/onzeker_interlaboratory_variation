@@ -23,13 +23,10 @@ colab_wo_log <- colab_wo_log %>%
   ) %>%
   filter(age >= 18)
 
-# Split dataset according to prevalence.
 colab_low_prevalence <- colab_wo_log
   
 colab_high_prevalence <- colab_wo_log %>%
   filter(ER_date >= lubridate::as_date("2020-03-01"))
-
-# Save datasets.
 
 write.csv(
   colab_low_prevalence,
@@ -40,27 +37,5 @@ write.csv(
 write.csv(
   colab_high_prevalence,
   paste0('data/colab_ed_low_prevalence.csv'),
-  row.names = FALSE
-)
-
-# Prepare colab ed dataset (low prevalence).
-colab_ed_low_with_log <- read.csv('data/Data_colab_ED_low_prevalence.csv')
-
-colab_ed_low_prevalence_without_log <- colab_variable_de_log(colab_ed_low_with_log)
-
-write.csv(
-  colab_ed_low_prevalence_without_log,
-  paste0('data/colab_ed_low_prevalence.csv'),
-  row.names = FALSE
-)
-
-# Prepare colab ed dataset (high prevalence).
-colab_ed_high_with_log <- read.csv('data/Data_colab_ED_high_prevalence.csv')
-
-colab_ed_high_prevalence_without_log <- colab_variable_de_log(colab_ed_high_with_log)
-
-write.csv(
-  colab_ed_high_prevalence_without_log,
-  paste0('data/colab_ed_high_prevalence.csv'),
   row.names = FALSE
 )
