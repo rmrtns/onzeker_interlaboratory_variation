@@ -19,7 +19,7 @@ colab_wo_log <- colab_variable_de_log(colab_with_log)
 colab_prepared <- colab_wo_log %>% 
   mutate(
     ER_date = lubridate::as_date(ER_date),
-    visit = row_number()
+    visit_id = row_number()
   ) %>%
   filter(age >= 18)
 
