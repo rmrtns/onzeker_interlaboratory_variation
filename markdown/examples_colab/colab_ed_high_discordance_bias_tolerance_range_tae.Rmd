@@ -25,7 +25,7 @@ library(dplyr)
 ```{r}
 parameters <- new.env()
 parameters$data <- read.csv('data/colab_ed_high_prevalence.csv')
-parameters$identifier <- "Pat"
+parameters$identifier <- "visit_id"
 parameters$continuous_prediction_function <- colab$get_continuous_prediction_colab
 parameters$ordinal_prediction_function <- colab$get_ordinal_prediction_colab
 parameters$categorical_prediction_function <- colab$get_categorical_prediction_colab

@@ -20,7 +20,7 @@ source('src/predict_colab.R', local = colab <- new.env())
 ```{r}
 parameters <- new.env()
 parameters$data <- read.csv('data/colab_ed_high_prevalence.csv')
-parameters$identifier <- "Pat"
+parameters$identifier <- "visit_id"
 parameters$continuous_prediction_function <- colab$get_continuous_prediction_colab
 parameters$ordinal_prediction_function <- colab$get_ordinal_prediction_colab
 parameters$categorical_prediction_function <- colab$get_categorical_prediction_colab
@@ -73,16 +73,16 @@ parameters$histogram_continuous_rmse_binwidth <- 0.05
 parameters$histogram_continuous_rmse_x_range <- c(0, 1)
 parameters$histogram_continuous_rmse_y_range <- c(0, 10)
 parameters$histogram_continuous_mape_trimmed_binwidth <- 1
-parameters$histogram_continuous_mape_trimmed_x_range <- c(0, 20)
+parameters$histogram_continuous_mape_trimmed_x_range <- c(0, 25)
 parameters$histogram_continuous_mape_trimmed_y_range <- c(0, 10)
 parameters$histogram_continuous_mdape_binwidth <- 1
-parameters$histogram_continuous_mdape_x_range <- c(0, 20)
+parameters$histogram_continuous_mdape_x_range <- c(0, 25)
 parameters$histogram_continuous_mdape_y_range <- c(0, 10)
 parameters$histogram_continuous_rmspe_trimmed_binwidth <- 1
-parameters$histogram_continuous_rmspe_trimmed_x_range <- c(0, 20)
+parameters$histogram_continuous_rmspe_trimmed_x_range <- c(0, 25)
 parameters$histogram_continuous_rmspe_trimmed_y_range <- c(0, 10)
 parameters$histogram_continuous_rmdspe_binwidth <- 1
-parameters$histogram_continuous_rmdspe_x_range <- c(0, 20)
+parameters$histogram_continuous_rmdspe_x_range <- c(0, 25)
 parameters$histogram_continuous_rmdspe_y_range <- c(0, 10)
 parameters$histogram_ordinal_median_difference_binwidth <- 0.05
 parameters$histogram_ordinal_median_difference_x_range <- c(0, 1)
@@ -96,7 +96,7 @@ parameters$histogram_ordinal_micro_rmse_y_range <- c(0, 10)
 parameters$histogram_ordinal_macro_rmse_binwidth <- 0.05
 parameters$histogram_ordinal_macro_rmse_x_range <- c(0, 1)
 parameters$histogram_ordinal_macro_rmse_y_range <- c(0, 10)
-parameters$histogram_ordinal_percentage_discordant_binwidth <- 1
+parameters$histogram_ordinal_percentage_discordant_binwidth <- 2
 parameters$histogram_ordinal_percentage_discordant_x_range <- c(0, 50)
 parameters$histogram_ordinal_percentage_discordant_y_range <- c(0, 10)
 parameters$histogram_categorical_percentage_discordant_binwidth <- 0.2

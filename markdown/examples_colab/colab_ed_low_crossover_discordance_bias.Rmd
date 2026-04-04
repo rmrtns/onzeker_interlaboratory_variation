@@ -1,5 +1,5 @@
 ---
-title: "CoLab score: Impact of bias related discordant predictions on crossover within confusion matrices based on simulations_discordance_aggregate_results in ED population with low COVID-19 prevalence"
+title: "CoLab score: Impact of bias related discordant predictions on crossover within confusion matrices in ED population with low COVID-19 prevalence"
 output: html_document
 date: "Report generated on: `r format(Sys.time(), '%Y-%m-%d')`"
 ---
@@ -23,7 +23,7 @@ parameters <- new.env()
 parameters$original_data <- read.csv('data/colab_ed_low_prevalence.csv')
 parameters$discordance_data <- 
   read.csv('out/colab/simulations_discordance/colab_discordance_ed_low_bias_per_individual.csv')
-parameters$identifier <- "Pat"
+parameters$identifier <- "visit_id"
 parameters$model_outcome <- "outcome"
 parameters$model_outcome_class_TRUE <-  "1" 
 ```

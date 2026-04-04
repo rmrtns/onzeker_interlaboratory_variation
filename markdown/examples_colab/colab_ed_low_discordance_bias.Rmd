@@ -19,8 +19,8 @@ source('src/predict_colab.R', local = colab <- new.env())
 ## Set simulation parameters.
 ```{r}
 parameters <- new.env()
-parameters$data <- read.csv('data/colab_ed_low_prevalence_abstract.csv')
-parameters$identifier <- "Pat"
+parameters$data <- read.csv('data/colab_ed_low_prevalence.csv')
+parameters$identifier <- "visit_id"
 parameters$continuous_prediction_function <- colab$get_continuous_prediction_colab
 parameters$ordinal_prediction_function <- colab$get_ordinal_prediction_colab
 parameters$categorical_prediction_function <- colab$get_categorical_prediction_colab
@@ -96,7 +96,7 @@ parameters$histogram_ordinal_micro_rmse_y_range <- c(0, 10)
 parameters$histogram_ordinal_macro_rmse_binwidth <- 0.05
 parameters$histogram_ordinal_macro_rmse_x_range <- c(0, 1)
 parameters$histogram_ordinal_macro_rmse_y_range <- c(0, 10)
-parameters$histogram_ordinal_percentage_discordant_binwidth <- 1
+parameters$histogram_ordinal_percentage_discordant_binwidth <- 2
 parameters$histogram_ordinal_percentage_discordant_x_range <- c(0, 50)
 parameters$histogram_ordinal_percentage_discordant_y_range <- c(0, 10)
 parameters$histogram_categorical_percentage_discordant_binwidth <- 0.2

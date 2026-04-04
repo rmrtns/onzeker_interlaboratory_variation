@@ -25,7 +25,7 @@ library(dplyr)
 ```{r}
 parameters <- new.env()
 parameters$data <- read.csv('data/colab_ed_low_prevalence.csv')
-parameters$identifier <- "Pat"
+parameters$identifier <- "visit_id"
 parameters$continuous_prediction_function <- colab$get_continuous_prediction_colab
 parameters$ordinal_prediction_function <- colab$get_ordinal_prediction_colab
 parameters$categorical_prediction_function <- colab$get_categorical_prediction_colab
@@ -129,7 +129,7 @@ parameters$bootstrap_methods <- NA # choose from c("perc¨, "norm", "bca")
 ```{r}
 parameters$histogram_continuous_median_prediction_binwidth <- 0.05
 parameters$histogram_continuous_median_difference_binwidth <- 0.05
-parameters$histogram_continuous_median_percentage_difference_binwidth <- 0.5
+parameters$histogram_continuous_median_percentage_difference_binwidth <- 2
 parameters$histogram_continuous_mae_binwidth <- 0.05
 parameters$histogram_continuous_rmse_binwidth <- 0.05
 parameters$histogram_continuous_mape_trimmed_binwidth <- 1
@@ -140,7 +140,7 @@ parameters$histogram_ordinal_median_difference_binwidth <- 0.05
 parameters$histogram_ordinal_mae_binwidth <- 0.05
 parameters$histogram_ordinal_micro_rmse_binwidth <- 0.05
 parameters$histogram_ordinal_macro_rmse_binwidth <- 0.05
-parameters$histogram_ordinal_percentage_discordant_binwidth <- 1
+parameters$histogram_ordinal_percentage_discordant_binwidth <- 2
 parameters$histogram_categorical_percentage_discordant_binwidth <- 0.2
 ```
 

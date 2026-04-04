@@ -1,5 +1,5 @@
 ---
-title: "CoLab score: TAE-based tolerance ranges for impact of bias related discordant predictions on crossover within confusion matrices based on simulations_discordance_aggregate_results in ED population with low COVID-19 prevalence"
+title: "CoLab score: TAE-based tolerance ranges for impact of bias related discordant predictions on crossover within confusion matrices in ED population with low COVID-19 prevalence"
 output: html_document
 date: "Report generated on: `r format(Sys.time(), '%Y-%m-%d')`"
 ---
@@ -23,7 +23,7 @@ parameters <- new.env()
 parameters$original_data <- read.csv('data/colab_ed_low_prevalence.csv')
 parameters$discordance_data <- 
   read.csv('out/colab/simulations_discordance/colab_discordance_ed_low_tol_tae_bias_per_individual.csv')
-parameters$identifier <- "Pat"
+parameters$identifier <- "visit_id"
 parameters$model_outcome <- "outcome"
 parameters$model_outcome_class_TRUE <-  "1" 
 ```
@@ -38,11 +38,7 @@ parameters$bootstrap_methods <- NA # choose from c("perc¨, "norm", "bca")
 ## Set plot parameters.
 ```{r}
 parameters$histogram_fn_minus_tp_percentage_point_diff_binwidth <-  0.2
-parameters$histogram_fn_minus_tp_percentage_point_diff_x_range <- c(-5, 5)
-parameters$histogram_fn_minus_tp_percentage_point_diff_y_range <- c(0, 50)
 parameters$histogram_fp_minus_tn_percentage_point_diff_binwidth <-  0.2
-parameters$histogram_fp_minus_tn_percentage_point_diff_x_range <- c(-5, 5)
-parameters$histogram_fp_minus_tn_percentage_point_diff_y_range <- c(0, 10)
 ```
 
 ## Set parameters to save results.

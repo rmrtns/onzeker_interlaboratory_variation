@@ -23,7 +23,7 @@ parameters <- new.env()
 parameters$original_data <- read.csv('data/colab_ed_high_prevalence.csv')
 parameters$discordance_data <-
   read.csv('out/colab/simulations_discordance/colab_discordance_ed_high_tol_tae_bias_per_individual.csv')
-parameters$identifier <- "Pat"
+parameters$identifier <- "visit_id"
 parameters$model_outcome <- "outcome"
 parameters$model_outcome_class_TRUE <-  "1"
 ```
@@ -48,7 +48,7 @@ parameters$histogram_npv_binwidth <- 0.02
 ## Set parameters to save results.
 ```{r}
 parameters$model_name <- 'colab'
-parameters$population <- 'ed_low_high_tae'
+parameters$population <- 'ed_high_tol_tae'
 parameters$path_output <- 'out/colab/simulations_confusion_matrix/'
 ```
 
