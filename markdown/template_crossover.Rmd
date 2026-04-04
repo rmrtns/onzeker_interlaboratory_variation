@@ -121,8 +121,6 @@ histogram_fn_minus_tp_percentage_point_diff <- comparison$get_histogram(
   summary_crossover, 
   "fn_minus_tp_percentage_point_diff",
   "Probability discordant false negative - true positive (%)",
-  parameters$histogram_method,
-  parameters$histogram_method_label,
   parameters$histogram_fn_minus_tp_percentage_point_diff_binwidth,
   parameters$histogram_fn_minus_tp_percentage_point_diff_x_range,
   parameters$histogram_fn_minus_tp_percentage_point_diff_y_range
@@ -156,8 +154,6 @@ histogram_fp_minus_tn_percentage_point_diff <- comparison$get_histogram(
   summary_crossover, 
   "fp_minus_tn_percentage_point_diff",
   "Probability discordant false positive - true negative (%)",
-  parameters$histogram_method,
-  parameters$histogram_method_label,
   parameters$histogram_fp_minus_tn_percentage_point_diff_binwidth,
   parameters$histogram_fp_minus_tn_percentage_point_diff_x_range,
   parameters$histogram_fp_minus_tn_percentage_point_diff_y_range

@@ -1,8 +1,8 @@
 
 selected_variables_egfr <- c(
-  'age' = 'age',
-  'sex' = 'sex',
-  'creatinine' = 'creatinine'
+  'age' = 'Leeft',
+  'sex' = 'Gesl',
+  'creatinine' = 'Kreatinine'
 )
 
 uncertain_variables_indicator_egfr <- c(

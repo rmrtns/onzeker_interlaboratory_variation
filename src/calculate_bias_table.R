@@ -59,6 +59,6 @@ clean_bias_data <- function(data, lab_col, measurement_col, bias_data_names, non
     select(all_of(c(lab_col, bias_data_names))) %>%
     mutate(!!!setNames(as.list(rep(NA, length(non_bias_vector))), non_bias_vector)) %>%
     filter(!if_any(-all_of(non_bias_vector), is.na)) %>%
-    rename(lab = all_of(lab_col)) %>%
+    rename(laboratory = all_of(lab_col)) %>%
     ungroup()
 }

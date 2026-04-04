@@ -7,7 +7,8 @@ source('src/variables_friedewald.R', local = variables <- new.env())
 # Prepare friedewald gp dataset.
 friedewald_gp <- read.csv('data/JuistheidFRIE-HA(Remy)_251029_anonymised_wide_format.csv')
 friedewald_gp_wo_missing <- friedewald_gp %>%
-  filter(complete.cases(across(all_of(variables$selected_variables_friedewald))))
+  filter(complete.cases(across(all_of(variables$selected_variables_friedewald)))) %>%
+  mutate(Gesl = replace_values(Gesl, "M" ~ 1, "V" ~ 0))
 
 write.csv(
   friedewald_gp_wo_missing,
@@ -18,7 +19,8 @@ write.csv(
 # Prepare friedewald cardio dataset.
 friedewald_cardio <- read.csv('data/JuistheidFRIE-Card(Remy)_251017_anonymised_wide_format.csv')
 friedewald_cardio_wo_missing <- friedewald_cardio %>%
-  filter(complete.cases(across(all_of(variables$selected_variables_friedewald))))
+  filter(complete.cases(across(all_of(variables$selected_variables_friedewald)))) %>%
+  mutate(Gesl = replace_values(Gesl, "M" ~ 1, "V" ~ 0))
 
 write.csv(
   friedewald_cardio_wo_missing,

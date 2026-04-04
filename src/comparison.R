@@ -1,14 +1,13 @@
 library(dplyr)
 library(ggplot2)
 
-get_histogram <- function(data, variable, variable_label, method, method_label, binwidth, x_range, y_range){
+get_histogram <- function(data, variable, variable_label, binwidth, x_range, y_range){
   histogram <- ggplot(data = data, aes(x = .data[[variable]])) +
     geom_histogram(binwidth = binwidth, color = "black", fill = "lightgrey") +
     scale_y_continuous(breaks = scales::pretty_breaks()) +
     labs(
       x = variable_label,
-      y = "Frequency",
-      fill = method_label
+      y = "Frequency"
     ) +
     theme_classic() +
     theme(legend.position="none")
@@ -25,11 +24,11 @@ get_histogram <- function(data, variable, variable_label, method, method_label, 
 }
 
 
-get_distribution_table <- function(data, variable, method){
-  results_reference <- data %>% filter(laboratory == "reference") %>% group_by(laboratory) %>% get_distribution(., variable)
+get_distribution_table <- function(data, variable, laboratory){
+  results_reference <- data %>% filter(.data[[laboratory]] == "reference") %>% group_by(.data[[laboratory]]) %>% get_distribution(., variable)
   distribution_altm <- data %>% get_distribution(., variable) %>% mutate(laboratory = "all labs") %>% relocate(laboratory)
-  distribution_per_method <- data %>% group_by(.data[[method]]) %>% get_distribution(., variable)
-  distribution_table <- bind_rows(results_reference, distribution_altm, distribution_per_method)
+  distribution_per_laboratory <- data %>% group_by(.data[[laboratory]]) %>% get_distribution(., variable)
+  distribution_table <- bind_rows(results_reference, distribution_altm, distribution_per_laboratory)
 }
 
 
@@ -55,33 +54,12 @@ get_quantile <- function(x, probs){
   qnt = quantile(x, probs)
   
   qauntile_number = case_when(
-    n < 19 ~ NA,  #based on at least 1/q observations for 95%
+    n < 19 ~ NA,  # based on at least 1/q observations for 95%
     n >= 20 ~ qnt
   )
   
   qauntile_number
 }
-
-
-# get_robust_sd <- function(x){
-#   mad = mad(x)
-#   niqr = normalized_iqr(x)
-#   sd = sd(x)
-#   sd2 = sd_for_2(x)
-#   n = n()
-# 
-#   robust_sd = case_when(
-#     n < 2 ~ NA,
-#     n == 2 & sd2 > 0 ~ sd2,
-#     n == 2 & sd == 0 ~ NA,
-#     n > 2 & mad > 0 ~ mad,
-#     n > 2 & mad == 0 & niqr > 0 ~ niqr,
-#     n > 2 & mad == 0 & niqr == 0 & sd > 0 ~ sd,
-#     n > 2 & mad == 0 & niqr == 0 & sd == 0 ~ NA
-#   )
-# 
-#   robust_sd
-# }
 
 
 get_robust_sd <- function(x){

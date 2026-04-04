@@ -37,8 +37,6 @@ parameters$bootstrap_methods <- NA # choose from c("perc¨, "norm", "bca")
 
 ## Set plot parameters.
 ```{r}
-parameters$histogram_method <- "laboratory"
-parameters$histogram_method_label <- "Laboratory"
 parameters$histogram_fn_minus_tp_percentage_point_diff_binwidth <-  0.2
 parameters$histogram_fn_minus_tp_percentage_point_diff_x_range <- c(-5, 5)
 parameters$histogram_fn_minus_tp_percentage_point_diff_y_range <- c(0, 50)

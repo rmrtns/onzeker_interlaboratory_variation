@@ -7,7 +7,7 @@ create_constant_data <- function(data, variables){
 
 
 simulate_bias <- function(data, identifier, variables, bias_factors, bias_intercepts){
-    if (is.null(names(variables)) || any(names(variables) == "")) {
+  if (is.null(names(variables)) || any(names(variables) == "")) {
     variables_map <- setNames(as.character(variables), as.character(variables))
   } else {
     variables_map <- setNames(as.character(unname(variables)), names(variables))

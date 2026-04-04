@@ -124,8 +124,6 @@ histogram_auroc <- comparison$get_histogram(
   summary_performance_measures, 
   "auroc",
   "Area under the receiver operating characteristic curve",
-  parameters$histogram_method,
-  parameters$histogram_method_label,
   parameters$histogram_auroc_binwidth,
   parameters$histogram_auroc_x_range,
   parameters$histogram_auroc_y_range
@@ -159,8 +157,6 @@ histogram_accuracy <- comparison$get_histogram(
   summary_performance_measures, 
   "accuracy",
   "Accuracy (%)",
-  parameters$histogram_method,
-  parameters$histogram_method_label,
   parameters$histogram_accuracy_binwidth,
   parameters$histogram_accuracy_x_range,
   parameters$histogram_accuracy_y_range
@@ -195,8 +191,6 @@ histogram_sensitivity <- comparison$get_histogram(
   summary_performance_measures, 
   "sensitivity",
   "Sensitivity (%)",
-  parameters$histogram_method,
-  parameters$histogram_method_label,
   parameters$histogram_sensitivity_binwidth,
   parameters$histogram_sensitivity_x_range,
   parameters$histogram_sensitivity_y_range
@@ -230,8 +224,6 @@ histogram_specificity <- comparison$get_histogram(
   summary_performance_measures, 
   "specificity",
   "specificity",
-  parameters$histogram_method,
-  parameters$histogram_method_label,
   parameters$histogram_specificity_binwidth,
   parameters$histogram_specificity_x_range,
   parameters$histogram_specificity_y_range
@@ -265,8 +257,6 @@ histogram_ppv <- comparison$get_histogram(
   summary_performance_measures, 
   "pos_pred_value",
   "Positive predictive value (%)",
-  parameters$histogram_method,
-  parameters$histogram_method_label,
   parameters$histogram_ppv_binwidth,
   parameters$histogram_ppv_x_range,
   parameters$histogram_ppv_y_range
@@ -300,8 +290,6 @@ histogram_npv <- comparison$get_histogram(
   summary_performance_measures, 
   "neg_pred_value",
   "Negative predictive value (%)",
-  parameters$histogram_method,
-  parameters$histogram_method_label,
   parameters$histogram_npv_binwidth,
   parameters$histogram_npv_x_range,
   parameters$histogram_npv_y_range

@@ -19,7 +19,7 @@ source('src/predict_colab.R', local = colab <- new.env())
 ## Set simulation parameters.
 ```{r}
 parameters <- new.env()
-parameters$data <- read.csv('data/colab_ed_low_prevalence.csv')
+parameters$data <- read.csv('data/colab_ed_low_prevalence_abstract.csv')
 parameters$identifier <- "Pat"
 parameters$continuous_prediction_function <- colab$get_continuous_prediction_colab
 parameters$ordinal_prediction_function <- colab$get_ordinal_prediction_colab
@@ -27,7 +27,6 @@ parameters$categorical_prediction_function <- colab$get_categorical_prediction_c
 parameters$model <- NA
 parameters$model_variables <- variables$selected_variables_colab
 parameters$uncertain_variables <- variables$selected_variables_colab[variables$uncertain_variables_indicator_colab]
-parameters$laboratory <- "lab"
 ```
 
 ## Set bias data parameters.
@@ -58,8 +57,6 @@ parameters$bootstrap_methods <- NA # choose from c("perc¨, "norm", "bca")
 
 ## Set plot parameters.
 ```{r}
-parameters$histogram_method <- "laboratory"
-parameters$histogram_method_label <- "Laboratory"
 parameters$histogram_continuous_median_prediction_binwidth <- 0.05
 parameters$histogram_continuous_median_prediction_x_range <- c(-6, -4)
 parameters$histogram_continuous_median_prediction_y_range <- c(0, 10)

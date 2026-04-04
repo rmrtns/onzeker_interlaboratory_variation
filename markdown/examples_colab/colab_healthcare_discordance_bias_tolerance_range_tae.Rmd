@@ -32,7 +32,6 @@ parameters$categorical_prediction_function <- colab$get_categorical_prediction_c
 parameters$model <- NA
 parameters$model_variables <- variables$selected_variables_colab
 parameters$uncertain_variables <- variables$selected_variables_colab[variables$uncertain_variables_indicator_colab]
-parameters$laboratory <- "lab"
 ```
 
 ## Set tolerance ranges for individual laboratory tests.
@@ -128,8 +127,6 @@ parameters$bootstrap_methods <- NA # choose from c("perc¨, "norm", "bca")
 
 ## Set plot parameters.
 ```{r}
-parameters$histogram_method <- "laboratory"
-parameters$histogram_method_label <- "Laboratory"
 parameters$histogram_continuous_median_prediction_binwidth <- 0.05
 parameters$histogram_continuous_median_difference_binwidth <- 0.05
 parameters$histogram_continuous_median_percentage_difference_binwidth <- 0.5

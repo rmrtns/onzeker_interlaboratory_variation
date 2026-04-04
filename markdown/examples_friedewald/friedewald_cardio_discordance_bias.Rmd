@@ -29,7 +29,6 @@ parameters$categorical_prediction_function <- friedewald$get_categorical_predict
 parameters$model <- NA
 parameters$model_variables <- variables$selected_variables_friedewald
 parameters$uncertain_variables <- variables$selected_variables_friedewald[variables$uncertain_variables_indicator_friedewald]
-parameters$laboratory <- "lab"
 ```
 
 ## Set bias data parameters.
@@ -55,8 +54,6 @@ parameters$bootstrap_methods <- NA # choose from c("perc¨, "norm", "bca")
 
 ## Set plot parameters.
 ```{r}
-parameters$histogram_method <- "laboratory"
-parameters$histogram_method_label <- "Laboratory"
 parameters$histogram_continuous_median_prediction_binwidth <- 0.5
 parameters$histogram_continuous_median_prediction_x_range <- c(-20, 20)
 parameters$histogram_continuous_median_prediction_y_range <- c(0, 10)

@@ -21,15 +21,14 @@ source('src/predict_egfr.R', local = egfr <- new.env())
 ## Set simulation parameters.
 ```{r}
 parameters <- new.env()
-parameters$data <- read.csv('data/test_data.csv')
-parameters$identifier <- "id"
+parameters$data <- read.csv('data/egfr_int.csv')
+parameters$identifier <- "BezoekersID"
 parameters$continuous_prediction_function <- egfr$get_continuous_prediction_egfr
 parameters$ordinal_prediction_function <- egfr$get_ordinal_prediction_egfr
 parameters$categorical_prediction_function <- egfr$get_categorical_prediction_egfr
 parameters$model <- NA
 parameters$model_variables <- variables$selected_variables_egfr
 parameters$uncertain_variables <- variables$selected_variables_egfr[variables$uncertain_variables_indicator_egfr]
-parameters$laboratory <- "lab"
 ```
 
 ## Set bias data parameters.
@@ -51,8 +50,6 @@ parameters$bootstrap_methods <- NA # choose from c("perc¨, "norm", "bca")
 
 ## Set plot parameters.
 ```{r}
-parameters$histogram_method <- "laboratory"
-parameters$histogram_method_label <- "Laboratory"
 parameters$histogram_continuous_median_prediction_binwidth <- 0.5
 parameters$histogram_continuous_median_prediction_x_range <- c(-20, 20)
 parameters$histogram_continuous_median_prediction_y_range <- c(0, 10)

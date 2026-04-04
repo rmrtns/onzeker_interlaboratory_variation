@@ -37,8 +37,6 @@ parameters$bootstrap_methods <- NA # choose from c("perc¨, "norm", "bca")
 
 ## Set plot parameters.
 ```{r}
-parameters$histogram_method <- "laboratory"
-parameters$histogram_method_label <- "Laboratory"
 parameters$histogram_auroc_binwidth <-  0.02
 parameters$histogram_auroc_x_range <- c(0.5, 1.0)
 parameters$histogram_auroc_y_range <- c(0, 50)

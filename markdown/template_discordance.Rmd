@@ -40,7 +40,7 @@ discordance_status <-
     parameters$uncertain_variables,
     bias_slopes,
     bias_intercepts,
-    parameters$laboratory,
+    "laboratory",
     parameters$continuous_prediction_function,
     parameters$ordinal_prediction_function,
     parameters$categorical_prediction_function,
@@ -144,8 +144,6 @@ histogram_continuous_median_prediction <- comparison$get_histogram(
   summary_discordance_status, 
   "continuous_median_prediction",
   "Median continuous prediction",
-  parameters$histogram_method,
-  parameters$histogram_method_label,
   parameters$histogram_continuous_median_prediction_binwidth,
   parameters$histogram_continuous_median_prediction_x_range,
   parameters$histogram_continuous_median_prediction_y_range
@@ -179,8 +177,6 @@ histogram_continuous_median_difference <- comparison$get_histogram(
   summary_discordance_status, 
   "continuous_median_difference",
   "Median difference",
-  parameters$histogram_method,
-  parameters$histogram_method_label,
   parameters$histogram_continuous_median_difference_binwidth,
   parameters$histogram_continuous_median_difference_x_range,
   parameters$histogram_continuous_median_difference_y_range
@@ -214,8 +210,6 @@ histogram_continuous_median_percentage_difference <- comparison$get_histogram(
   summary_discordance_status, 
   "continuous_median_percentage_difference",
   "Median percentage difference",
-  parameters$histogram_method,
-  parameters$histogram_method_label,
   parameters$histogram_continuous_median_percentage_difference_binwidth,
   parameters$histogram_continuous_median_percentage_difference_x_range,
   parameters$histogram_continuous_median_percentage_difference_y_range
@@ -249,8 +243,6 @@ histogram_continuous_mae <- comparison$get_histogram(
   summary_discordance_status, 
   "continuous_mae",
   "Mean absolute error",
-  parameters$histogram_method,
-  parameters$histogram_method_label,
   parameters$histogram_continuous_mae_binwidth,
   parameters$histogram_continuous_mae_x_range,
   parameters$histogram_continuous_mae_y_range
@@ -284,8 +276,6 @@ histogram_continuous_rmse <- comparison$get_histogram(
   summary_discordance_status, 
   "continuous_rmse",
   "Root mean squared error",
-  parameters$histogram_method,
-  parameters$histogram_method_label,
   parameters$histogram_continuous_rmse_binwidth,
   parameters$histogram_continuous_rmse_x_range,
   parameters$histogram_continuous_rmse_y_range
@@ -319,8 +309,6 @@ histogram_continuous_mape_trimmed <- comparison$get_histogram(
   summary_discordance_status, 
   "continuous_mape_trimmed",
   "Trimmed mean absolute percentage error",
-  parameters$histogram_method,
-  parameters$histogram_method_label,
   parameters$histogram_continuous_mape_trimmed_binwidth,
   parameters$histogram_continuous_mape_trimmed_x_range,
   parameters$histogram_continuous_mape_trimmed_y_range
@@ -354,8 +342,6 @@ histogram_continuous_mdape <- comparison$get_histogram(
   summary_discordance_status, 
   "continuous_mdape",
   "Median absolute percentage error",
-  parameters$histogram_method,
-  parameters$histogram_method_label,
   parameters$histogram_continuous_mdape_binwidth,
   parameters$histogram_continuous_mdape_x_range,
   parameters$histogram_continuous_mdape_y_range
@@ -389,8 +375,6 @@ histogram_continuous_rmspe_trimmed <- comparison$get_histogram(
   summary_discordance_status, 
   "continuous_rmspe_trimmed",
   "Trimmed root mean squared percentage error",
-  parameters$histogram_method,
-  parameters$histogram_method_label,
   parameters$histogram_continuous_rmspe_trimmed_binwidth,
   parameters$histogram_continuous_rmspe_trimmed_x_range,
   parameters$histogram_continuous_rmspe_trimmed_y_range
@@ -424,8 +408,6 @@ histogram_continuous_rmdspe <- comparison$get_histogram(
   summary_discordance_status, 
   "continuous_rmdspe",
   "Root median squared percentage error",
-  parameters$histogram_method,
-  parameters$histogram_method_label,
   parameters$histogram_continuous_rmdspe_binwidth,
   parameters$histogram_continuous_rmdspe_x_range,
   parameters$histogram_continuous_rmdspe_y_range
@@ -459,8 +441,6 @@ histogram_ordinal_median_difference <- comparison$get_histogram(
   summary_discordance_status, 
   "ordinal_median_difference",
   "Median difference",
-  parameters$histogram_method,
-  parameters$histogram_method_label,
   parameters$histogram_ordinal_median_difference_binwidth,
   parameters$histogram_ordinal_median_difference_x_range,
   parameters$histogram_ordinal_median_difference_y_range
@@ -494,8 +474,6 @@ histogram_ordinal_mae <- comparison$get_histogram(
   summary_discordance_status, 
   "ordinal_mae",
   "Mean absolute error",
-  parameters$histogram_method,
-  parameters$histogram_method_label,
   parameters$histogram_ordinal_mae_binwidth,
   parameters$histogram_ordinal_mae_x_range,
   parameters$histogram_ordinal_mae_y_range
@@ -529,8 +507,6 @@ histogram_ordinal_micro_rmse <- comparison$get_histogram(
   summary_discordance_status, 
   "ordinal_micro_rmse",
   "Micro-averaged root mean squared error",
-  parameters$histogram_method,
-  parameters$histogram_method_label,
   parameters$histogram_ordinal_micro_rmse_binwidth,
   parameters$histogram_ordinal_micro_rmse_x_range,
   parameters$histogram_ordinal_micro_rmse_y_range
@@ -564,8 +540,6 @@ histogram_ordinal_macro_rmse <- comparison$get_histogram(
   summary_discordance_status, 
   "ordinal_macro_rmse",
   "Macro-averaged root mean squared error",
-  parameters$histogram_method,
-  parameters$histogram_method_label,
   parameters$histogram_ordinal_macro_rmse_binwidth,
   parameters$histogram_ordinal_macro_rmse_x_range,
   parameters$histogram_ordinal_macro_rmse_y_range
@@ -599,8 +573,6 @@ histogram_ordinal_percentage_discordant <- comparison$get_histogram(
   summary_discordance_status, 
   "ordinal_percentage_discordant",
   "Percentage discordant",
-  parameters$histogram_method,
-  parameters$histogram_method_label,
   parameters$histogram_ordinal_percentage_discordant_binwidth,
   parameters$histogram_ordinal_percentage_discordant_x_range,
   parameters$histogram_ordinal_percentage_discordant_y_range
@@ -634,8 +606,6 @@ histogram_categorical_percentage_discordant <- comparison$get_histogram(
   summary_discordance_status, 
   "categorical_percentage_discordant",
   "Percentage discordant",
-  parameters$histogram_method,
-  parameters$histogram_method_label,
   parameters$histogram_categorical_percentage_discordant_binwidth,
   parameters$histogram_categorical_percentage_discordant_x_range,
   parameters$histogram_categorical_percentage_discordant_y_range

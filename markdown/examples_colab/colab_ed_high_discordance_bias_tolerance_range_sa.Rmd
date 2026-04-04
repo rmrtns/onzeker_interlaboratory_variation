@@ -32,20 +32,19 @@ parameters$categorical_prediction_function <- colab$get_categorical_prediction_c
 parameters$model <- NA
 parameters$model_variables <- variables$selected_variables_colab
 parameters$uncertain_variables <- variables$selected_variables_colab[variables$uncertain_variables_indicator_colab]
-parameters$laboratory <- "lab"
 ```
 
 ## Set tolerance ranges for individual laboratory tests.
 ```{r}
 tolerance_range_individual_tests_slopes <- list( 
-  Erytrocyten_BV =      c((0.963), (1.037)),
-  Leukocyten_BV =       c((0.921), (1.079)),
-  BilirubineTotaal_BV = c((0.853), (1.141)),
-  LD_BV =               c((0.893), (1.107)),
-  AlkFosf_BV =          c((0.885), (1.115)),
-  GGT_BV =              c((0.905), (1.095)),
-  Albumine_BV =         c((0.917), (1.083)),
-  CRP_BV =              c((0.845), (1.155))
+  Erytrocyten_BV =      c(0.963, 1.037),
+  Leukocyten_BV =       c(0.921, 1.079),
+  BilirubineTotaal_BV = c(0.853, 1.141),
+  LD_BV =               c(0.893, 1.107),
+  AlkFosf_BV =          c(0.885, 1.115),
+  GGT_BV =              c(0.905, 1.095),
+  Albumine_BV =         c(0.917, 1.083),
+  CRP_BV =              c(0.845, 1.155)
 )
 
 all_combos_slopes <- expand.grid(tolerance_range_individual_tests_slopes)
@@ -128,8 +127,6 @@ parameters$bootstrap_methods <- NA # choose from c("perc¨, "norm", "bca")
 
 ## Set plot parameters.
 ```{r}
-parameters$histogram_method <- "laboratory"
-parameters$histogram_method_label <- "Laboratory"
 parameters$histogram_continuous_median_prediction_binwidth <- 0.05
 parameters$histogram_continuous_median_difference_binwidth <- 0.05
 parameters$histogram_continuous_median_percentage_difference_binwidth <- 0.5
