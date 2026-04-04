@@ -36,6 +36,6 @@ write.csv(
 
 write.csv(
   colab_high_prevalence,
-  paste0('data/colab_ed_low_prevalence.csv'),
+  paste0('data/colab_ed_high_prevalence.csv'),
   row.names = FALSE
 )
