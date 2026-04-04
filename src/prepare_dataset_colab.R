@@ -16,16 +16,16 @@ colab_with_log <- read.csv('data/CoLab_externe_validatie_Zuyderland_met_datum.cs
 
 # Prepare dataset.
 colab_wo_log <- colab_variable_de_log(colab_with_log)
-colab_wo_log <- colab_wo_log %>% 
+colab_prepared <- colab_wo_log %>% 
   mutate(
     ER_date = lubridate::as_date(ER_date),
     visit = row_number()
   ) %>%
   filter(age >= 18)
 
-colab_low_prevalence <- colab_wo_log
+colab_low_prevalence <- colab_prepared
   
-colab_high_prevalence <- colab_wo_log %>%
+colab_high_prevalence <- colab_prepared %>%
   filter(ER_date >= lubridate::as_date("2020-03-01"))
 
 write.csv(
