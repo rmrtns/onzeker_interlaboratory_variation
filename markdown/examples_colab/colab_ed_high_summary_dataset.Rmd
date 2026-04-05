@@ -34,6 +34,7 @@ parameters$ordinal_prediction_function <- colab$get_ordinal_prediction_colab
 parameters$categorical_prediction_function <- colab$get_categorical_prediction_colab
 parameters$model <- NA
 parameters$model_variables <- variables$selected_variables_colab
+parameters$model_outcome <- "outcome"
 ```
 
 ## Calculate reference predictions.
@@ -53,7 +54,7 @@ reference_predictions <- discordance$get_reference_predictions(
 - Distribution of predictive variables.
 ```{r, echo=FALSE}
 parameters$data %>% tbl_summary(
-  include = as.character(parameters$model_variables),
+  include = c(as.character(parameters$model_variables), parameters$model_outcome),
   digits = everything() ~ 2
 )
 ```
@@ -62,6 +63,14 @@ parameters$data %>% tbl_summary(
 ```{r, echo=FALSE}
 reference_predictions %>% tbl_summary(
   include = c(continuous_reference, ordinal_reference, categorical_reference),
+  digits = everything() ~ 2
+)
+```
+
+- Distribution of outcome.
+```{r, echo=FALSE}
+parameters$data %>% tbl_summary(
+  include = as.character(parameters$model_outcome),
   digits = everything() ~ 2
 )
 ```
