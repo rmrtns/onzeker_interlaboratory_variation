@@ -14,7 +14,9 @@ set.seed(seed = 200)
 
 ## Import functions and variables.
 ```{r, include=FALSE, warning=FALSE, message=FALSE}
+source('src/simulate_discordance.R', local = discordance <- new.env())
 source('src/variables_friedewald.R', local = variables <- new.env())
+source('src/predict_friedewald.R', local = colab <- new.env())
 ```
 
 ```{r, include=FALSE, warning=FALSE, message=FALSE}
@@ -25,8 +27,13 @@ library(gtsummary)
 ## Read data.
 ```{r}
 parameters <- new.env()
-parameters$data <- read.csv('data/test_data.csv')
-parameters$model_variables <- variables$selected_variables_friewald
+parameters$data <- read.csv('data/friedewald_cardio.csv')
+parameters$identifier <- "BezoekersID"
+parameters$continuous_prediction_function <- colab$get_continuous_prediction_colab
+parameters$ordinal_prediction_function <- colab$get_ordinal_prediction_colab
+parameters$categorical_prediction_function <- colab$get_categorical_prediction_colab
+parameters$model <- NA
+parameters$model_variables <- variables$selected_variables_friedewald
 ```
 
 ## Summarise dataset.

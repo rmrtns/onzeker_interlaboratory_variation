@@ -14,7 +14,9 @@ set.seed(seed = 200)
 
 ## Import functions and variables.
 ```{r, include=FALSE, warning=FALSE, message=FALSE}
+source('src/simulate_discordance.R', local = discordance <- new.env())
 source('src/variables_egfr.R', local = variables <- new.env())
+source('src/predict_egfr.R', local = colab <- new.env())
 ```
 
 ```{r, include=FALSE, warning=FALSE, message=FALSE}
@@ -26,13 +28,40 @@ library(gtsummary)
 ```{r}
 parameters <- new.env()
 parameters$data <- read.csv('data/test_data.csv')
+parameters$identifier <- "BezoekersID"
+parameters$continuous_prediction_function <- colab$get_continuous_prediction_colab
+parameters$ordinal_prediction_function <- colab$get_ordinal_prediction_colab
+parameters$categorical_prediction_function <- colab$get_categorical_prediction_colab
+parameters$model <- NA
 parameters$model_variables <- variables$selected_variables_egfr
 ```
 
+## Calculate reference predictions.
+```{r, echo=FALSE}
+reference_predictions <- discordance$get_reference_predictions(
+  parameters$data, 
+  parameters$identifier,
+  parameters$continuous_prediction_function,
+  parameters$ordinal_prediction_function,
+  parameters$categorical_prediction_function,
+  list(model_variables = parameters$model_variables)
+)
+```
+
 ## Summarise dataset.
+
+- Distribution of predictive variables.
 ```{r, echo=FALSE}
 parameters$data %>% tbl_summary(
   include = as.character(parameters$model_variables),
+  digits = everything() ~ 2
+)
+```
+
+- Distribution of reference predictions.
+```{r, echo=FALSE}
+reference_predictions %>% tbl_summary(
+  include = c(continuous_reference, ordinal_reference, categorical_reference),
   digits = everything() ~ 2
 )
 ```
