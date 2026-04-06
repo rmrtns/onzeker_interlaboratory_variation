@@ -15,12 +15,14 @@ set.seed(seed = 200)
 ## Import functions and variables.
 ```{r, include=FALSE, warning=FALSE, message=FALSE}
 source('src/simulate_discordance.R', local = discordance <- new.env())
+source('src/confusion_matrix.R', local = confusion <- new.env())
 source('src/variables_colab.R', local = variables <- new.env())
 source('src/predict_colab.R', local = colab <- new.env())
 ```
 
 ```{r, include=FALSE, warning=FALSE, message=FALSE}
 library(dplyr)
+library(gt)
 library(gtsummary)
 ```
 
@@ -44,13 +46,21 @@ parameters$model_outcome <- "outcome"
 
 ## Calculate reference predictions.
 ```{r, echo=FALSE}
-reference_predictions <- discordance$get_reference_predictions(
+reference_predictions <- discordance$get_predictions(
   parameters$data, 
   parameters$identifier,
   parameters$continuous_prediction_function,
   parameters$ordinal_prediction_function,
   parameters$categorical_prediction_function,
   list(model_variables = parameters$model_variables)
+)
+```
+
+```{r, echo=FALSE}
+performance_measures <- confusion$get_summmary_performance_measures(
+  reference_predictions,
+  parameters$model_outcome,
+  parameters$model_outcome_class_TRUE
 )
 ```
 
@@ -68,16 +78,26 @@ parameters$data %>% tbl_summary(
 - Distribution of reference predictions.
 ```{r, echo=FALSE}
 reference_predictions %>% tbl_summary(
-  include = c(continuous_reference, ordinal_reference, categorical_reference),
+  include = c(continuous_prediction, ordinal_prediction, categorical_prediction),
   statistic = all_continuous() ~ "{median} [{p2_5}; {p97_5}]",
   digits = everything() ~ 2
 )
 ```
 
-- Distribution of outcome.
+- Original performance measures.
 ```{r, echo=FALSE}
-parameters$data %>% tbl_summary(
-  include = as.character(parameters$model_outcome),
-  digits = everything() ~ 2
-)
+performance_measures %>% 
+  pivot_longer(
+    everything(),
+    names_to = "performance_measure"
+  ) %>%
+  mutate(value = round(value, digits = 4)) %>% 
+  gt() %>%
+  tab_style(
+    style = cell_text(weight = "bold"),
+    locations = list(
+      cells_column_labels(columns = c(performance_measure, value))
+    )
+  )
 ```
+
