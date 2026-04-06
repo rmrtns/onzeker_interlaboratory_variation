@@ -468,7 +468,7 @@ print$print_table_distribution(distribution_ordinal_median_difference, 4)
 ```
 
 ```{r, eval = is.function(parameters$ordinal_prediction_function), results = 'asis', echo=FALSE}
-cat("* Histogram and distribution of mean_absolute_error for ordinal predictions:")
+cat("* Histogram and distribution of mean absolute error for ordinal predictions:")
 
 histogram_ordinal_mae <- comparison$get_histogram(
   summary_discordance_status, 
