@@ -115,7 +115,7 @@ print$print_table_summary(summary_crossover, 4)
 ```
 
 ```{r, results = 'asis', echo=FALSE}
-cat("* Histogram and distribution of percentage point difference between the probability discordant FN negative and TP results:")
+cat("* Histogram and distribution of percentage point difference between the probability discordant FN and TP results:")
 
 histogram_fn_minus_tp_percentage_point_diff <- comparison$get_histogram(
   summary_crossover, 
