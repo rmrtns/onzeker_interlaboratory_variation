@@ -3,7 +3,7 @@ library(ggplot2)
 
 get_histogram <- function(data, variable, variable_label, binwidth, x_range, y_range){
   histogram <- ggplot(data = data, aes(x = .data[[variable]])) +
-    geom_histogram(binwidth = binwidth, color = "black", fill = "lightgrey") +
+    geom_histogram(binwidth = binwidth, boundary = 0, closed ="left", color = "black", fill = "lightgrey") +
     scale_y_continuous(breaks = scales::pretty_breaks()) +
     labs(
       x = variable_label,

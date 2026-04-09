@@ -137,42 +137,6 @@ get_discordance_categorical_prediction <- function(data){
 }
 
 
-plot_distribution_per_laboratory <- function(data, variable){
-  for (lab in unique(data[["laboratory"]])){
-    data_per_laboratory <- data %>% filter(laboratory == lab)
-    reference <- median(data_per_laboratory[[variable]])
-    histogram <- plot_distribution_histogram(data_per_laboratory, variable, reference)
-    qqplot <- plot_distribution_qqplot(data_per_laboratory, variable)
-    combined_plots <- ggarrange(histogram, qqplot)
-    plot(annotate_figure(combined_plots, top = text_grob(lab, face = "bold", size = 18)))
-  }
-  
-}
-
-
-plot_distribution_histogram <- function(data, variable, reference){
-  ggplot(data = data, aes(x = .data[[variable]], y = after_stat(density))) +
-    geom_histogram(bins = ceiling(length(data[[variable]])/25), color = "black", fill = "white") +
-    geom_vline(xintercept = reference, color = "black", linetype = "dashed") +
-    labs(title = str_wrap(paste0("Histogram ", variable), width = 8),
-         x = variable) +
-    theme_classic() +
-    theme(plot.title = element_text(hjust = 0.5))
-}
-
-
-plot_distribution_qqplot <- function(data, variable){
-  ggplot(data = data, aes(sample = .data[[variable]])) +
-    geom_qq() +
-    geom_qq_line() +
-    labs(title = str_wrap(paste0("QQ plot ", variable), width = 8),
-         x = "Theoretical",
-         y = variable) +
-    theme_classic() +
-    theme(plot.title = element_text(hjust = 0.5))
-}
-
-
 get_summary_of_discordance_measures_all_laboratories <- function(data){
   laboratories <- as.character(unique(data[["laboratory"]]))
   list_of_summaries <- list()

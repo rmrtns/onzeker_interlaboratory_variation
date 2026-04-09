@@ -127,9 +127,9 @@ parameters$bootstrap_methods <- NA # choose from c("perc¨, "norm", "bca")
 
 ## Set plot parameters.
 ```{r}
-parameters$histogram_continuous_median_prediction_binwidth <- 0.05
-parameters$histogram_continuous_median_difference_binwidth <- 0.05
-parameters$histogram_continuous_median_percentage_difference_binwidth <- 0.5
+parameters$histogram_continuous_median_prediction_binwidth <- 0.1
+parameters$histogram_continuous_median_difference_binwidth <- 0.1
+parameters$histogram_continuous_median_percentage_difference_binwidth <- 2
 parameters$histogram_continuous_mae_binwidth <- 0.05
 parameters$histogram_continuous_rmse_binwidth <- 0.05
 parameters$histogram_continuous_mape_trimmed_binwidth <- 1
@@ -140,7 +140,7 @@ parameters$histogram_ordinal_median_difference_binwidth <- 0.05
 parameters$histogram_ordinal_mae_binwidth <- 0.05
 parameters$histogram_ordinal_micro_rmse_binwidth <- 0.05
 parameters$histogram_ordinal_macro_rmse_binwidth <- 0.05
-parameters$histogram_ordinal_percentage_discordant_binwidth <- 1
+parameters$histogram_ordinal_percentage_discordant_binwidth <- 2
 parameters$histogram_categorical_percentage_discordant_binwidth <- 0.2
 ```
 
