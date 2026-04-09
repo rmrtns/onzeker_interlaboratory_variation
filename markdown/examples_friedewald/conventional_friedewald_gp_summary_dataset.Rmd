@@ -50,17 +50,22 @@ reference_predictions <- discordance$get_reference_predictions(
 
 ## Summarise dataset.
 
+```{r, echo=FALSE}
+conversion_factors <- c(
+  total_cholesterol = 38.67,
+  hdl = 38.67,
+  triglycerides = 88.5
+)
+
+```
+
 - Distribution of predictive variables.
 ```{r, echo=FALSE}
 parameters$data %>% 
   mutate(
     across(
-      c("Cholesterol", "HDL.Cholesterol", "Triglyceriden"),
-      ~ .x * c(
-        Cholesterol = 38.61,
-        HDL.Cholesterol = 38.61,
-        Triglyceriden = 88.5
-      ) [cur_column()]
+      all_of(unname(parameters$model_variables)),
+      ~ .x * conversion_factors[names(parameters$model_variables)[match(cur_column(), unname(parameters$model_variables))]]
     )
   ) %>% 
   tbl_summary(
