@@ -1,5 +1,5 @@
 ---
-title: 'Friedewald: Summary dataset cardiology outpatient population'
+title: 'Friedewald: Summary dataset cardiology outpatient population (conventional units)'
 output:
   html_document: default
   pdf_document: default
@@ -40,11 +40,21 @@ parameters$model_variables <- variables$selected_variables_friedewald
 
 - Distribution of predictive variables.
 ```{r, echo=FALSE}
-parameters$data %>% tbl_summary(
-  include = as.character(parameters$model_variables),
-  digits = everything() ~ 2
+parameters$data %>% 
+  mutate(
+    across(
+      c("Cholesterol", "HDL.Cholesterol", "Triglyceriden"),
+      ~ .x * c(
+        Cholesterol = 38.61,
+        HDL.Cholesterol = 38.61,
+        Triglyceriden = 88.5
+      ) [cur_column()]
+    )
+  ) %>% 
+  tbl_summary(
+    include = as.character(parameters$model_variables),
+    digits = everything() ~ 2
 )
-```
 
 - Distribution of reference predictions.
 ```{r, echo=FALSE}

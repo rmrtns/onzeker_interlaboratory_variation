@@ -16,7 +16,7 @@ set.seed(seed = 200)
 ```{r, include=FALSE, warning=FALSE, message=FALSE}
 source('src/simulate_discordance.R', local = discordance <- new.env())
 source('src/variables_egfr.R', local = variables <- new.env())
-source('src/predict_egfr.R', local = colab <- new.env())
+source('src/predict_egfr.R', local = egfr <- new.env())
 ```
 
 ```{r, include=FALSE, warning=FALSE, message=FALSE}
@@ -29,9 +29,9 @@ library(gtsummary)
 parameters <- new.env()
 parameters$data <- read.csv('data/JuistheidCKD-HA(Remy)_251017_anonymised_wide_format.csv')
 parameters$identifier <- "BezoekersID"
-parameters$continuous_prediction_function <- colab$get_continuous_prediction_colab
-parameters$ordinal_prediction_function <- colab$get_ordinal_prediction_colab
-parameters$categorical_prediction_function <- colab$get_categorical_prediction_colab
+parameters$continuous_prediction_function <- egfr$get_continuous_prediction_egfr
+parameters$ordinal_prediction_function <- egfr$get_ordinal_prediction_egfr
+parameters$categorical_prediction_function <- egfr$get_categorical_prediction_s
 parameters$model <- NA
 parameters$model_variables <- variables$selected_variables_egfr
 ```

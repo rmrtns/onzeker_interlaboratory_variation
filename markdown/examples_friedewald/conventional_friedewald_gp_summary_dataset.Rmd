@@ -1,5 +1,5 @@
 ---
-title: 'eGFR: Summary dataset internal medicine outpatient population'
+title: 'Friedewald: Summary dataset gp population (conventional units)'
 output:
   html_document: default
   pdf_document: default
@@ -15,8 +15,8 @@ set.seed(seed = 200)
 ## Import functions and variables.
 ```{r, include=FALSE, warning=FALSE, message=FALSE}
 source('src/simulate_discordance.R', local = discordance <- new.env())
-source('src/variables_egfr.R', local = variables <- new.env())
-source('src/predict_egfr.R', local = egfr <- new.env())
+source('src/variables_friedewald.R', local = variables <- new.env())
+source('src/predict_friedewald.R', local = friedewald <- new.env())
 ```
 
 ```{r, include=FALSE, warning=FALSE, message=FALSE}
@@ -27,13 +27,13 @@ library(gtsummary)
 ## Read data.
 ```{r}
 parameters <- new.env()
-parameters$data <- read.csv('data/test_data.csv')
+parameters$data <- read.csv('data/friedewald_gp.csv')
 parameters$identifier <- "BezoekersID"
-parameters$continuous_prediction_function <- egfr$get_continuous_prediction_egfr
-parameters$ordinal_prediction_function <- egfr$get_ordinal_prediction_egfr
-parameters$categorical_prediction_function <- egfr$get_categorical_prediction_egfr
+parameters$continuous_prediction_function <- friedewald$get_continuous_prediction_ldl
+parameters$ordinal_prediction_function <- friedewald$get_ordinal_prediction_ldl
+parameters$categorical_prediction_function <- friedewald$get_categorical_prediction_ldl
 parameters$model <- NA
-parameters$model_variables <- variables$selected_variables_egfr
+parameters$model_variables <- variables$selected_variables_friedewald
 ```
 
 ## Calculate reference predictions.
@@ -52,9 +52,20 @@ reference_predictions <- discordance$get_reference_predictions(
 
 - Distribution of predictive variables.
 ```{r, echo=FALSE}
-parameters$data %>% tbl_summary(
-  include = as.character(parameters$model_variables),
-  digits = everything() ~ 2
+parameters$data %>% 
+  mutate(
+    across(
+      c("Cholesterol", "HDL.Cholesterol", "Triglyceriden"),
+      ~ .x * c(
+        Cholesterol = 38.61,
+        HDL.Cholesterol = 38.61,
+        Triglyceriden = 88.5
+      ) [cur_column()]
+    )
+  ) %>% 
+  tbl_summary(
+    include = as.character(parameters$model_variables),
+    digits = everything() ~ 2
 )
 ```
 
