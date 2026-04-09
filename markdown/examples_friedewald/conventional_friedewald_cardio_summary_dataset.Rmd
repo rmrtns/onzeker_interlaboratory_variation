@@ -16,7 +16,7 @@ set.seed(seed = 200)
 ```{r, include=FALSE, warning=FALSE, message=FALSE}
 source('src/simulate_discordance.R', local = discordance <- new.env())
 source('src/variables_friedewald.R', local = variables <- new.env())
-source('src/predict_friedewald.R', local = friedewald <- new.env())
+source('src/predict_friedewald_conventional.R', local = friedewald <- new.env())
 ```
 
 ```{r, include=FALSE, warning=FALSE, message=FALSE}
