@@ -42,6 +42,18 @@ parameters$model <- NA
 parameters$model_variables <- variables$selected_variables_friedewald
 ```
 
+## Calculate reference predictions.
+```{r, echo=FALSE}
+reference_predictions <- discordance$get_reference_predictions(
+  parameters$data, 
+  parameters$identifier,
+  parameters$continuous_prediction_function,
+  parameters$ordinal_prediction_function,
+  parameters$categorical_prediction_function,
+  list(model_variables = parameters$model_variables)
+)
+```
+
 ## Summarise dataset.
 
 - Distribution of predictive variables.
