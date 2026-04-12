@@ -55,7 +55,7 @@ parameters$bootstrap_methods <- NA # choose from c("perc¨, "norm", "bca")
 ## Set plot parameters.
 ```{r}
 parameters$histogram_continuous_median_prediction_binwidth <- 1
-parameters$histogram_continuous_median_prediction_x_range <- c(80, 120)
+parameters$histogram_continuous_median_prediction_x_range <- c(60, 120)
 parameters$histogram_continuous_median_prediction_y_range <- c(0, 25)
 parameters$histogram_continuous_median_difference_binwidth <- 1
 parameters$histogram_continuous_median_difference_x_range <- c(-15, 15)

@@ -73,9 +73,15 @@ get_reference_predictions <- function(data, identifier, predict_continuous, pred
 
 get_predictions <- function(data, identifier, predict_continuous, predict_ordinal, predict_categorical, dots_arguments){
   data %>%
-    mutate(continuous_prediction = predict_continuous(., dots_arguments)) %>%
-    mutate(ordinal_prediction = predict_ordinal(., dots_arguments)) %>%
-    mutate(categorical_prediction = predict_categorical(., dots_arguments))
+    mutate(continuous_prediction = apply_or_na(predict_continuous, ., dots_arguments)) %>%
+    mutate(ordinal_prediction = apply_or_na(predict_ordinal, ., dots_arguments)) %>%
+    mutate(categorical_prediction = apply_or_na(predict_categorical, ., dots_arguments))
+}
+
+
+
+apply_or_na <- function(fun, data, dots_arguments) {
+  if (is.function(fun)) fun(data, dots_arguments) else NA
 }
 
 

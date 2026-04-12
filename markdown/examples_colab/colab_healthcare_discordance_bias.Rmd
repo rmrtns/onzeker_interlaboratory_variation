@@ -12,17 +12,17 @@ set.seed(seed = 200)
 
 ## Import functions and variables.
 ```{r, include=FALSE, warning=FALSE, message=FALSE}
-source('src/variables_colab.R', local = variables <- new.env())
-source('src/predict_colab.R', local = colab <- new.env())
+source('src/variables_coronate.R', local = variables <- new.env())
+source('src/predict_coronate.R', local = colab <- new.env())
 ```
 
 ## Set simulation parameters.
 ```{r}
 parameters <- new.env()
 parameters$data <- read.csv('data/colab_healthcare.csv')
-parameters$identifier <- "Pat"
+parameters$identifier <- "BezoekersID"
 parameters$continuous_prediction_function <- colab$get_continuous_prediction_colab
-parameters$ordinal_prediction_function <- colab$get_ordinal_prediction_colab
+parameters$ordinal_prediction_function <- NA
 parameters$categorical_prediction_function <- colab$get_categorical_prediction_colab
 parameters$model <- NA
 parameters$model_variables <- variables$selected_variables_colab
@@ -57,9 +57,9 @@ parameters$bootstrap_methods <- NA # choose from c("perc¨, "norm", "bca")
 
 ## Set plot parameters.
 ```{r}
-parameters$histogram_continuous_median_prediction_binwidth <- 0.05
-parameters$histogram_continuous_median_prediction_x_range <- c(-6, -4)
-parameters$histogram_continuous_median_prediction_y_range <- c(0, 10)
+parameters$histogram_continuous_median_prediction_binwidth <- 0.2
+parameters$histogram_continuous_median_prediction_x_range <- c(-8, -2)
+parameters$histogram_continuous_median_prediction_y_range <- c(0, 40)
 parameters$histogram_continuous_median_difference_binwidth <- 0.05
 parameters$histogram_continuous_median_difference_x_range <- c(-1, 1)
 parameters$histogram_continuous_median_difference_y_range <- c(0, 10)
@@ -72,35 +72,20 @@ parameters$histogram_continuous_mae_y_range <- c(0, 10)
 parameters$histogram_continuous_rmse_binwidth <- 0.05
 parameters$histogram_continuous_rmse_x_range <- c(0, 1)
 parameters$histogram_continuous_rmse_y_range <- c(0, 10)
-parameters$histogram_continuous_mape_binwidth <- 5
-parameters$histogram_continuous_mape_x_range <- c(0, 100)
-parameters$histogram_continuous_mape_y_range <- c(0, 10)
-parameters$histogram_continuous_smape_binwidth <- 1
-parameters$histogram_continuous_smape_x_range <- c(0, 20)
-parameters$histogram_continuous_smape_y_range <- c(0, 10)
-parameters$histogram_continuous_rmspe_binwidth <- 500
-parameters$histogram_continuous_rmspe_x_range <- c(0, 10000)
-parameters$histogram_continuous_rmspe_y_range <- c(0, 20)
-parameters$histogram_continuous_srmspe_binwidth <- 2
-parameters$histogram_continuous_srmspe_x_range <- c(0, 50)
-parameters$histogram_continuous_srmspe_y_range <- c(0, 10)
-parameters$histogram_ordinal_median_difference_binwidth <- 0.05
-parameters$histogram_ordinal_median_difference_x_range <- c(0, 1)
-parameters$histogram_ordinal_median_difference_y_range <- c(0, 50)
-parameters$histogram_ordinal_mae_binwidth <- 0.05
-parameters$histogram_ordinal_mae_x_range <- c(0, 1)
-parameters$histogram_ordinal_mae_y_range <- c(0, 10)
-parameters$histogram_ordinal_micro_rmse_binwidth <- 0.05
-parameters$histogram_ordinal_micro_rmse_x_range <- c(0, 1)
-parameters$histogram_ordinal_micro_rmse_y_range <- c(0, 10)
-parameters$histogram_ordinal_macro_rmse_binwidth <- 0.05
-parameters$histogram_ordinal_macro_rmse_x_range <- c(0, 1)
-parameters$histogram_ordinal_macro_rmse_y_range <- c(0, 10)
-parameters$histogram_ordinal_percentage_discordant_binwidth <- 1
-parameters$histogram_ordinal_percentage_discordant_x_range <- c(0, 50)
-parameters$histogram_ordinal_percentage_discordant_y_range <- c(0, 10)
-parameters$histogram_categorical_percentage_discordant_binwidth <- 0.2
-parameters$histogram_categorical_percentage_discordant_x_range <- c(0, 5)
+parameters$histogram_continuous_mape_trimmed_binwidth <- 1
+parameters$histogram_continuous_mape_trimmed_x_range <- c(0, 20)
+parameters$histogram_continuous_mape_trimmed_y_range <- c(0, 10)
+parameters$histogram_continuous_mdape_binwidth <- 1
+parameters$histogram_continuous_mdape_x_range <- c(0, 20)
+parameters$histogram_continuous_mdape_y_range <- c(0, 10)
+parameters$histogram_continuous_rmspe_trimmed_binwidth <- 1
+parameters$histogram_continuous_rmspe_trimmed_x_range <- c(0, 20)
+parameters$histogram_continuous_rmspe_trimmed_y_range <- c(0, 10)
+parameters$histogram_continuous_rmdspe_binwidth <- 1
+parameters$histogram_continuous_rmdspe_x_range <- c(0, 20)
+parameters$histogram_continuous_rmdspe_y_range <- c(0, 10)
+parameters$histogram_categorical_percentage_discordant_binwidth <- 1
+parameters$histogram_categorical_percentage_discordant_x_range <- c(0, 20)
 parameters$histogram_categorical_percentage_discordant_y_range <- c(0, 10)
 ```
 

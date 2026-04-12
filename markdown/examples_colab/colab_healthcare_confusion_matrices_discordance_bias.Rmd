@@ -23,8 +23,8 @@ parameters <- new.env()
 parameters$original_data <- read.csv('data/colab_healthcare.csv')
 parameters$discordance_data <-
   read.csv('out/colab/simulations_discordance/colab_discordance_healthcare_bias_per_individual.csv')
-parameters$identifier <- "Pat"
-parameters$model_outcome <- "outcome"
+parameters$identifier <- "BezoekersID"
+parameters$model_outcome <- "PCR.uitslag"
 parameters$model_outcome_class_TRUE <-  "1"
 ```
 
@@ -45,13 +45,13 @@ parameters$histogram_accuracy_x_range <- c(0.0, 1.0)
 parameters$histogram_accuracy_y_range <- c(0, 50)
 parameters$histogram_sensitivity_binwidth <-  0.02
 parameters$histogram_sensitivity_x_range <- c(0.0, 1.0)
-parameters$histogram_sensitivity_y_range <- c(0, 20)
+parameters$histogram_sensitivity_y_range <- c(0, 50)
 parameters$histogram_specificity_binwidth <-  0.02
 parameters$histogram_specificity_x_range <- c(0.0, 1.0)
 parameters$histogram_specificity_y_range <- c(0, 50)
 parameters$histogram_ppv_binwidth <- 0.02
 parameters$histogram_ppv_x_range <- c(0.0, 1.0)
-parameters$histogram_ppv_y_range <- c(0, 20)
+parameters$histogram_ppv_y_range <- c(0, 50)
 parameters$histogram_npv_binwidth <- 0.02
 parameters$histogram_npv_x_range <- c(0.0, 1.0)
 parameters$histogram_npv_y_range <- c(0, 50)
