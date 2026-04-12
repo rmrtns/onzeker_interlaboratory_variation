@@ -21,7 +21,13 @@ source('src/predict_friedewald.R', local = friedewald <- new.env())
 
 ```{r, include=FALSE, warning=FALSE, message=FALSE}
 library(dplyr)
+library(gt)
 library(gtsummary)
+```
+
+```{r, echo=FALSE}
+p2_5  <- function(x) quantile(x, probs = 0.025, names = FALSE)
+p97_5 <- function(x) quantile(x, probs = 0.975, names = FALSE)
 ```
 
 ## Read data.
@@ -42,6 +48,7 @@ parameters$model_variables <- variables$selected_variables_friedewald
 ```{r, echo=FALSE}
 parameters$data %>% tbl_summary(
   include = as.character(parameters$model_variables),
+  statistic = all_continuous() ~ "{median} [{p2_5}; {p97_5}]",
   digits = everything() ~ 2
 )
 ```
@@ -50,6 +57,7 @@ parameters$data %>% tbl_summary(
 ```{r, echo=FALSE}
 reference_predictions %>% tbl_summary(
   include = c(continuous_reference, ordinal_reference, categorical_reference),
+  statistic = all_continuous() ~ "{median} [{p2_5}; {p97_5}]",
   digits = everything() ~ 2
 )
 ```

@@ -21,7 +21,13 @@ source('src/predict_egfr.R', local = egfr <- new.env())
 
 ```{r, include=FALSE, warning=FALSE, message=FALSE}
 library(dplyr)
+library(gt)
 library(gtsummary)
+```
+
+```{r, echo=FALSE}
+p2_5  <- function(x) quantile(x, probs = 0.025, names = FALSE)
+p97_5 <- function(x) quantile(x, probs = 0.975, names = FALSE)
 ```
 
 ## Read data.
@@ -54,6 +60,7 @@ reference_predictions <- discordance$get_reference_predictions(
 ```{r, echo=FALSE}
 parameters$data %>% tbl_summary(
   include = as.character(parameters$model_variables),
+  statistic = all_continuous() ~ "{median} [{p2_5}; {p97_5}]",
   digits = everything() ~ 2
 )
 ```
@@ -62,6 +69,7 @@ parameters$data %>% tbl_summary(
 ```{r, echo=FALSE}
 reference_predictions %>% tbl_summary(
   include = c(continuous_reference, ordinal_reference, categorical_reference),
+  statistic = all_continuous() ~ "{median} [{p2_5}; {p97_5}]",
   digits = everything() ~ 2
 )
 ```
