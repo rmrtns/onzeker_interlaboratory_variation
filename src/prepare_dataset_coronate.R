@@ -25,11 +25,6 @@ colab_prepared <- coronate %>%
   )
 
 
-
-# Code (kolom X) = ColabMed
-# F-score (kolom AO): lege cellen en !WAARDE# niet selecteren
-# PCR uitslag (kolom F): excl en stop niet selecteren
-
 colab_healthcare <- colab_prepared
   
 write.csv(
