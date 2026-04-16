@@ -2,8 +2,14 @@ library(tidyr)
 library(dplyr)
 
 # Import dataset.
-coronate <- read.csv('data/20210322_databestand_CORONATE_study_anonymised_healthcareworkers.csv', sep = ";", dec = ",")
+coronate <- read.csv('data/20210322_databestand_CORONATE_study_anonymised.csv', sep = ",", dec = ",")
 
+# filtering steps
+test <- coronate %>%
+  filter(Code %in% c("ColabMed", "ColabMED", "CoLabMed")) %>%
+  filter(PCR.uitslag %in% c("neg", "pos")) %>% 
+  filter(!is.na(F.score))
+  
 # Prepare dataset.
 colab_prepared <- coronate %>% 
   mutate(
@@ -17,6 +23,12 @@ colab_prepared <- coronate %>%
       ~ as.numeric(.x)
     )
   )
+
+
+
+# Code (kolom X) = ColabMed
+# F-score (kolom AO): lege cellen en !WAARDE# niet selecteren
+# PCR uitslag (kolom F): excl en stop niet selecteren
 
 colab_healthcare <- colab_prepared
   
