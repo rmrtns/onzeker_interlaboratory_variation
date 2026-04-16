@@ -12,12 +12,13 @@ friedewald_gp_wide <- pivot_wider(friedewald_gp,
                                   names_from = X,
                                   values_from = X.3,
                                   values_fn = list(X.3 = mean))
-friedewald_gp_wide <- friedewald_gp_wide %>%
-  rename_with(~ gsub("-", ".", .x))
+
 friedewald_gp_wo_missing <- friedewald_gp_wide %>%
+  rename_with(~ gsub("-", ".", .x)) %>%
   filter(complete.cases(across(all_of(variables$selected_variables_friedewald)))) %>%
+  filter(Triglyceriden <= 4.5) %>%
   mutate(Gesl = recode(Gesl, "M" = 1, "V" = 0)) %>%
-  mutate(BezoekersID = row_number())
+  mutate(BezoekersID = row_number()) 
 
 
 write.csv(
@@ -34,10 +35,10 @@ friedewald_cardio_wide <- pivot_wider(friedewald_cardio,
                                   names_from = X,
                                   values_from = X.3,
                                   values_fn = list(X.3 = mean))
-friedewald_cardio_wide <- friedewald_cardio_wide %>%
-  dplyr::rename_with(~ gsub("-", ".", .x))
 friedewald_cardio_wo_missing <- friedewald_cardio_wide %>%
+  dplyr::rename_with(~ gsub("-", ".", .x)) %>%
   filter(complete.cases(across(all_of(variables$selected_variables_friedewald)))) %>%
+  filter(Triglyceriden <= 4.5) %>%
   mutate(Gesl = recode(Gesl, "M" = 1, "V" = 0)) %>%
   mutate(BezoekersID = row_number())
 
