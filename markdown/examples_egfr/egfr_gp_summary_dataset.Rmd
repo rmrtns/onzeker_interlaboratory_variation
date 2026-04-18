@@ -37,7 +37,7 @@ parameters$data <- read.csv('data/JuistheidCKD-HA(Remy)_251017_anonymised_wide_f
 parameters$identifier <- "BezoekersID"
 parameters$continuous_prediction_function <- egfr$get_continuous_prediction_egfr
 parameters$ordinal_prediction_function <- egfr$get_ordinal_prediction_egfr
-parameters$categorical_prediction_function <- egfr$get_categorical_prediction_s
+parameters$categorical_prediction_function <- egfr$get_categorical_prediction_egfr
 parameters$model <- NA
 parameters$model_variables <- variables$selected_variables_egfr
 ```
