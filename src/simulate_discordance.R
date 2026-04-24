@@ -8,7 +8,8 @@ library(purrr)
 source('src/simulate_bias.R', local = bias <- new.env())
 source('src/save_output.R', local = save <- new.env())
 
-simulate_bias_induced_discordance <- function(data, identifier, variables, bias_factors, bias_intercepts, laboratory, continuous_prediction_function, ordinal_prediction_function, categorical_prediction_function, base_dir, ...){ 
+simulate_bias_induced_discordance <- function(data, identifier, variables, bias_factors, bias_intercepts, laboratory, continuous_prediction_function, ordinal_prediction_function, categorical_prediction_function, base_dir, ...,
+                                              correct_predictions = T){ 
   is_bias_entered_correctly(bias_factors, bias_intercepts)
   is_prediction_function_entered(continuous_prediction_function, ordinal_prediction_function, categorical_prediction_function)
   predict_continuous <- create_pointer_to_prediction_function(continuous_prediction_function)
@@ -21,7 +22,11 @@ simulate_bias_induced_discordance <- function(data, identifier, variables, bias_
   for (row in 1:nrow(bias_factors)){
     simulated_data <- bias$simulate_bias(data, identifier, variables, bias_factors[row,], bias_intercepts[row,])
     combined_data <- left_join(constant_data, simulated_data, by = c(identifier))
+    if (correct_predictions) {
+      combined_data_with_predictions <- get_predictions_w_linreg_correction(combined_data, identifier, predict_continuous, predict_ordinal, predict_categorical, reference_predictions, dots_arguments)
+    } else {
     combined_data_with_predictions <- get_predictions(combined_data, identifier, predict_continuous, predict_ordinal, predict_categorical, dots_arguments)
+    }
     # save$save_database_data(combined_data_with_predictions, base_dir, bias_factors[[laboratory]][row])
     simulated_predictions <- combined_data_with_predictions %>% select(all_of(identifier), continuous_prediction, ordinal_prediction, categorical_prediction)
     simulated_and_reference_predictions <- left_join(simulated_predictions, reference_predictions, by = identifier)
@@ -74,6 +79,22 @@ get_reference_predictions <- function(data, identifier, predict_continuous, pred
 get_predictions <- function(data, identifier, predict_continuous, predict_ordinal, predict_categorical, dots_arguments){
   data %>%
     mutate(continuous_prediction = apply_or_na(predict_continuous, ., dots_arguments)) %>%
+    mutate(ordinal_prediction = apply_or_na(predict_ordinal, ., dots_arguments)) %>%
+    mutate(categorical_prediction = apply_or_na(predict_categorical, ., dots_arguments))
+}
+
+
+get_predictions_w_linreg_correction <- function(data, identifier, 
+                                                predict_continuous, 
+                                                predict_ordinal, 
+                                                predict_categorical, 
+                                                reference_predictions, 
+                                                dots_arguments){
+  ref_cont_preds <- reference_predictions$continuous_reference
+  sim_cont_preds <- apply_or_na(predict_continuous, data, dots_arguments)
+  linreg <- lm(ref_cont_preds ~ sim_cont_preds)
+  data %>%
+    mutate(continuous_prediction = predict(linreg, data.frame(sim_cont_preds))) %>%
     mutate(ordinal_prediction = apply_or_na(predict_ordinal, ., dots_arguments)) %>%
     mutate(categorical_prediction = apply_or_na(predict_categorical, ., dots_arguments))
 }
