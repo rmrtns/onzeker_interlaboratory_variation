@@ -5,13 +5,13 @@ library(dplyr)
 coronate <- read.csv('data/20210322_databestand_CORONATE_study_anonymised.csv', sep = ",", dec = ",")
 
 # filtering steps
-test <- coronate %>%
+coronate_filtered <- coronate %>%
   filter(Code %in% c("ColabMed", "ColabMED", "CoLabMed")) %>%
   filter(PCR.uitslag %in% c("neg", "pos")) %>% 
   filter(!is.na(F.score))
   
 # Prepare dataset.
-colab_prepared <- coronate %>% 
+colab_prepared <- coronate_filtered %>% 
   mutate(
     leeft = floor(as.numeric(leeft)),
     PCR.uitslag = case_when(

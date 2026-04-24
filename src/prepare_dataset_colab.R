@@ -23,7 +23,7 @@ colab_prepared <- colab_wo_log %>%
   ) %>%
   filter(age >= 18)
 
-colab_low_prevalence <- colab_prepared
+colab_low_prevalence <- colab_prepared 
   
 colab_high_prevalence <- colab_prepared %>%
   filter(ER_date >= lubridate::as_date("2020-03-01"))
