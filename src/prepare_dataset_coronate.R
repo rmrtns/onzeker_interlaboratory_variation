@@ -24,7 +24,6 @@ colab_prepared <- coronate_filtered %>%
     )
   )
 
-
 colab_healthcare <- colab_prepared
   
 write.csv(

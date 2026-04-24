@@ -80,9 +80,12 @@ parameters$histogram_continuous_rmdspe_y_range <- c(0, 20)
 parameters$histogram_ordinal_median_difference_binwidth <- 0.5
 parameters$histogram_ordinal_median_difference_x_range <- c(0, 5)
 parameters$histogram_ordinal_median_difference_y_range <- c(0, 10)
-parameters$histogram_ordinal_mae_binwidth <- 0.5
-parameters$histogram_ordinal_mae_x_range <- c(0, 5)
-parameters$histogram_ordinal_mae_y_range <- c(0, 10)
+parameters$histogram_ordinal_micro_mae_binwidth <- 0.5
+parameters$histogram_ordinal_micro_mae_x_range <- c(0, 5)
+parameters$histogram_ordinal_micro_mae_y_range <- c(0, 10)
+parameters$histogram_ordinal_macro_mae_binwidth <- 0.5
+parameters$histogram_ordinal_macro_mae_x_range <- c(0, 5)
+parameters$histogram_ordinal_macro_mae_y_range <- c(0, 10)
 parameters$histogram_ordinal_micro_rmse_binwidth <- 0.5
 parameters$histogram_ordinal_micro_rmse_x_range <- c(0, 50)
 parameters$histogram_ordinal_micro_rmse_y_range <- c(0, 10)

@@ -20,7 +20,6 @@ friedewald_gp_wo_missing <- friedewald_gp_wide %>%
   mutate(Gesl = recode(Gesl, "M" = 1, "V" = 0)) %>%
   mutate(BezoekersID = row_number()) 
 
-
 write.csv(
   friedewald_gp_wo_missing,
   paste0('data/friedewald_gp.csv'),
