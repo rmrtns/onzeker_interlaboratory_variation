@@ -204,7 +204,8 @@ summarise_ordinal_discordance_measures <- function(data){
 
   discordance_measures <- data %>% summarise(
     ordinal_median_difference = median(ordinal_difference),
-    ordinal_mae = mean(ordinal_absolute_error),
+    ordinal_micro_mae = mean(ordinal_absolute_error),
+    ordinal_macro_mae = get_macro_mae(data, "ordinal_absolute_error", "ordinal_reference"),
     ordinal_micro_rmse = sqrt(mean(ordinal_squared_error)),
     ordinal_macro_rmse = get_macro_rmse(data, "ordinal_squared_error", "ordinal_reference"),
     ordinal_percentage_discordant = mean(ordinal_discordant) * 100
@@ -283,6 +284,19 @@ get_rmdspe <- function(data, actual, prediction){
           )
         )
       ) * 100
+    ) %>% unlist()
+}
+
+
+get_macro_mae <- function(data, variable, group){
+  data %>%
+    group_by(.data[[group]]) %>%
+    summarise(
+      mae = mean(.data[[variable]]),
+      .groups = "drop"
+    ) %>%
+    summarise(
+      macro_mae = mean(mae)
     ) %>% unlist()
 }
 

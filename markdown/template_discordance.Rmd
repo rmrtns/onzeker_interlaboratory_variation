@@ -468,36 +468,69 @@ print$print_table_distribution(distribution_ordinal_median_difference, 4)
 ```
 
 ```{r, eval = is.function(parameters$ordinal_prediction_function), results = 'asis', echo=FALSE}
-cat("* Histogram and distribution of mean absolute error for ordinal predictions:")
+cat("* Histogram and distribution of micro-averaged mean absolute error for ordinal predictions:")
 
-histogram_ordinal_mae <- comparison$get_histogram(
+histogram_ordinal_micro_mae <- comparison$get_histogram(
   summary_discordance_status, 
-  "ordinal_mae",
-  "Mean absolute error",
-  parameters$histogram_ordinal_mae_binwidth,
-  parameters$histogram_ordinal_mae_x_range,
-  parameters$histogram_ordinal_mae_y_range
+  "ordinal_micro_mae",
+  "Micro-averaged mean absolute error",
+  parameters$histogram_ordinal_micro_mae_binwidth,
+  parameters$histogram_ordinal_micro_mae_x_range,
+  parameters$histogram_ordinal_micro_mae_y_range
 )
 
 save$save_histogram(
-  histogram_ordinal_mae, 
+  histogram_ordinal_micro_mae, 
   parameters$path_output, 
   parameters$model_name, 
   "discordance",
   parameters$population
 )
 
-plot(histogram_ordinal_mae)
+plot(histogram_ordinal_micro_mae)
 ```
 
 ```{r, eval = is.function(parameters$ordinal_prediction_function), results = 'asis', echo=FALSE, message=FALSE}
-distribution_ordinal_mae <- comparison$get_distribution_table(
+distribution_ordinal_micro_mae <- comparison$get_distribution_table(
   summary_discordance_status, 
-  "ordinal_mae", 
+  "ordinal_micro_mae", 
   "laboratory"
 )
 
-print$print_table_distribution(distribution_ordinal_mae, 4)
+print$print_table_distribution(distribution_ordinal_micro_mae, 4)
+```
+
+```{r, eval = is.function(parameters$ordinal_prediction_function), results = 'asis', echo=FALSE}
+cat("* Histogram and distribution of macro-averaged mean absolute error for ordinal predictions:")
+
+histogram_ordinal_macro_mae <- comparison$get_histogram(
+  summary_discordance_status, 
+  "ordinal_macro_mae",
+  "Macro-averaged mean absolute error",
+  parameters$histogram_ordinal_macro_mae_binwidth,
+  parameters$histogram_ordinal_macro_mae_x_range,
+  parameters$histogram_ordinal_macro_mae_y_range
+)
+
+save$save_histogram(
+  histogram_ordinal_macro_mae, 
+  parameters$path_output, 
+  parameters$model_name, 
+  "discordance",
+  parameters$population
+)
+
+plot(histogram_ordinal_macro_mae)
+```
+
+```{r, eval = is.function(parameters$ordinal_prediction_function), results = 'asis', echo=FALSE, message=FALSE}
+distribution_ordinal_macro_mae <- comparison$get_distribution_table(
+  summary_discordance_status, 
+  "ordinal_macro_mae", 
+  "laboratory"
+)
+
+print$print_table_distribution(distribution_ordinal_macro_mae, 4)
 ```
 
 ```{r, eval = is.function(parameters$ordinal_prediction_function), results = 'asis', echo=FALSE}
