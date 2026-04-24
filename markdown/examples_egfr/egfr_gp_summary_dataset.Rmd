@@ -33,7 +33,7 @@ p97_5 <- function(x) quantile(x, probs = 0.975, names = FALSE)
 ## Read data.
 ```{r}
 parameters <- new.env()
-parameters$data <- read.csv('data/JuistheidCKD-HA(Remy)_251017_anonymised_wide_format.csv')
+parameters$data <- read.csv('data/egfr_gp.csv')
 parameters$identifier <- "BezoekersID"
 parameters$continuous_prediction_function <- egfr$get_continuous_prediction_egfr
 parameters$ordinal_prediction_function <- egfr$get_ordinal_prediction_egfr
