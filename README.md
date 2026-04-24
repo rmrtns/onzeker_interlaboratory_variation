@@ -1,7 +1,7 @@
 
 # Interlaboratory variation in prediction model performance
 
-This repository contains the code for a simulation method to evaluate the impact bias in laboratory tests (or other continuous variables) on the clinical performance of prediction models.
+This repository contains the code for a simulation method to evaluate the impact of bias in laboratory tests (or other continuous variables) on the clinical performance of prediction models.
 
 The code accompanies the journal article:
 [to be filled in]
