@@ -50,4 +50,4 @@ paba_data_filt <- paba_data %>%
   group_by(Bepaling, ptp, ctr) %>%  # indien meerdere methodes selecteer eerste
   slice(1)
 
-write.csv(paba_data, "data/paba_data.csv", row.names = FALSE)
+write.csv(paba_data_filt, "data/paba_data.csv", row.names = FALSE)
