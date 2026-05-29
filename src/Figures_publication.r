@@ -39,6 +39,10 @@ EGFR_plot <- ggarrange(CDKEPI_C_RMSE  +
                          xlim(0,20),
                        ncol = 2, nrow = 2,labels = c("A", "B", "C", "D"))
 
+
+
+
+
 tiff("figures publication/EGFR_Figure.tiff",
      width = 176, 
      height = 176,
@@ -57,7 +61,7 @@ Friedewald_O_micro_RMSE <- readRDS("out/friedewald/simulations_discordance/conve
 Friedewald_D_PD <- readRDS("out/friedewald/simulations_discordance/conventional_friedewald_discordance_gp_histogram_categorical_percentage_discordant.rds")
 
 Friedewald_conventional_plot <- ggarrange(Friedewald_C_RMSE  + 
-                                            xlab("RMSE (continuous)") + 
+                                            xlab("Root mean squared error (continuous)") + 
                                             ylim(0, 50) + 
                                             xlim(0,15), 
                                           Friedewald_O_PD  + 
@@ -65,7 +69,7 @@ Friedewald_conventional_plot <- ggarrange(Friedewald_C_RMSE  +
                                             ylim(0, 30) + 
                                             xlim(0,20), 
                                           Friedewald_O_micro_RMSE  + 
-                                            xlab("RMSE (ordinal)") +
+                                            xlab("Root mean squared error (ordinal)") +
                                             ylim(0, 50) + 
                                             xlim(0,1.5),
                                           Friedewald_D_PD  + 
@@ -93,7 +97,7 @@ Friedewald_SI_D_PD <- readRDS("out/friedewald/simulations_discordance/friedewald
 
 
 Friedewald_SI_plot <- ggarrange(Friedewald_SI_C_RMSE  + 
-                                  xlab("RMSE (continuous)") + 
+                                  xlab("Root mean squared error (continuous)") + 
                                   ylim(0, 50) + 
                                   xlim(0,1) , 
                                 Friedewald_SI_O_PD  + 
@@ -101,7 +105,7 @@ Friedewald_SI_plot <- ggarrange(Friedewald_SI_C_RMSE  +
                                   ylim(0, 30) + 
                                   xlim(0,20), 
                                 Friedewald_SI_O_micro_RMSE  + 
-                                  xlab("RMSE (ordinal)") +
+                                  xlab("Root mean squared error (ordinal)") +
                                   ylim(0, 50) + 
                                   xlim(0,1) ,
                                 Friedewald_SI_D_PD  + 
@@ -130,7 +134,7 @@ colab_spec <- readRDS("out/CoLab/simulations_confusion_matrix/colab_confusion_ma
 
 
 CoLab_plot <- ggarrange(colab_C_RMSE  + 
-                          xlab("RMSE (continuous)") +
+                          xlab("Root mean squared error (continuous)") +
                           ylim(0,10) +
                           xlim(0,1), 
                         colab_O_PD  + 
@@ -138,7 +142,7 @@ CoLab_plot <- ggarrange(colab_C_RMSE  +
                           ylim(0,10) + 
                           xlim(0,50), 
                         colab_O_micro_RMSE  + 
-                          xlab("RMSE (ordinal)") +
+                          xlab("Root mean squared error (ordinal)") +
                           ylim(0,10) +
                           xlim(0,1),
                         colab_D_PD  + 
@@ -158,7 +162,7 @@ CoLab_plot <- ggarrange(colab_C_RMSE  +
 
 # cowplot alternative tot allign
 p1 <- colab_C_RMSE  + 
-  xlab("RMSE (continuous)") +
+  xlab("Root mean squared error (continuous)") +
   ylim(0,8) +
   xlim(0,1) 
 p2 <- colab_O_PD  + 
@@ -166,7 +170,7 @@ p2 <- colab_O_PD  +
   ylim(0,8) + 
   xlim(0,50)
 p3 <- colab_O_micro_RMSE  + 
-  xlab("RMSE (ordinal)") +
+  xlab("Root mean squared error (ordinal)") +
   ylim(0,8) +
   xlim(0,1)
 p4 <- colab_D_PD  + 
@@ -174,13 +178,17 @@ p4 <- colab_D_PD  +
   ylim(0,8) + 
   xlim(0,5)
 p5 <- colab_sens + 
-  xlab("sensitivity") +
+  xlab("Sensitivity") +
   ylim(0,50) +
-  xlim(0,1)
+  xlim(0,1) +
+  geom_vline(xintercept = 0.66, linetype="dashed", linewidth=0.5, col = "#ff6961")+
+  annotate("text", x=0.54, y=19, label="original", angle=0, size = 4)
 p6 <- colab_spec + 
-  xlab("specificity") +
+  xlab("Specificity") +
   ylim(0,50) +
-  xlim(0,1)
+  xlim(0,1) +
+  geom_vline(xintercept = 0.93, linetype="dashed", linewidth=0.5, col = "#ff6961")+
+  annotate("text",  x=0.81, y=46, label="original", angle=0, size = 4)
 
 aligned <- align_plots(p1, p2, p3, p4, p5, p6, 
                        align = "hv",   
@@ -189,6 +197,7 @@ CoLab_plot_cow <- plot_grid(plotlist = aligned,
                             ncol = 2,
                             labels = c('A', 'B', 'C', 'D', 'E', 'F'))
 CoLab_plot_cow
+
 
 tiff("figures publication/Colab_Figure.tiff",
      width = 176, 
