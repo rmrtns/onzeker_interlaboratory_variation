@@ -31,7 +31,7 @@ parameters$uncertain_variables <- variables$selected_variables_colab[variables$u
 
 ## Set bias data parameters.
 ```{r}
-parameters$bias_data <- read.csv('data/paba_data.csv')
+parameters$bias_data <- read.csv('data/paba_data_2020.csv')
 parameters$bias_data_lab_col <- "ptp"
 parameters$bias_data_cluster_col <- "ctr"
 parameters$bias_data_measurement_col <- "Bepaling"

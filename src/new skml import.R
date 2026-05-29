@@ -3,7 +3,8 @@ library(tidyr)
 library(dplyr)
 
 # Read all Excel files in data/SKML subfolder
-files <- list.files("data/SKML", pattern = "\\.xlsx$", full.names = TRUE)
+year <- "2020"
+files <- list.files(paste0("data/SKML/",year), pattern = "\\.xlsx|.xls$", full.names = TRUE)
 data_list_results <- lapply(files, read_excel, sheet = "Resultaten", 
                             col_types = "text")
 data_list_reference <- lapply(files, read_excel, sheet = "Consensuswaarden", 
@@ -13,7 +14,7 @@ data_list_reference <- lapply(files, read_excel, sheet = "Consensuswaarden",
 # Cast the columns "2024.1A", "2024.1B", "2024.1C", etc. to long by using
 # pivot and cast to numeric in data_list_results.
 data_list_results_long <- lapply(data_list_results, function(df) {
-  df_long <- pivot_longer(df, cols = starts_with("2024"), 
+  df_long <- pivot_longer(df, cols = starts_with(paste0(year)), 
                           names_to = "ctm", values_to = "Resultaat")
   df_long$Resultaat <- as.numeric(df_long$Resultaat)
   return(df_long)
@@ -62,10 +63,12 @@ skml_merged <- skml_merged %>%
 
 
 
-write.csv(skml_merged, "data/skml_merged.csv", row.names = FALSE)
+write.csv(skml_merged, paste0("data/skml_merged_",year,".csv"), row.names = FALSE)
 
 
-
+xxxxx
 rm(list = c("data_list_reference", "data_list_results", 
             "data_list_results_long", "files", "reference_filt", 
             "reference_methods_by_bepaling", "results_filt", "skml_merged"))
+
+
