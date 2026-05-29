@@ -9,7 +9,7 @@ source('src/simulate_bias.R', local = bias <- new.env())
 source('src/save_output.R', local = save <- new.env())
 
 simulate_bias_induced_discordance <- function(data, identifier, variables, bias_factors, bias_intercepts, laboratory, continuous_prediction_function, ordinal_prediction_function, categorical_prediction_function, base_dir, ...,
-                                              correct_predictions = T){ 
+                                              correct_predictions = F){ 
   is_bias_entered_correctly(bias_factors, bias_intercepts)
   is_prediction_function_entered(continuous_prediction_function, ordinal_prediction_function, categorical_prediction_function)
   predict_continuous <- create_pointer_to_prediction_function(continuous_prediction_function)
