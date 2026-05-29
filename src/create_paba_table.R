@@ -37,11 +37,17 @@ paba.reg.fun <- function(ReferenceMethod, TestMethod){
 paba_data <- skml %>%
   group_by(Bepaling, ptp, ctr, Methode) %>% 
   do(paba.reg.fun(.$ConsensusWaarde, .$Resultaat)) 
-  
+
+# add number of methods  
 paba_data <- paba_data %>% 
   group_by(Bepaling, ptp, ctr) %>% 
-  mutate(N_methodes = n_distinct(Methode))
+  mutate(N_methodes = n_distinct(Methode)) %>% 
+  ungroup()
 
-
+# filtering criteria
+paba_data_filt <- paba_data %>% 
+  filter(N_metingen >= N_min) %>%   # meer dan of gelijk aan N_min metingen
+  group_by(Bepaling, ptp, ctr) %>%  # indien meerdere methodes selecteer eerste
+  slice(1)
 
 write.csv(paba_data, "data/paba_data.csv", row.names = FALSE)
