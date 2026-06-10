@@ -6,7 +6,7 @@ library(stringr)
 # Choose year to generate data, year must be subfolder
 year <- "2024"
 
-# Choose order of reference method 
+# Choose order of consensus method 
 # Default: "Referentiewaarde", "Expertwaarde", "ALTM"
 ref_order <- c("Referentiewaarde", "Expertwaarde", "ALTM")
 
