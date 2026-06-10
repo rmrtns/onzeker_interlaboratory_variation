@@ -1,9 +1,14 @@
 library(readxl)
 library(tidyr)
 library(dplyr)
+library(stringr)
 
 # Choose year to generate data, year must be subfolder
 year <- "2024"
+
+# Choose order of reference method 
+# Default: "Referentiewaarde", "Expertwaarde", "ALTM"
+ref_order <- c("Referentiewaarde", "Expertwaarde", "ALTM")
 
 # Read all Excel files in data/SKML subfolder
 files <- list.files(paste0("data/SKML/",year), pattern = "\\.xlsx|.xls$", full.names = TRUE)
@@ -45,8 +50,7 @@ reference_filt <- do.call(rbind, lapply(data_list_reference, function(df) {
 # in hierarchical order, Referentiewaarde, Expertwaarde, ALTM
 reference_methods_by_bepaling <- reference_filt %>% 
   group_by(anl) %>%
-  slice(which.min(match(Methode, c("Referentiewaarde", "Expertwaarde",  
-                                   "ALTM")))) %>%
+  slice(which.min(match(Methode, ref_order))) %>%
   ungroup() %>% 
   select(Bepaling, Methode) %>% 
   rename(ConsensusMethode = Methode)
