@@ -5,3 +5,4 @@
 data/
 markdown/**/*.html
 .positai
+out/
