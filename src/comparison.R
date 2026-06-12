@@ -36,7 +36,8 @@ get_distribution <- function(data, variable){
   data %>%
     summarize(
       n = n(),
-      mean = median(.data[[variable]]),
+      mean = mean(.data[[variable]]),
+      median = median(.data[[variable]]),
       `robust sd` = get_robust_sd(.data[[variable]]),
       min = get_quantile(.data[[variable]], probs = c(0)),
       `quantile 2.5%` = get_quantile(.data[[variable]], probs = c(0.025)),
