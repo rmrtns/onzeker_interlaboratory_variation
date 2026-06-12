@@ -14,7 +14,7 @@ source('src/print_table.R', local = print <- new.env())
 source('src/save_output.R', local = save <- new.env())
 ```
 
-```{r, echo=FALSE}
+```{r echo=FALSE, warning=TRUE}
 ## Prepare bias data.
 bias_tables <- bias$get_bias_table(
   parameters$bias_data,

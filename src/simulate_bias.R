@@ -16,7 +16,11 @@ simulate_bias <- function(data, identifier, variables, bias_factors, bias_interc
   simulated_bias_per_database <- data[identifier]
   for (variable_name in names(variables_map)) {
     input_col <- variables_map[[variable_name]]
-    simulated_bias_per_variable <- pmax(data[[variables_map[[variable_name]]]]*as.numeric(bias_factors[[variable_name]]) + as.numeric(bias_intercepts[[variable_name]]), 0)
+    simulated_bias_per_variable_raw <- data[[variables_map[[variable_name]]]]*as.numeric(bias_factors[[variable_name]]) + as.numeric(bias_intercepts[[variable_name]])
+    if (any(simulated_bias_per_variable_raw <= 0)) {
+      warning(sum(simulated_bias_per_variable_raw <= 0), " value(s) were truncated to 0 for: ", input_col, ", ptp: ", bias_intercepts$laboratory,  call. = F)
+    }
+    simulated_bias_per_variable <- pmax(simulated_bias_per_variable_raw, 0)
     simulated_bias_per_database[[input_col]] <- simulated_bias_per_variable
   }
   return(simulated_bias_per_database)

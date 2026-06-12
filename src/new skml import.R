@@ -1,9 +1,16 @@
 library(readxl)
 library(tidyr)
 library(dplyr)
+library(stringr)
+
+# Choose year to generate data, year must be subfolder
+year <- "2024"
+
+# Choose order of consensus method 
+# Default: "Referentiewaarde", "Expertwaarde", "ALTM"
+ref_order <- c("Referentiewaarde", "Expertwaarde", "ALTM")
 
 # Read all Excel files in data/SKML subfolder
-year <- "2020"
 files <- list.files(paste0("data/SKML/",year), pattern = "\\.xlsx|.xls$", full.names = TRUE)
 data_list_results <- lapply(files, read_excel, sheet = "Resultaten", 
                             col_types = "text")
@@ -16,6 +23,9 @@ data_list_reference <- lapply(files, read_excel, sheet = "Consensuswaarden",
 data_list_results_long <- lapply(data_list_results, function(df) {
   df_long <- pivot_longer(df, cols = starts_with(paste0(year)), 
                           names_to = "ctm", values_to = "Resultaat")
+  df_long$Resultaat_chr <- df_long$Resultaat
+  no_nums <- str_detect(df_long$Resultaat, "^\\d+(\\.\\d+)?$", negate = T)
+  df_long$Resultaat[no_nums] <- NA
   df_long$Resultaat <- as.numeric(df_long$Resultaat)
   return(df_long)
 })
@@ -40,8 +50,7 @@ reference_filt <- do.call(rbind, lapply(data_list_reference, function(df) {
 # in hierarchical order, Referentiewaarde, Expertwaarde, ALTM
 reference_methods_by_bepaling <- reference_filt %>% 
   group_by(anl) %>%
-  slice(which.min(match(Methode, c("Referentiewaarde", "Expertwaarde",  
-                                   "ALTM")))) %>%
+  slice(which.min(match(Methode, ref_order))) %>%
   ungroup() %>% 
   select(Bepaling, Methode) %>% 
   rename(ConsensusMethode = Methode)
@@ -62,13 +71,7 @@ skml_merged <- skml_merged %>%
   ungroup()
 
 
-
-write.csv(skml_merged, paste0("data/skml_merged_",year,".csv"), row.names = FALSE)
-
-
-xxxxx
-rm(list = c("data_list_reference", "data_list_results", 
-            "data_list_results_long", "files", "reference_filt", 
-            "reference_methods_by_bepaling", "results_filt", "skml_merged"))
+write.csv(skml_merged, paste0("data/skml_merged_",year,".csv"), 
+          row.names = FALSE)
 
 

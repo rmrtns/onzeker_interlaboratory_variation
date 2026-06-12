@@ -1,13 +1,16 @@
 library(mcr)
 library(dplyr)
 
+# Year
+year <- "2024"
+
 # minimal amount of observations for paba method
 N_min = 16 
 
 # read the merged skml file 
 #   If file doesn't exist, run:
 #   source("src/new skml import.R")
-skml <- read.csv("data/skml_merged_2020.csv")
+skml <- read.csv(paste0("data/skml_merged_",year,".csv"))
 
 
 paba.reg.fun <- function(ReferenceMethod, TestMethod){
@@ -50,4 +53,5 @@ paba_data_filt <- paba_data %>%
   group_by(Bepaling, ptp, ctr) %>%  # indien meerdere methodes selecteer eerste
   slice(1)
 
-write.csv(paba_data_filt, "data/paba_data_2020.csv", row.names = FALSE)
+write.csv(paba_data_filt, paste0("data/paba_data_", year, ".csv"), 
+          row.names = FALSE)
