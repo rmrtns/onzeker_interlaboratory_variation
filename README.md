@@ -70,5 +70,5 @@ Follow the approach outlined in 'colab_ed_high_crossover_discordance_bias.Rmd' i
 
 ## Disclaimer:
 The code in this repository is intended for research use only.<br>
-The simulation method was developed in R (version 4.5.3) with RStudio (version 2025.05.0) in an Ubuntu 24.04 development environment using WSL on a 64-bit Windows 11 machine. Running the code under other operating systems, or versions of the software and packages used, may require code modifications or installation of additional system dependencies.<br>
+The simulation method was developed in R (version 4.5.2) with RStudio (version 2025.05.0) in an Ubuntu 24.04 development environment using WSL on a 64-bit Windows 11 machine. Running the code under other operating systems, or versions of the software and packages used, may require code modifications or installation of additional system dependencies.<br>
 Computational time may vary depending on the complexity of the model tested, applied simulation parameters and computational resources.
