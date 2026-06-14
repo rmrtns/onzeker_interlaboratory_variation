@@ -53,7 +53,8 @@ The simulation method accepts additional function arguments, if required by the 
 The bias data should be save as a .csv file in the 'data/'folder.<br>
 Sources of  bias data may be external quality assessment (EQA) data or sample exchange between laboratories.<br>
 The data file should contain columns for analyte, laboratory, cluster, intercept and slope. It is not necessary to exclude analytes that are not part of the prediction formula. A laboratory may participate with multiple analyzers in an EQA program. These analyzers are indicated in the column clusters. The simulation method selects the first cluster for analysis.<br>
-Intercept and slope may be calculated - in hierarchical order - the laboratory that produced the results of the reference population, the measurement procedure applied in the reference population, reference methods, expert laboratories or consensus method group averages.<br>
+Code to generate bias from excel files from the EQA provider SKML are present in the 'src/' folder.<br> 
+Target values for the calculation of bias are assigned hierarchically by the laboratory that produced the results of the reference population, the measurement procedure applied in the reference population, reference methods, expert laboratories or consensus method group averages.<br>
 If the laboratory that produced the results of the reference population participates in an EQA round, results may be recalculated relative to this laboratory in the simulation program.<br>
 
 - Estimate the bias-induced discordance measures.<br>
