@@ -18,10 +18,10 @@ The code uses other open source software components, either as modified code of 
 
 ### Modified code from the following packages or repositories.
 
-| Package / Repository      				| Version   | URL                                                   				| License         |
-| :---:                     				| :---:     | :---:                                                 				| :---:           |
-| prediction_uncertainty_categorical_models	| 1.1.0     | https://github.com/rmrtns/prediction_uncertainty_categorical_models 	| GPL-3           |
-| broom                     				| 1.0.7     | https://cran.r-project.org/package=broom              				| MIT             |
+| Package / Repository      				        | Version   | URL                                                   				                                                    | License         |
+| :---:                     				        | :---:     | :---:                                                 				                                                    | :---:           |
+| prediction_uncertainty_categorical_models	| 1.1.0     | [prediction_uncertainty_categorical_models](https://github.com/rmrtns/prediction_uncertainty_categorical_models) 	| GPL-3           |
+| broom                     				        | 1.0.7     | https://cran.r-project.org/package=broom              				                                                    | MIT             |
 
 ### Exported functions from the following packages.
 
@@ -31,15 +31,15 @@ The code uses other open source software components, either as modified code of 
 | broom                     				| 1.0.7     | https://cran.r-project.org/package=broom              				| MIT             |
 | caret                     				| 7.0-1    	| https://cran.r-project.org/package=caret              				| GPL-2 \| GPL-3  |
 | dplyr                     				| 1.2.0     | https://cran.r-project.org/package=dplyr              				| MIT             |
-| DT                        				| 0.33      | https://cran.r-project.org/package=DT                 				| MIT	          |
+| DT                        				| 0.33      | https://cran.r-project.org/package=DT                 				| MIT	            |
 | ggplot2                   				| 3.5.1     | https://cran.r-project.org/package=ggplot2            				| MIT             |
 | ggpubr                    				| 0.6.0     | https://cran.r-project.org/package=ggpubr             				| GPL-2 \| GPL-3  |
-| gt	                     				| 1.3.0     | https://cran.r-project.org/package=gt		              				| MIT		      |
-| gtsummary                    				| 3.0.0     | https://cran.r-project.org/package=gtsummary             				| MIT		      |
-| mcr	                     				| 2.5.0     | https://cran.r-project.org/package=mcr	              				| GPL (≥ 3)       |
+| gt	                     				  | 1.3.0     | https://cran.r-project.org/package=gt		              				| MIT		          |
+| gtsummary                    			| 3.0.0     | https://cran.r-project.org/package=gtsummary             			| MIT		          |
+| mcr	                     				  | 2.5.0     | https://cran.r-project.org/package=mcr	              				| GPL (≥ 3)       |
 | pROC                      				| 1.18.5    | https://cran.r-project.org/package=pROC               				| GPL (≥ 3)       |
 | purrr                     				| 1.0.2     | https://cran.r-project.org/package=purrr              				| MIT             |
-| readxl                     				| 1.5.0     | https://cran.r-project.org/package=readxl              				| MIT		      |
+| readxl                     				| 1.5.0     | https://cran.r-project.org/package=readxl              				| MIT		          |
 | rmarkdown                 				| 2.29      | https://cran.r-project.org/package=rmarkdown          				| GPL-3           |
 | stringr                   				| 1.5.1     | https://cran.r-project.org/package=stringr            				| MIT             |
 | tidyr                     				| 1.3.1     | https://cran.r-project.org/package=tidyr              				| MIT             |
