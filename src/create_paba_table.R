@@ -55,3 +55,31 @@ paba_data_filt <- paba_data %>%
 
 write.csv(paba_data_filt, paste0("data/paba_data_", year, ".csv"), 
           row.names = FALSE)
+
+
+
+paba_methode <- skml %>%
+  group_by(Bepaling, Methode) %>%
+  do(paba.reg.fun(.$ConsensusWaarde, .$Resultaat, N_min)) 
+
+
+methode_per_ctr <- skml %>% group_by(ptp, ctr, Bepaling) %>% 
+  filter(Methode == Methode[1]) %>% 
+  slice(1) %>% 
+  select(ptp, ctr, Bepaling, Methode)
+
+
+paba_data_met_methode <- left_join(paba_data, methode_per_ctr,
+                                   by = c("Bepaling", "ptp", "ctr"))
+
+paba_joined_methode <- left_join(paba_data_met_methode, 
+                                 select(paba_methode, -N, -Lin_test_p), 
+                                 by = c("Methode", "Bepaling"))
+
+paba_joined_methode_corrected <- paba_joined_methode %>% 
+  mutate(Intercept = Slope.y*Intercept.x + Intercept.y) %>% 
+  mutate(Slope = Slope.y*Slope.x) %>% 
+  select(Bepaling, ptp, ctr, N, Intercept, Slope, Lin_test_p)
+
+write.csv(paba_joined_methode_corrected, 
+          "data/paba_data_corrected.csv", row.names = FALSE)
