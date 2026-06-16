@@ -135,69 +135,29 @@ colab_spec <- readRDS("out/CoLab/simulations_confusion_matrix/colab_confusion_ma
 
 CoLab_plot <- ggarrange(colab_C_RMSE  + 
                           xlab("Root mean squared error (continuous)") +
-                          ylim(0,10) +
+                          ylim(0,8) +
                           xlim(0,1), 
                         colab_O_PD  + 
                           xlab("Percentage discordant (ordinal)") +
-                          ylim(0,10) + 
+                          ylim(0,8) + 
                           xlim(0,50), 
                         colab_O_micro_RMSE  + 
                           xlab("Root mean squared error (ordinal)") +
-                          ylim(0,10) +
+                          ylim(0,8) +
                           xlim(0,1),
                         colab_D_PD  + 
                           xlab("Percentage discordant (dichotomous)") +
-                          ylim(0,10) + 
+                          ylim(0,8) + 
                           xlim(0,5),
                         colab_sens + 
                           ggtitle("sensitivity") +
-                          ylim(0,35) +
+                          ylim(0,50) +
                           xlim(0,1),
                         colab_spec + 
                           ggtitle("specificity") +
-                          ylim(0,35) +
+                          ylim(0,50) +
                           xlim(0,1),
                         ncol = 2, nrow = 3,labels = c("A", "B", "C", "D", "E", "F"))
-
-
-# cowplot alternative tot allign
-p1 <- colab_C_RMSE  + 
-  xlab("Root mean squared error (continuous)") +
-  ylim(0,8) +
-  xlim(0,1) 
-p2 <- colab_O_PD  + 
-  xlab("Percentage discordant (ordinal)") +
-  ylim(0,8) + 
-  xlim(0,50)
-p3 <- colab_O_micro_RMSE  + 
-  xlab("Root mean squared error (ordinal)") +
-  ylim(0,8) +
-  xlim(0,1)
-p4 <- colab_D_PD  + 
-  xlab("Percentage discordant (dichotomous)") +
-  ylim(0,8) + 
-  xlim(0,5)
-p5 <- colab_sens + 
-  xlab("Sensitivity") +
-  ylim(0,50) +
-  xlim(0,1) +
-  geom_vline(xintercept = 0.66, linetype="dashed", linewidth=0.5, col = "#ff6961")+
-  annotate("text", x=0.54, y=19, label="original", angle=0, size = 4)
-p6 <- colab_spec + 
-  xlab("Specificity") +
-  ylim(0,50) +
-  xlim(0,1) +
-  geom_vline(xintercept = 0.93, linetype="dashed", linewidth=0.5, col = "#ff6961")+
-  annotate("text",  x=0.81, y=46, label="original", angle=0, size = 4)
-
-aligned <- align_plots(p1, p2, p3, p4, p5, p6, 
-                       align = "hv",   
-                       axis = "tblr")  
-CoLab_plot_cow <- plot_grid(plotlist = aligned, 
-                            ncol = 2,
-                            labels = c('A', 'B', 'C', 'D', 'E', 'F'))
-CoLab_plot_cow
-
 
 tiff("figures publication/Colab_Figure.tiff",
      width = 176, 
@@ -205,7 +165,7 @@ tiff("figures publication/Colab_Figure.tiff",
      units = "mm",
      res = 1200,
      compression = "lzw")
-print(CoLab_plot_cow)
+print(CoLab_plot)
 dev.off() 
 
 
