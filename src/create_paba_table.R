@@ -15,9 +15,11 @@ skml <- read.csv(paste0("data/skml_merged_",year,".csv"))
 
 paba.reg.fun <- function(ReferenceMethod, TestMethod){
   # Minimum sample size is 16
-  N <- length(ReferenceMethod)
-  PB.reg <- try(mcr::mcreg(ReferenceMethod, TestMethod,
-                           method.reg = "PBequi",
+  df <- data.frame(ReferenceMethod, TestMethod)
+  df2 <- na.omit(df)
+  N <- nrow(df2)
+  PB.reg <- try(mcr::mcreg(df2$ReferenceMethod, df2$TestMethod,
+                           method.reg = "PBequi", na.rm = T,
                            method.ci = "analytical"), silent = T)
   if (class(PB.reg) == "MCResultAnalytical") {
     coef <- getCoefficients(PB.reg)
@@ -57,43 +59,41 @@ write.csv(paba_data_filt, paste0("data/paba_data_", year, ".csv"),
           row.names = FALSE)
 
 
-
 # Correctie op methode niveau ---------------------------------------------
 
-# # PaBa regressie per bepaling/methode
-# paba_data_per_methode <- skml %>%
-#   group_by(Bepaling, Methode) %>%
-#   do(paba.reg.fun(.$ConsensusWaarde, .$Resultaat)) 
-# 
-# # filtering criteria
-# paba_data_per_methode_filt <- paba_data_per_methode %>% 
-#   filter(N_metingen >= N_min) 
-# 
-# # Kies per ptp/ctr/bepaling de eerste methode, indien meerdere methodes 
-# methode_per_ctr <- skml %>% group_by(ptp, ctr, Bepaling) %>% 
-#   filter(Methode == Methode[1]) %>% 
-#   slice(1) %>% 
-#   select(ptp, ctr, Bepaling, Methode)
-# 
-# 
-# # PaBa regressie data met methode zoals gekozen door methode per ctr 
-# paba_data_eerste_methode <- left_join(paba_data_filt, methode_per_ctr,
-#                                       by = c("Bepaling", "ptp", 
-#                                              "ctr", "Methode"))
-# 
+
+# Resultaten centrum 11 (referentie)
+ptp11 <- skml %>% filter(ptp == 11) %>% 
+  select(Bepaling, ctm, Resultaat) %>% 
+  rename(Resultaat_11 = Resultaat) 
+
+skml_w_ptp11 <- left_join(skml, ptp11, by = c("Bepaling", "ctm"))
+
+# PaBa regressie per bepaling/methode
+paba_data_per_methode_ptp11 <- skml_w_ptp11 %>%
+  group_by(Bepaling, Methode) %>%
+  do(paba.reg.fun(.$Resultaat, .$Resultaat_11)) 
+
+
+# PaBa regressie data met methode zoals gekozen door methode per ctr
+paba_correctiefactoren <- left_join(select(paba_data_filt, Bepaling, 
+                                           ptp, ctr, Methode),
+                                    paba_data_per_methode_ptp11,
+                                    by = c("Bepaling", "Methode")) 
+
 # # Combineren met PaBa data per methode
-# paba_data_joined <- left_join(select(paba_data_eerste_methode, 
-#                                      -Lin_test_p, -N_methodes), 
-#                               select(paba_data_per_methode_filt, -Lin_test_p), 
+# paba_data_joined <- left_join(select(paba_data_eerste_methode,
+#                                      -Lin_test_p, -N_methodes),
+#                               select(paba_data_per_methode_filt, -Lin_test_p),
 #                               by = c("Methode", "Bepaling"))
 # 
 # # Gesimuleerde PaBa data met correctie berekenen
-# paba_joined_methode_corrected <- paba_data_joined %>% 
-#   mutate(Intercept = Slope.y*Intercept.x + Intercept.y) %>% 
-#   mutate(Slope = Slope.y*Slope.x) %>% 
-#   select(Bepaling, ptp, ctr, Intercept, Slope)
+# paba_joined_methode_corrected <- paba_data_joined %>%
+#   mutate(Intercept = Slope.y*Intercept.x + Intercept.y) %>%
+#   mutate(Slope = Slope.y*Slope.x) %>%
+#   select(Bepaling, ptp, ctr, Methode, Intercept, Slope)
 # 
-# 
-# write.csv(paba_joined_methode_corrected, 
-#           paste0("data/paba_data_", year, "_corrected.csv"), 
-#           row.names = FALSE)
+
+write.csv(paba_correctiefactoren,
+          paste0("data/paba_data_", year, "_correctiefactoren.csv"),
+          row.names = FALSE)
