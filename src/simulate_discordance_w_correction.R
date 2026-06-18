@@ -8,8 +8,10 @@ library(purrr)
 source('src/simulate_bias.R', local = bias <- new.env())
 source('src/save_output.R', local = save <- new.env())
 
-simulate_bias_induced_discordance <- function(data, identifier, variables, bias_factors, bias_intercepts, laboratory, continuous_prediction_function, ordinal_prediction_function, categorical_prediction_function, base_dir, ...,
-                                              correct_predictions = T){ 
+# If correct_linreg = T, correct predictions using linreg of outcome
+# Else corrections are performed on individual test level
+simulate_bias_induced_discordance <- function(data, identifier, variables, bias_factors, bias_intercepts, laboratory, continuous_prediction_function, ordinal_prediction_function, categorical_prediction_function, base_dir,
+                                              bias_corrections_slopes, bias_corrections_intercepts, correct_linreg, ...){ 
   is_bias_entered_correctly(bias_factors, bias_intercepts)
   is_prediction_function_entered(continuous_prediction_function, ordinal_prediction_function, categorical_prediction_function)
   predict_continuous <- create_pointer_to_prediction_function(continuous_prediction_function)
@@ -21,11 +23,13 @@ simulate_bias_induced_discordance <- function(data, identifier, variables, bias_
   constant_data <- bias$create_constant_data(data, variables)
   for (row in 1:nrow(bias_factors)){
     simulated_data <- bias$simulate_bias(data, identifier, variables, bias_factors[row,], bias_intercepts[row,])
-    combined_data <- left_join(constant_data, simulated_data, by = c(identifier))
-    if (correct_predictions) {
+    if (correct_linreg) {
+      combined_data <- left_join(constant_data, simulated_data, by = c(identifier))
       combined_data_with_predictions <- get_predictions_w_linreg_correction(combined_data, identifier, predict_continuous, predict_ordinal, predict_categorical, reference_predictions, dots_arguments)
     } else {
-    combined_data_with_predictions <- get_predictions(combined_data, identifier, predict_continuous, predict_ordinal, predict_categorical, dots_arguments)
+      corrected_simulated_data <- bias$simulate_bias(simulated_data, identifier, variables, bias_corrections_slopes[row,], bias_corrections_intercepts[row,])
+      combined_data <- left_join(constant_data, corrected_simulated_data, by = c(identifier))
+      combined_data_with_predictions <- get_predictions(combined_data, identifier, predict_continuous, predict_ordinal, predict_categorical, dots_arguments)
     }
     # save$save_database_data(combined_data_with_predictions, base_dir, bias_factors[[laboratory]][row])
     simulated_predictions <- combined_data_with_predictions %>% select(all_of(identifier), continuous_prediction, ordinal_prediction, categorical_prediction)

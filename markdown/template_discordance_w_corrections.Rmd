@@ -1,0 +1,684 @@
+```{r, include=FALSE, warning=FALSE, message=FALSE}
+## Load libraries.
+library(boot)
+library(dplyr)
+```
+
+```{r, include=FALSE, warning=FALSE, message=FALSE}
+## Import functions and variables.
+source('src/calculate_bias_table.R', local = bias <- new.env())
+source('src/simulate_discordance_w_correction.R', local = discordance <- new.env())
+source('src/bootstrapped_ci.R', local = bootstrapped <- new.env())
+source('src/comparison.R', local = comparison <- new.env())
+source('src/print_table.R', local = print <- new.env())
+source('src/save_output.R', local = save <- new.env())
+```
+
+```{r echo=FALSE, warning=TRUE}
+## Prepare bias data.
+bias_tables <- bias$get_bias_table(
+  parameters$bias_data,
+  parameters$bias_data_lab_col,
+  parameters$bias_data_cluster_col,
+  parameters$bias_data_measurement_col,
+  parameters$bias_data_names,
+  parameters$model_variables[!parameters$model_variables %in% parameters$uncertain_variables],
+  parameters$bias_data_reference_lab
+)
+
+bias_slopes <- bias_tables$slopes
+bias_intercepts <- bias_tables$intercepts
+
+# Bias corrections
+bias_tables_corrections <- bias$get_bias_table(
+  parameters$bias_data_corrections,
+  parameters$bias_data_lab_col,
+  parameters$bias_data_cluster_col,
+  parameters$bias_data_measurement_col,
+  parameters$bias_data_names,
+  parameters$model_variables[!parameters$model_variables %in% parameters$uncertain_variables],
+  NA
+)
+
+bias_corrections_slopes <- bias_tables_corrections$slopes
+bias_corrections_intercepts <- bias_tables_corrections$intercepts
+
+```
+
+## Simulate predictions and calculate % discordance.
+
+```{r, echo=FALSE}
+discordance_status <-
+  discordance$simulate_bias_induced_discordance(
+    parameters$data,
+    parameters$identifier,
+    parameters$uncertain_variables,
+    bias_slopes,
+    bias_intercepts,
+    "laboratory",
+    parameters$continuous_prediction_function,
+    parameters$ordinal_prediction_function,
+    parameters$categorical_prediction_function,
+    parameters$path_output,
+    model = parameters$model,
+    model_variables = parameters$model_variables,
+    bias_corrections_slopes,
+    bias_corrections_intercepts,
+    parameters$correct_via_linreg
+  )
+
+save$save_summary(
+  discordance_status, 
+  parameters$path_output, 
+  parameters$model_name, 
+  "discordance",
+  parameters$population,
+  "bias_per_individual"
+)
+```
+
+## Calculate discordance measures.
+
+```{r, eval = !is.na(parameters$bootstrap_number_of_samples), results = 'asis', echo=FALSE}
+cat("The distribution of bootstrapped estimates and the bootstrap bias estimate determine the appropriateness of normal and percentile bootstrapped confidence intervals. Bias-corrected and accelerated (BCa) confidence intervals correct for bias and skewness in the distribution of bootstrapped estimates but require more computational time.")
+```
+
+```{r, eval = !is.na(parameters$bootstrap_number_of_samples), echo=FALSE}
+bootstrapped_discordant_predictions <- 
+  discordance_status %>%
+  group_split(laboratory) %>%
+  set_names(unlist(group_keys(discordance_status %>% group_by(laboratory)))) %>%
+  purrr::map(
+    function(x){
+      boot(
+        x,
+        discordance$get_summary_of_discordance_measures_as_vector,
+        parameters$bootstrap_number_of_samples
+      )
+    }
+  )
+```
+
+```{r, eval = !is.na(parameters$bootstrap_number_of_samples), results = 'asis', echo=FALSE}
+cat("-  Table with bootstrapped summary statistics:")
+```
+
+```{r, eval = !is.na(parameters$bootstrap_number_of_samples), echo=FALSE}
+bootstrapped_ci_discordance_status <- bootstrapped$get_bootstrapped_ci_all_laboratories(
+  bootstrapped_discordant_predictions,
+  discordance$get_variable_names_from_summary_of_discordance_measures_as_vector(discordance_status), 
+  parameters$bootstrap_confidence_level, 
+  parameters$bootstrap_methods
+)
+
+save$save_summary(
+  bootstrapped_ci_discordance_status, 
+  parameters$path_output, 
+  parameters$model_name, 
+  "discordance",
+  parameters$population,
+  "stats_with_ci"
+)
+
+print$print_table_bootstrapped_summary(bootstrapped_ci_discordance_status, 4)
+```
+
+- Compact table with summary statistics.
+
+```{r, eval = is.na(parameters$bootstrap_number_of_samples), echo=FALSE}
+summary_discordance_status <- discordance$get_summary_of_discordance_measures_all_laboratories(discordance_status)
+
+save$save_summary(
+  summary_discordance_status, 
+  parameters$path_output, 
+  parameters$model_name, 
+  "discordance",
+  parameters$population,
+  "stats_without_ci"
+)
+
+print$print_table_summary(summary_discordance_status, 4)
+```
+
+```{r, eval = !is.na(parameters$bootstrap_number_of_samples), echo=FALSE}
+summary_discordance_status <- bootstrapped$get_dataframe_without_ci(bootstrapped_ci_discordance_status)
+
+save$save_summary(
+  summary_discordance_status, 
+  parameters$path_output, 
+  parameters$model_name, 
+  "discordance",
+  parameters$population,
+  "stats_without_ci"
+)
+
+print$print_table_summary(summary_discordance_status, 4)
+```
+
+```{r, eval = is.function(parameters$continuous_prediction_function), results = 'asis', echo=FALSE}
+cat("* Histogram and distribution of median prediction for continuous predictions:")
+
+histogram_continuous_median_prediction <- comparison$get_histogram(
+  summary_discordance_status, 
+  "continuous_median_prediction",
+  "Median continuous prediction",
+  parameters$histogram_continuous_median_prediction_binwidth,
+  parameters$histogram_continuous_median_prediction_x_range,
+  parameters$histogram_continuous_median_prediction_y_range
+)
+
+save$save_histogram(
+  histogram_continuous_median_prediction, 
+  parameters$path_output, 
+  parameters$model_name, 
+  "discordance",
+  parameters$population
+)
+
+plot(histogram_continuous_median_prediction)
+```
+
+```{r, eval = is.function(parameters$continuous_prediction_function), results = 'asis', echo=FALSE, message=FALSE, warning=FALSE}
+distribution_continuous_median_prediction <- comparison$get_distribution_table(
+  summary_discordance_status, 
+  "continuous_median_prediction", 
+  "laboratory"
+)
+
+print$print_table_distribution(distribution_continuous_median_prediction, 4)
+```
+
+```{r, eval = is.function(parameters$continuous_prediction_function), results = 'asis', echo=FALSE}
+cat("* Histogram and distribution of median difference for continuous predictions:")
+
+histogram_continuous_median_difference <- comparison$get_histogram(
+  summary_discordance_status, 
+  "continuous_median_difference",
+  "Median difference",
+  parameters$histogram_continuous_median_difference_binwidth,
+  parameters$histogram_continuous_median_difference_x_range,
+  parameters$histogram_continuous_median_difference_y_range
+)
+
+save$save_histogram(
+  histogram_continuous_median_difference, 
+  parameters$path_output, 
+  parameters$model_name, 
+  "discordance",
+  parameters$population
+)
+
+plot(histogram_continuous_median_difference)
+```
+
+```{r, eval = is.function(parameters$continuous_prediction_function), results = 'asis', echo=FALSE, message=FALSE}
+distribution_continuous_median_difference <- comparison$get_distribution_table(
+  summary_discordance_status, 
+  "continuous_median_difference", 
+  "laboratory"
+)
+
+print$print_table_distribution(distribution_continuous_median_difference, 4)
+```
+
+```{r, eval = is.function(parameters$continuous_prediction_function), results = 'asis', echo=FALSE}
+cat("* Histogram and distribution of median percentage difference prediction for continuous predictions:")
+
+histogram_continuous_median_percentage_difference <- comparison$get_histogram(
+  summary_discordance_status, 
+  "continuous_median_percentage_difference",
+  "Median percentage difference",
+  parameters$histogram_continuous_median_percentage_difference_binwidth,
+  parameters$histogram_continuous_median_percentage_difference_x_range,
+  parameters$histogram_continuous_median_percentage_difference_y_range
+)
+
+save$save_histogram(
+  histogram_continuous_median_percentage_difference, 
+  parameters$path_output, 
+  parameters$model_name, 
+  "discordance",
+  parameters$population
+)
+
+plot(histogram_continuous_median_percentage_difference)
+```
+
+```{r, eval = is.function(parameters$continuous_prediction_function), results = 'asis', echo=FALSE, message=FALSE}
+distribution_continuous_median_percentage_difference <- comparison$get_distribution_table(
+  summary_discordance_status, 
+  "continuous_median_percentage_difference", 
+  "laboratory"
+)
+
+print$print_table_distribution(distribution_continuous_median_percentage_difference, 4)
+```
+
+```{r, eval = is.function(parameters$continuous_prediction_function), results = 'asis', echo=FALSE}
+cat("* Histogram and distribution of mean absolute error for continuous predictions:")
+
+histogram_continuous_mae <- comparison$get_histogram(
+  summary_discordance_status, 
+  "continuous_mae",
+  "Mean absolute error",
+  parameters$histogram_continuous_mae_binwidth,
+  parameters$histogram_continuous_mae_x_range,
+  parameters$histogram_continuous_mae_y_range
+)
+
+save$save_histogram(
+  histogram_continuous_mae, 
+  parameters$path_output, 
+  parameters$model_name, 
+  "discordance",
+  parameters$population
+)
+
+plot(histogram_continuous_mae)
+```
+
+```{r, eval = is.function(parameters$continuous_prediction_function), results = 'asis', echo=FALSE, message=FALSE}
+distribution_continuous_mae <- comparison$get_distribution_table(
+  summary_discordance_status, 
+  "continuous_mae", 
+  "laboratory"
+)
+
+print$print_table_distribution(distribution_continuous_mae, 4)
+```
+
+```{r, eval = is.function(parameters$continuous_prediction_function), results = 'asis', echo=FALSE}
+cat("* Histogram and distribution of root mean squared error (rmse) for continuous predictions:")
+
+histogram_continuous_rmse <- comparison$get_histogram(
+  summary_discordance_status, 
+  "continuous_rmse",
+  "Root mean squared error",
+  parameters$histogram_continuous_rmse_binwidth,
+  parameters$histogram_continuous_rmse_x_range,
+  parameters$histogram_continuous_rmse_y_range
+)
+
+save$save_histogram(
+  histogram_continuous_rmse, 
+  parameters$path_output, 
+  parameters$model_name, 
+  "discordance",
+  parameters$population
+)
+
+plot(histogram_continuous_rmse)
+```
+
+```{r, eval = is.function(parameters$continuous_prediction_function), results = 'asis', echo=FALSE, message=FALSE}
+distribution_continuous_rmse <- comparison$get_distribution_table(
+  summary_discordance_status, 
+  "continuous_rmse", 
+  "laboratory"
+)
+
+print$print_table_distribution(distribution_continuous_rmse, 4)
+```
+
+```{r, eval = is.function(parameters$continuous_prediction_function), results = 'asis', echo=FALSE}
+cat("* Histogram and distribution of trimmed mean absolute percentage error (mape) for continuous predictions:")
+
+histogram_continuous_mape_trimmed <- comparison$get_histogram(
+  summary_discordance_status, 
+  "continuous_mape_trimmed",
+  "Trimmed mean absolute percentage error",
+  parameters$histogram_continuous_mape_trimmed_binwidth,
+  parameters$histogram_continuous_mape_trimmed_x_range,
+  parameters$histogram_continuous_mape_trimmed_y_range
+)
+
+save$save_histogram(
+  histogram_continuous_mape_trimmed, 
+  parameters$path_output, 
+  parameters$model_name, 
+  "discordance",
+  parameters$population
+)
+
+plot(histogram_continuous_mape_trimmed)
+```
+
+```{r, eval = is.function(parameters$continuous_prediction_function), results = 'asis', echo=FALSE, message=FALSE}
+distribution_continuous_mape_trimmed <- comparison$get_distribution_table(
+  summary_discordance_status, 
+  "continuous_mape_trimmed", 
+  "laboratory"
+)
+
+print$print_table_distribution(distribution_continuous_mape_trimmed, 4)
+```
+
+```{r, eval = is.function(parameters$continuous_prediction_function), results = 'asis', echo=FALSE}
+cat("* Histogram and distribution of median absolute percentage error (mdape) for continuous predictions:")
+
+histogram_continuous_mdape <- comparison$get_histogram(
+  summary_discordance_status, 
+  "continuous_mdape",
+  "Median absolute percentage error",
+  parameters$histogram_continuous_mdape_binwidth,
+  parameters$histogram_continuous_mdape_x_range,
+  parameters$histogram_continuous_mdape_y_range
+)
+
+save$save_histogram(
+  histogram_continuous_mdape, 
+  parameters$path_output, 
+  parameters$model_name, 
+  "discordance",
+  parameters$population
+)
+
+plot(histogram_continuous_mdape)
+```
+
+```{r, eval = is.function(parameters$continuous_prediction_function), results = 'asis', echo=FALSE, message=FALSE}
+distribution_continuous_mdape <- comparison$get_distribution_table(
+  summary_discordance_status, 
+  "continuous_mdape", 
+  "laboratory"
+)
+
+print$print_table_distribution(distribution_continuous_mdape, 4)
+```
+
+```{r, eval = is.function(parameters$continuous_prediction_function), results = 'asis', echo=FALSE}
+cat("* Histogram and distribution of trimmed root mean squared percentage error (rmspe) for continuous predictions:")
+
+histogram_continuous_rmspe_trimmed <- comparison$get_histogram(
+  summary_discordance_status, 
+  "continuous_rmspe_trimmed",
+  "Trimmed root mean squared percentage error",
+  parameters$histogram_continuous_rmspe_trimmed_binwidth,
+  parameters$histogram_continuous_rmspe_trimmed_x_range,
+  parameters$histogram_continuous_rmspe_trimmed_y_range
+)
+
+save$save_histogram(
+  histogram_continuous_rmspe_trimmed, 
+  parameters$path_output, 
+  parameters$model_name, 
+  "discordance",
+  parameters$population
+)
+
+plot(histogram_continuous_rmspe_trimmed)
+```
+
+```{r, eval = is.function(parameters$continuous_prediction_function), results = 'asis', echo=FALSE, message=FALSE}
+distribution_continuous_rmspe_trimmed <- comparison$get_distribution_table(
+  summary_discordance_status, 
+  "continuous_rmspe_trimmed", 
+  "laboratory"
+)
+
+print$print_table_distribution(distribution_continuous_rmspe_trimmed, 4)
+```
+
+```{r, eval = is.function(parameters$continuous_prediction_function), results = 'asis', echo=FALSE}
+cat("* Histogram and distribution of root median squared percentage error (rmdspe) for continuous predictions:")
+
+histogram_continuous_rmdspe <- comparison$get_histogram(
+  summary_discordance_status, 
+  "continuous_rmdspe",
+  "Root median squared percentage error",
+  parameters$histogram_continuous_rmdspe_binwidth,
+  parameters$histogram_continuous_rmdspe_x_range,
+  parameters$histogram_continuous_rmdspe_y_range
+)
+
+save$save_histogram(
+  histogram_continuous_rmdspe, 
+  parameters$path_output, 
+  parameters$model_name, 
+  "discordance",
+  parameters$population
+)
+
+plot(histogram_continuous_rmdspe)
+```
+
+```{r, eval = is.function(parameters$continuous_prediction_function), results = 'asis', echo=FALSE, message=FALSE}
+distribution_continuous_rmdspe <- comparison$get_distribution_table(
+  summary_discordance_status, 
+  "continuous_rmdspe", 
+  "laboratory"
+)
+
+print$print_table_distribution(distribution_continuous_rmdspe, 4)
+```
+
+```{r, eval = is.function(parameters$ordinal_prediction_function), results = 'asis', echo=FALSE}
+cat("* Histogram and distribution of median difference for ordinal predictions:")
+
+histogram_ordinal_median_difference <- comparison$get_histogram(
+  summary_discordance_status, 
+  "ordinal_median_difference",
+  "Median difference",
+  parameters$histogram_ordinal_median_difference_binwidth,
+  parameters$histogram_ordinal_median_difference_x_range,
+  parameters$histogram_ordinal_median_difference_y_range
+)
+
+save$save_histogram(
+  histogram_ordinal_median_difference, 
+  parameters$path_output, 
+  parameters$model_name, 
+  "discordance",
+  parameters$population
+)
+
+plot(histogram_ordinal_median_difference)
+```
+
+```{r, eval = is.function(parameters$ordinal_prediction_function), results = 'asis', echo=FALSE, message=FALSE}
+distribution_ordinal_median_difference <- comparison$get_distribution_table(
+  summary_discordance_status, 
+  "ordinal_median_difference", 
+  "laboratory"
+)
+
+print$print_table_distribution(distribution_ordinal_median_difference, 4)
+```
+
+```{r, eval = is.function(parameters$ordinal_prediction_function), results = 'asis', echo=FALSE}
+cat("* Histogram and distribution of micro-averaged mean absolute error for ordinal predictions:")
+
+histogram_ordinal_micro_mae <- comparison$get_histogram(
+  summary_discordance_status, 
+  "ordinal_micro_mae",
+  "Micro-averaged mean absolute error",
+  parameters$histogram_ordinal_micro_mae_binwidth,
+  parameters$histogram_ordinal_micro_mae_x_range,
+  parameters$histogram_ordinal_micro_mae_y_range
+)
+
+save$save_histogram(
+  histogram_ordinal_micro_mae, 
+  parameters$path_output, 
+  parameters$model_name, 
+  "discordance",
+  parameters$population
+)
+
+plot(histogram_ordinal_micro_mae)
+```
+
+```{r, eval = is.function(parameters$ordinal_prediction_function), results = 'asis', echo=FALSE, message=FALSE}
+distribution_ordinal_micro_mae <- comparison$get_distribution_table(
+  summary_discordance_status, 
+  "ordinal_micro_mae", 
+  "laboratory"
+)
+
+print$print_table_distribution(distribution_ordinal_micro_mae, 4)
+```
+
+```{r, eval = is.function(parameters$ordinal_prediction_function), results = 'asis', echo=FALSE}
+cat("* Histogram and distribution of macro-averaged mean absolute error for ordinal predictions:")
+
+histogram_ordinal_macro_mae <- comparison$get_histogram(
+  summary_discordance_status, 
+  "ordinal_macro_mae",
+  "Macro-averaged mean absolute error",
+  parameters$histogram_ordinal_macro_mae_binwidth,
+  parameters$histogram_ordinal_macro_mae_x_range,
+  parameters$histogram_ordinal_macro_mae_y_range
+)
+
+save$save_histogram(
+  histogram_ordinal_macro_mae, 
+  parameters$path_output, 
+  parameters$model_name, 
+  "discordance",
+  parameters$population
+)
+
+plot(histogram_ordinal_macro_mae)
+```
+
+```{r, eval = is.function(parameters$ordinal_prediction_function), results = 'asis', echo=FALSE, message=FALSE}
+distribution_ordinal_macro_mae <- comparison$get_distribution_table(
+  summary_discordance_status, 
+  "ordinal_macro_mae", 
+  "laboratory"
+)
+
+print$print_table_distribution(distribution_ordinal_macro_mae, 4)
+```
+
+```{r, eval = is.function(parameters$ordinal_prediction_function), results = 'asis', echo=FALSE}
+cat("* Histogram and distribution of micro-averaged root mean squared error for ordinal predictions:")
+
+histogram_ordinal_micro_rmse <- comparison$get_histogram(
+  summary_discordance_status, 
+  "ordinal_micro_rmse",
+  "Micro-averaged root mean squared error",
+  parameters$histogram_ordinal_micro_rmse_binwidth,
+  parameters$histogram_ordinal_micro_rmse_x_range,
+  parameters$histogram_ordinal_micro_rmse_y_range
+)
+
+save$save_histogram(
+  histogram_ordinal_micro_rmse, 
+  parameters$path_output, 
+  parameters$model_name, 
+  "discordance",
+  parameters$population
+)
+
+plot(histogram_ordinal_micro_rmse)
+```
+
+```{r, eval = is.function(parameters$ordinal_prediction_function), results = 'asis', echo=FALSE, message=FALSE}
+distribution_ordinal_micro_rmse <- comparison$get_distribution_table(
+  summary_discordance_status, 
+  "ordinal_micro_rmse", 
+  "laboratory"
+)
+
+print$print_table_distribution(distribution_ordinal_micro_rmse, 4)
+```
+
+```{r, eval = is.function(parameters$ordinal_prediction_function), results = 'asis', echo=FALSE}
+cat("* Histogram and distribution of macro-averaged root mean squared error for ordinal predictions:")
+
+histogram_ordinal_macro_rmse <- comparison$get_histogram(
+  summary_discordance_status, 
+  "ordinal_macro_rmse",
+  "Macro-averaged root mean squared error",
+  parameters$histogram_ordinal_macro_rmse_binwidth,
+  parameters$histogram_ordinal_macro_rmse_x_range,
+  parameters$histogram_ordinal_macro_rmse_y_range
+)
+
+save$save_histogram(
+  histogram_ordinal_macro_rmse, 
+  parameters$path_output, 
+  parameters$model_name, 
+  "discordance",
+  parameters$population
+)
+
+plot(histogram_ordinal_macro_rmse)
+```
+
+```{r, eval = is.function(parameters$ordinal_prediction_function), results = 'asis', echo=FALSE, message=FALSE}
+distribution_ordinal_macro_rmse <- comparison$get_distribution_table(
+  summary_discordance_status, 
+  "ordinal_macro_rmse", 
+  "laboratory"
+)
+
+print$print_table_distribution(distribution_ordinal_macro_rmse, 4)
+```
+
+```{r, eval = is.function(parameters$ordinal_prediction_function), results = 'asis', echo=FALSE}
+cat("* Histogram and distribution of percentage discordant for ordinal predictions:")
+
+histogram_ordinal_percentage_discordant <- comparison$get_histogram(
+  summary_discordance_status, 
+  "ordinal_percentage_discordant",
+  "Percentage discordant",
+  parameters$histogram_ordinal_percentage_discordant_binwidth,
+  parameters$histogram_ordinal_percentage_discordant_x_range,
+  parameters$histogram_ordinal_percentage_discordant_y_range
+)
+
+save$save_histogram(
+  histogram_ordinal_percentage_discordant, 
+  parameters$path_output, 
+  parameters$model_name, 
+  "discordance",
+  parameters$population
+)
+
+plot(histogram_ordinal_percentage_discordant)
+```
+
+```{r, eval = is.function(parameters$ordinal_prediction_function), results = 'asis', echo=FALSE, message=FALSE}
+distribution_ordinal_percentage_discordant <- comparison$get_distribution_table(
+  summary_discordance_status, 
+  "ordinal_percentage_discordant", 
+  "laboratory"
+)
+
+print$print_table_distribution(distribution_ordinal_percentage_discordant, 4)
+```
+
+```{r, eval = is.function(parameters$categorical_prediction_function), results = 'asis', echo=FALSE}
+cat("* Histogram and distribution of percentage discordant for categorical predictions:")
+
+histogram_categorical_percentage_discordant <- comparison$get_histogram(
+  summary_discordance_status, 
+  "categorical_percentage_discordant",
+  "Percentage discordant",
+  parameters$histogram_categorical_percentage_discordant_binwidth,
+  parameters$histogram_categorical_percentage_discordant_x_range,
+  parameters$histogram_categorical_percentage_discordant_y_range
+)
+
+save$save_histogram(
+  histogram_categorical_percentage_discordant, 
+  parameters$path_output, 
+  parameters$model_name,
+  "discordance",
+  parameters$population
+)
+
+plot(histogram_categorical_percentage_discordant)
+```
+
+```{r, eval = is.function(parameters$categorical_prediction_function), results = 'asis', echo=FALSE, message=FALSE}
+distribution_categorical_percentage_discordant <- comparison$get_distribution_table(
+  summary_discordance_status, 
+  "categorical_percentage_discordant", 
+  "laboratory"
+)
+
+print$print_table_distribution(distribution_categorical_percentage_discordant, 4)
+```
